@@ -8,7 +8,7 @@ import { api } from '../api'
 import { useIsMobile } from '../utils/composables'
 
 // Icons
-import { Refresh, QrCode, Edit, Delete } from '@vicons/material'
+import { RefreshFilled, QrCodeFilled, EditFilled, DeleteFilled } from '@vicons/material'
 import { Copy, User } from '@vicons/fa'
 
 // Components
@@ -132,7 +132,7 @@ onMounted(() => {
           
           <div class="action-area">
              <n-button type="primary" size="large" @click="showLocalAddress = true">
-                <template #icon><n-icon><Refresh /></n-icon></template>
+                <template #icon><n-icon><RefreshFilled /></n-icon></template>
                 {{ t('createEmail') }}
              </n-button>
           </div>
@@ -167,22 +167,22 @@ onMounted(() => {
        <!-- Action Buttons -->
        <div class="action-grid">
           <n-button class="action-btn" @click="refreshPage">
-             <template #icon><n-icon><Refresh /></n-icon></template>
+             <template #icon><n-icon><RefreshFilled /></n-icon></template>
              {{ t('refreshEmail') }}
           </n-button>
           
           <n-button class="action-btn" @click="showQrCode = true">
-             <template #icon><n-icon><QrCode /></n-icon></template>
+             <template #icon><n-icon><QrCodeFilled /></n-icon></template>
              {{ t('qrCode') }}
           </n-button>
           
           <n-button class="action-btn" @click="openChangeEmail">
-             <template #icon><n-icon><Edit /></n-icon></template>
+             <template #icon><n-icon><EditFilled /></n-icon></template>
              {{ t('changeEmail') }}
           </n-button>
 
           <n-button class="action-btn delete-btn" type="error" @click="handleDeleteEmail">
-             <template #icon><n-icon><Delete /></n-icon></template>
+             <template #icon><n-icon><DeleteFilled /></n-icon></template>
              {{ t('deleteEmail') }}
           </n-button>
        </div>
