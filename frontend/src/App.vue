@@ -82,31 +82,30 @@ onMounted(async () => {
     <n-spin description="loading..." :show="loading">
       <n-notification-provider container-style="margin-top: 60px;">
         <n-message-provider container-style="margin-top: 20px;">
-          <n-grid x-gap="12" :cols="gridMaxCols">
-            <n-gi v-if="showSideMargin" span="1">
-              <div class="side" v-if="showAd">
-                <ins class="adsbygoogle" style="display:block" :data-ad-client="adClient" :data-ad-slot="adSlot"
+          
+          <div class="app-layout">
+            <!-- Left Ad Column -->
+            <div class="side-column" v-if="showSideMargin && showAd">
+               <ins class="adsbygoogle" style="display:block" :data-ad-client="adClient" :data-ad-slot="adSlot"
                   data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+              <Header />
+              <div class="page-container glass-panel">
+                 <router-view></router-view>
               </div>
-            </n-gi>
-            <n-gi :span="!showSideMargin ? gridMaxCols : (gridMaxCols - 2)">
-              <div class="main">
-                <n-space vertical>
-                  <n-layout style="min-height: 80vh;">
-                    <Header />
-                    <router-view></router-view>
-                  </n-layout>
-                  <Footer />
-                </n-space>
-              </div>
-            </n-gi>
-            <n-gi v-if="showSideMargin" span="1">
-              <div class="side" v-if="showAd">
-                <ins class="adsbygoogle" style="display:block" :data-ad-client="adClient" :data-ad-slot="adSlot"
+              <Footer />
+            </div>
+
+            <!-- Right Ad Column -->
+            <div class="side-column" v-if="showSideMargin && showAd">
+               <ins class="adsbygoogle" style="display:block" :data-ad-client="adClient" :data-ad-slot="adSlot"
                   data-ad-format="auto" data-full-width-responsive="true"></ins>
-              </div>
-            </n-gi>
-          </n-grid>
+            </div>
+          </div>
+          
           <n-back-top />
         </n-message-provider>
       </n-notification-provider>
@@ -114,33 +113,38 @@ onMounted(async () => {
   </n-config-provider>
 </template>
 
-
-<style>
-.n-switch {
-  margin-left: 10px;
-  margin-right: 10px;
-}
-</style>
-
 <style scoped>
-.side {
-  height: 100vh;
+.app-layout {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  gap: 20px;
 }
 
-.main {
-  height: 100vh;
-  text-align: center;
+.main-content {
+  flex: 1;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.n-grid {
-  height: 100%;
+.page-container {
+  padding: 24px;
+  min-height: 60vh;
+  border-radius: 16px;
+  /* Glass effect applied globally via class but reinforced here if needed */
 }
 
-.n-gi {
-  height: 100%;
+.side-column {
+  width: 300px;
+  display: none;
 }
 
-.n-space {
-  height: 100%;
+@media (min-width: 1600px) {
+  .side-column {
+    display: block;
+  }
 }
 </style>

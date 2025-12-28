@@ -235,35 +235,51 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div>
-        <n-page-header>
-            <template #title>
-                <h3>{{ openSettings.title || t('title') }}</h3>
-            </template>
-            <template #avatar>
-                <div @click="logoClick">
-                    <n-avatar style="margin-left: 10px;" src="/logo.png" />
-                </div>
-            </template>
-            <template #extra>
-                <n-space>
-                    <n-menu v-if="!isMobile" mode="horizontal" :options="menuOptions" responsive />
-                    <n-button v-else :text="true" @click="showMobileMenu = !showMobileMenu" style="margin-right: 10px;">
-                        <template #icon>
-                            <n-icon :component="MenuFilled" />
-                        </template>
-                        {{ t('menu') }}
-                    </n-button>
-                </n-space>
-            </template>
-        </n-page-header>
-        <n-drawer v-model:show="showMobileMenu" placement="top" style="height: 100vh;">
-            <n-drawer-content :title="t('menu')" closable>
+    <div class="header-container glass-panel">
+        <div class="logo-section" @click="logoClick">
+            <n-avatar round size="medium" src="/logo.png" fallback-src="https://0.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=512" />
+            <span class="site-title">{{ openSettings.title || t('title') }}</span>
+        </div>
+        
+        <div class="nav-section">
+            <n-space v-if="!isMobile" align="center" size="large">
+                <router-link :to="getRouterPathWithLang('/', locale)" class="nav-link" :class="{ active: menuValue === 'home' }">
+                    <n-icon :component="Home" /> {{ t('home') }}
+                </router-link>
+                
+                <router-link v-if="!isTelegram && userSettings.user_id" :to="getRouterPathWithLang('/user', locale)" class="nav-link" :class="{ active: menuValue === 'user' }">
+                    <n-icon :component="User" /> {{ t('user') }}
+                </router-link>
+
+                <router-link v-if="showAdminPage" :to="getRouterPathWithLang('/admin', locale)" class="nav-link" :class="{ active: menuValue === 'admin' }">
+                    <n-icon :component="AdminPanelSettingsFilled" /> Admin
+                </router-link>
+
+                <n-button quaternary circle @click="toggleDark">
+                    <template #icon>
+                        <n-icon :component="isDark ? LightModeFilled : DarkModeFilled" />
+                    </template>
+                </n-button>
+                
+                <n-button quaternary circle @click="locale == 'zh' ? changeLocale('en') : changeLocale('zh')">
+                    <template #icon>
+                        <n-icon :component="Language" />
+                    </template>
+                </n-button>
+            </n-space>
+
+            <n-button v-else text style="font-size: 24px;" @click="showMobileMenu = !showMobileMenu">
+                <n-icon :component="MenuFilled" />
+            </n-button>
+        </div>
+
+        <n-drawer v-model:show="showMobileMenu" placement="right" style="width: 250px;">
+            <n-drawer-content :title="t('menu')">
                 <n-menu :options="menuOptions" />
             </n-drawer-content>
         </n-drawer>
-        <n-modal v-model:show="showAuth" :closable="false" :closeOnEsc="false" :maskClosable="false" preset="dialog"
-            :title="t('accessHeader')">
+
+        <n-modal v-model:show="showAuth" preset="dialog" :title="t('accessHeader')">
             <p>{{ t('accessTip') }}</p>
             <n-input v-model:value="auth" type="password" show-password-on="click" />
             <template #action>
@@ -276,31 +292,65 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.n-layout-header {
+.header-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 15px 25px;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    background: rgba(30, 41, 59, 0.6); /* Slightly more transparent than default glass */
+    backdrop-filter: blur(20px);
 }
 
-.n-alert {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-.n-card {
-    margin-top: 10px;
-}
-
-.center {
+.logo-section {
     display: flex;
-    text-align: left;
-    place-items: center;
-    justify-content: center;
-    margin: 20px;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: transform 0.2s;
 }
 
-.n-form .n-button {
-    margin-top: 10px;
+.logo-section:hover {
+    transform: scale(1.02);
+}
+
+.site-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #fff, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.nav-link:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link.active {
+    color: #fff;
+    background: var(--primary-gradient);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.n-button {
+    color: var(--text-secondary);
+}
+
+.n-button:hover {
+    color: var(--accent-color);
 }
 </style>
