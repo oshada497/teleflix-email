@@ -1,5 +1,5 @@
 <!-- markdownlint-disable-file MD033 MD045 -->
-# Cloudflare 临时邮箱 - 免费搭建临时邮件服务
+# Cloudflare Temp Email - Teleflix Edition 🟩
 
 <p align="center">
   <a href="https://temp-mail-docs.awsl.uk" target="_blank">
@@ -157,12 +157,18 @@
 <details>
 <summary>🏗️ 技术架构详情（点击收缩/展开）</summary>
 
-### 🏛️ 系统架构
+# Cloudflare Temp Email - Teleflix Edition 🟩
 
-- **数据库**: Cloudflare D1 作为主数据库
-- **前端部署**: 使用 Cloudflare Pages 部署前端
-- **后端部署**: 使用 Cloudflare Workers 部署后端
-- **邮件转发**: 使用 Cloudflare Email Routing
+A high-performance temporary email service built on **Cloudflare Workers**, **D1**, and **Pages**, featuring a **Modern Dark/Green "Matrix" Dashboard UI**.
+
+## ✨ Teleflix Modern UI Features
+*   **Hacker/Matrix Aesthetic**: Deep dark mode with vibrant green accents.
+*   **Floating Window Design**: Dashboard lives inside a sleek, macOS-style window frame.
+*   **Unified Dashboard**: Address bar, controls, and inbox all in one view.
+*   **Visual Indicators**: Time used progress bars and status lights.
+
+![UI Screenshot](https://raw.githubusercontent.com/dreamhunter2333/cloudflare_temp_email/main/doc/screenshot.png) 
+*(Note: Screenshot above is the original UI, deploy to see the new Teleflix Modern UI)*
 
 ### 🛠️ 技术栈
 
