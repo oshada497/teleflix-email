@@ -80,33 +80,36 @@ onMounted(async () => {
   <n-config-provider :locale="localeConfig" :theme="theme">
     <n-global-style />
     <n-spin description="loading..." :show="loading">
-      <n-notification-provider container-style="margin-top: 60px;">
-        <n-message-provider container-style="margin-top: 20px;">
+      <n-notification-provider>
+        <n-message-provider>
           
           <div class="app-layout">
-            <!-- Left Ad Column -->
-            <div class="side-column" v-if="showSideMargin && showAd">
-               <ins class="adsbygoogle" style="display:block" :data-ad-client="adClient" :data-ad-slot="adSlot"
-                  data-ad-format="auto" data-full-width-responsive="true"></ins>
-            </div>
+            <!-- Main Window Card -->
+            <div class="window-card">
+              
+              <!-- Window Header -->
+              <div class="window-header">
+                <div class="window-title">
+                  <n-icon size="20" color="#22c55e">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5l-8-5V6l8 5l8-5v2z"/></svg>
+                  </n-icon>
+                  <span>Temp Mail</span>
+                </div>
+                <div class="window-controls">
+                  <span class="dot red"></span>
+                  <span class="dot yellow"></span>
+                  <span class="dot green"></span>
+                </div>
+              </div>
 
-            <!-- Main Content -->
-            <div class="main-content">
-              <Header />
-              <div class="page-container glass-panel">
+              <!-- Content Area -->
+              <div class="window-content">
                  <router-view></router-view>
               </div>
-              <Footer />
-            </div>
 
-            <!-- Right Ad Column -->
-            <div class="side-column" v-if="showSideMargin && showAd">
-               <ins class="adsbygoogle" style="display:block" :data-ad-client="adClient" :data-ad-slot="adSlot"
-                  data-ad-format="auto" data-full-width-responsive="true"></ins>
             </div>
           </div>
           
-          <n-back-top />
         </n-message-provider>
       </n-notification-provider>
     </n-spin>
@@ -116,35 +119,57 @@ onMounted(async () => {
 <style scoped>
 .app-layout {
   display: flex;
+  align-items: center;
   justify-content: center;
   min-height: 100vh;
   padding: 20px;
-  gap: 20px;
+  background-color: var(--bg-dark);
 }
 
-.main-content {
-  flex: 1;
-  max-width: 1200px;
+.window-card {
+  width: 100%;
+  max-width: 900px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.window-header {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: #1a1a1a;
 }
 
-.page-container {
-  padding: 24px;
-  min-height: 60vh;
-  border-radius: 16px;
-  /* Glass effect applied globally via class but reinforced here if needed */
+.window-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 
-.side-column {
-  width: 300px;
-  display: none;
+.window-controls {
+  display: flex;
+  gap: 8px;
 }
 
-@media (min-width: 1600px) {
-  .side-column {
-    display: block;
-  }
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dot.red { background-color: #ef4444; }
+.dot.yellow { background-color: #f59e0b; }
+.dot.green { background-color: #22c55e; }
+
+.window-content {
+  padding: 0; 
 }
 </style>
