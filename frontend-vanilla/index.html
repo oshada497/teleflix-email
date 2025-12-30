@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teleflix Temp Mail | Secure Disposable Email</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="app-wrapper">
+        <header class="navbar glass-header">
+            <div class="brand">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </div>
+                <h1>Teleflix<span class="highlight">Mail</span></h1>
+            </div>
+            <div class="nav-controls">
+                <button id="refresh-btn" class="btn btn-icon" title="Refresh Inbox">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    <span class="btn-tooltip">Refresh</span>
+                </button>
+                <button id="theme-toggle" class="btn btn-icon" title="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <a href="https://github.com/oshada497/teleflix-email" target="_blank" class="btn btn-outline">
+                    <i class="fa-brands fa-github"></i> <span>GitHub</span>
+                </a>
+            </div>
+        </header>
+
+        <main class="main-container">
+            <!-- Hero Section / Email Display -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <h2 class="title-animate">Your Secure <span class="gradient-text">Disposable Box</span></h2>
+                    <p class="subtitle">Keep your real inbox clean and secure. Anonymous, fast, and free.</p>
+                </div>
+
+                <div class="email-card glass-panel swing-in">
+                    <div class="email-address-wrapper">
+                        <div class="email-icon">
+                            <i class="fa-regular fa-envelope"></i>
+                        </div>
+                        <input type="text" id="current-email" class="email-input" value="Generating secure address..."
+                            readonly>
+                        <button id="copy-email-btn" class="btn btn-primary shimmer-effect">
+                            <i class="fa-regular fa-copy"></i>
+                            <span>Copy</span>
+                        </button>
+                    </div>
+                    <div class="email-controls">
+                        <!-- <div class="timer">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <span id="auto-refresh-timer">Auto-refresh in 10s</span>
+                        </div> -->
+                        <div class="control-actions">
+                            <!-- <button id="random-btn" class="btn btn-ghost text-sm">
+                                <i class="fa-solid fa-shuffle"></i> New Random
+                            </button> -->
+                            <button id="custom-btn" class="btn btn-ghost text-sm">
+                                <i class="fa-solid fa-pen"></i> Custom
+                            </button>
+                            <button id="auth-btn" class="btn btn-ghost text-sm hidden">
+                                <i class="fa-solid fa-key"></i> Login
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Inbox Section -->
+            <section class="inbox-container">
+                <div class="inbox-header">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="inbox">
+                            <i class="fa-solid fa-inbox"></i> Inbox <span id="inbox-count" class="badge">0</span>
+                        </button>
+                    </div>
+                    <!-- <div class="filter-controls">
+                        <button class="btn btn-small btn-glass"><i class="fa-solid fa-filter"></i></button>
+                    </div> -->
+                </div>
+
+                <div id="message-list" class="message-list glass-panel-light">
+                    <!-- Empty State -->
+                    <div class="empty-state">
+                        <div class="empty-icon-wrapper">
+                            <i class="fa-brands fa-space-awesome"></i>
+                        </div>
+                        <h3>Your inbox is empty</h3>
+                        <p>Waiting for incoming messages...</p>
+                        <div class="loader-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <!-- Messages will be injected here -->
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Teleflix Mail. Powered by <a href="#">Cloudflare Workers</a>.</p>
+        </footer>
+    </div>
+
+    <!-- Email View Modal -->
+    <div id="email-viewer" class="modal-overlay hidden">
+        <div class="modal-container glass-panel slide-up">
+            <header class="modal-header">
+                <div class="modal-actions">
+                    <button class="btn btn-icon close-modal"><i class="fa-solid fa-arrow-left"></i></button>
+                    <div class="action-group">
+                        <button class="btn btn-icon danger" title="Delete"><i
+                                class="fa-regular fa-trash-can"></i></button>
+                        <button class="btn btn-icon" title="Download"><i class="fa-solid fa-download"></i></button>
+                    </div>
+                </div>
+            </header>
+            <div class="email-details-header">
+                <h2 id="view-subject">Subject Line Goes Here</h2>
+                <div class="sender-info">
+                    <div class="avatar" id="sender-avatar">A</div>
+                    <div class="meta">
+                        <span id="view-from" class="sender-name">Sender Name</span>
+                        <span id="view-email" class="sender-email">&lt;sender@example.com&gt;</span>
+                        <span id="view-date" class="date-stamp">Oct 24, 10:30 AM</span>
+                    </div>
+                </div>
+            </div>
+            <div class="email-body-content" id="view-body">
+                <!-- Email HTML content -->
+            </div>
+            <div class="email-attachments hidden" id="view-attachments">
+                <h4>Attachments</h4>
+                <div class="attachment-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Email Modal -->
+    <div id="custom-email-modal" class="modal-overlay hidden">
+        <div class="modal-container glass-panel zoom-in small-modal">
+            <div class="modal-header-simple">
+                <h3>Create Custom Email</h3>
+                <button class="btn btn-icon close-custom-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-form">
+                <div class="input-group">
+                    <input type="text" id="custom-name" placeholder="username">
+                    <select id="domain-select">
+                        <!-- Domains will be injected -->
+                    </select>
+                </div>
+                <button id="create-custom-btn" class="btn btn-primary full-width">Create Address</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notification-container"></div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
