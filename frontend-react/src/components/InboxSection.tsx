@@ -28,7 +28,11 @@ interface UIMail {
     attachments?: any[]
 }
 
-export function InboxSection() {
+interface InboxSectionProps {
+    onModalToggle?: (isOpen: boolean) => void
+}
+
+export function InboxSection({ onModalToggle }: InboxSectionProps) {
     const [activeTab, setActiveTab] = useState('inbox') // inbox, outbox, compose, account
     const [emails, setEmails] = useState<UIMail[]>([])
     const [sentEmails, setSentEmails] = useState<any[]>([])
@@ -78,6 +82,12 @@ export function InboxSection() {
             setIsLoading(false)
         }
     }
+
+    useEffect(() => {
+        if (onModalToggle) {
+            onModalToggle(!!selectedEmail || deleteConfirmOpen)
+        }
+    }, [selectedEmail, deleteConfirmOpen, onModalToggle])
 
     useEffect(() => {
         fetchMails()
@@ -259,7 +269,7 @@ export function InboxSection() {
             {/* Email View Modal */}
             <AnimatePresence>
                 {selectedEmail && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setSelectedEmail(null)}>
+                    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md" onClick={() => setSelectedEmail(null)}>
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}

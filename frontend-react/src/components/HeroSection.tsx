@@ -12,13 +12,20 @@ interface HeroSectionProps {
     domains: string[]
     selectedDomain: string
     onDomainChange: (domain: string) => void
+    onModalToggle?: (isOpen: boolean) => void
 }
 
-export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, selectedDomain, onDomainChange }: HeroSectionProps) {
+export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, selectedDomain, onDomainChange, onModalToggle }: HeroSectionProps) {
     const [copied, setCopied] = useState(false)
     const [timeLeft, setTimeLeft] = useState(24 * 60 * 60)
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
     const [pendingDomain, setPendingDomain] = useState<string | null>(null)
+
+    useEffect(() => {
+        if (onModalToggle) {
+            onModalToggle(isConfirmOpen)
+        }
+    }, [isConfirmOpen, onModalToggle])
 
     // Countdown timer logic
     useEffect(() => {

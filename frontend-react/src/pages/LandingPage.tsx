@@ -12,6 +12,7 @@ export function LandingPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [domains, setDomains] = useState<string[]>([]);
     const [selectedDomain, setSelectedDomain] = useState<string>('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const init = async () => {
@@ -84,7 +85,7 @@ export function LandingPage() {
 
             {/* Content */}
             <div className="relative z-10 flex flex-col min-h-screen">
-                <Navbar />
+                {!isModalOpen && <Navbar />}
 
                 <main className="flex-1 flex flex-col items-center">
                     <HeroSection
@@ -98,8 +99,9 @@ export function LandingPage() {
                             setSelectedDomain(d);
                             handleRefresh(d);
                         }}
+                        onModalToggle={setIsModalOpen}
                     />
-                    <InboxSection key={email} />
+                    <InboxSection key={email} onModalToggle={setIsModalOpen} />
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
