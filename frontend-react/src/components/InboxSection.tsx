@@ -288,7 +288,9 @@ export function InboxSection() {
                             <div className="flex-1 overflow-y-auto p-6 bg-white min-h-[300px] text-gray-900 border-t border-gray-100">
                                 {selectedEmail.bodyHtml ? (
                                     <div
-                                        dangerouslySetInnerHTML={{ __html: selectedEmail.bodyHtml }}
+                                        dangerouslySetInnerHTML={{
+                                            __html: selectedEmail.bodyHtml.replace(/<a\s+(?![^>]*target=)/gi, '<a target="_blank" rel="noopener noreferrer" ')
+                                        }}
                                         className="prose max-w-none text-gray-900 prose-a:text-blue-600 prose-a:underline break-words"
                                     />
                                 ) : (
