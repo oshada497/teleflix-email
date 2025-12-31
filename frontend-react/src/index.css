@@ -4,6 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @layer base {
   body {
     @apply bg-background text-white font-sans antialiased selection:bg-primary/30 selection:text-white;

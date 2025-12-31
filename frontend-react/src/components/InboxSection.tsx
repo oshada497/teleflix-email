@@ -1,191 +1,326 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
-    Inbox,
-    Settings,
+    Inbox, // For Account/Settings
     Search,
     Mail,
     RefreshCcw,
     Trash2,
-    Archive,
-    Star,
+    X,
+    Download,
+    CheckCircle2
 } from 'lucide-react'
+import { api } from '../services/api'
+import { Button } from './ui/Button'
 
-// Mock Data
-const MOCK_EMAILS = [
-    {
-        id: 1,
-        sender: 'Netflix',
-        subject: 'Finish setting up your account',
-        time: '10:42 AM',
-        unread: true,
-    },
-    {
-        id: 2,
-        sender: 'GitHub',
-        subject: '[GitHub] Please verify your device',
-        time: '09:15 AM',
-        unread: false,
-    },
-    {
-        id: 3,
-        sender: 'Linear',
-        subject: 'Login verification code: 123456',
-        time: 'Yesterday',
-        unread: false,
-    },
-]
+interface UIMail {
+    id: number
+    sender: string
+    subject: string
+    time: string
+    fullDate: string
+    unread: boolean
+    bodyHtml?: string
+    bodyText?: string
+    raw?: any
+}
 
 export function InboxSection() {
-    const [activeTab, setActiveTab] = useState('inbox')
-    const [emails] = useState(MOCK_EMAILS)
+    const [activeTab, setActiveTab] = useState('inbox') // inbox, outbox, compose, account
+    const [emails, setEmails] = useState<UIMail[]>([])
+    const [sentEmails, setSentEmails] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(false)
+    const [selectedEmail, setSelectedEmail] = useState<UIMail | null>(null)
+    const [autoRefresh, setAutoRefresh] = useState(true)
 
-    const handleRefresh = () => {
+    // Compose State
+    const [composeTo, setComposeTo] = useState('')
+    const [composeSubject, setComposeSubject] = useState('')
+    const [composeBody, setComposeBody] = useState('')
+    const [sending, setSending] = useState(false)
+    const [sendSuccess, setSendSuccess] = useState(false)
+
+    // settings
+    const [settings, setSettings] = useState<any>(null)
+
+    const fetchMails = async () => {
         setIsLoading(true)
-        setTimeout(() => setIsLoading(false), 1000)
+        try {
+            if (activeTab === 'inbox') {
+                const rawMails = await api.getMails()
+                const uiMails: UIMail[] = rawMails.map(m => ({
+                    id: m.id,
+                    sender: m.parsed?.from || 'Unknown',
+                    subject: m.parsed?.subject || '(No Subject)',
+                    time: new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    fullDate: new Date(m.created_at).toLocaleString(),
+                    unread: true,
+                    bodyHtml: m.parsed?.html,
+                    bodyText: m.parsed?.text
+                }))
+                setEmails(uiMails)
+            } else if (activeTab === 'outbox') {
+                const sent = await api.getSendbox()
+                setSentEmails(sent)
+            } else if (activeTab === 'account') {
+                const doms = await api.getDomains()
+                setSettings({ domains: doms, address: api.getAddress() })
+            }
+        } catch (e) {
+            console.error("Failed to fetch data", e)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        fetchMails()
+        let interval: any;
+        if (autoRefresh && activeTab === 'inbox') {
+            interval = setInterval(fetchMails, 10000)
+        }
+        return () => clearInterval(interval)
+    }, [activeTab, autoRefresh])
+
+    const handleDelete = async (id: number) => {
+        if (!confirm('Are you sure you want to delete this email?')) return;
+        await api.deleteMail(id);
+        setSelectedEmail(null);
+        fetchMails();
+    }
+
+    const handleSend = async () => {
+        if (!composeTo || !composeSubject || !composeBody) return;
+        setSending(true);
+        try {
+            const success = await api.sendMail(composeTo, composeSubject, composeBody);
+            if (success) {
+                setSendSuccess(true);
+                setComposeTo('');
+                setComposeSubject('');
+                setComposeBody('');
+                setTimeout(() => setSendSuccess(false), 3000);
+            } else {
+                alert('Failed to send mail');
+            }
+        } catch (e: any) {
+            alert(`Error sending mail: ${e.message}`);
+        } finally {
+            setSending(false);
+        }
+    }
+
+    const handleDownload = (mail: UIMail) => {
+        const element = document.createElement("a");
+        const file = new Blob([mail.bodyText || mail.bodyHtml || ''], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = `${mail.subject.replace(/[^a-z0-9]/gi, '_')}.eml`;
+        document.body.appendChild(element); // Required for this to work in FireFox
+        element.click();
     }
 
     return (
-        <section className="w-full max-w-6xl mx-auto px-4 pb-20">
+        <section className="w-full max-w-6xl mx-auto px-4 pb-20 relative">
             <motion.div
-                initial={{
-                    opacity: 0,
-                    y: 40,
-                }}
-                animate={{
-                    opacity: 1,
-                    y: 0,
-                }}
-                transition={{
-                    duration: 0.8,
-                    delay: 0.2,
-                    ease: 'easeOut',
-                }}
-                className="flex flex-col md:flex-row h-[600px] bg-[#1a1a1a]/60 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl"
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+                className="flex flex-col md:flex-row min-h-[600px] bg-[#1a1a1a]/60 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl"
             >
                 {/* Sidebar */}
                 <div className="w-full md:w-64 bg-[#151515]/80 border-b md:border-b-0 md:border-r border-white/5 p-4 flex flex-col">
                     <div className="mb-6 px-2">
-                        <div className="h-8 w-full bg-white/5 rounded-lg flex items-center px-3 text-muted text-sm">
+                        <div className="h-8 w-full bg-white/5 rounded-lg flex items-center px-3 text-muted text-sm border border-white/5 focus-within:border-primary/50 transition-colors">
                             <Search className="w-4 h-4 mr-2 opacity-50" />
-                            <span>Search...</span>
+                            <input className="bg-transparent border-none text-white text-xs w-full focus:outline-none placeholder-gray-500" placeholder="Filter..." />
                         </div>
                     </div>
-
                     <nav className="space-y-1 flex-1">
                         <SidebarItem
                             icon={<Inbox className="w-4 h-4" />}
                             label="Inbox"
                             active={activeTab === 'inbox'}
                             onClick={() => setActiveTab('inbox')}
-                            badge={emails.filter((e) => e.unread).length}
+                            badge={activeTab === 'inbox' ? emails.length : 0}
                         />
-                        <SidebarItem
-                            icon={<Star className="w-4 h-4" />}
-                            label="Starred"
-                            active={activeTab === 'starred'}
-                            onClick={() => setActiveTab('starred')}
-                        />
-                        <SidebarItem
-                            icon={<Archive className="w-4 h-4" />}
-                            label="Archive"
-                            active={activeTab === 'archive'}
-                            onClick={() => setActiveTab('archive')}
-                        />
-                        <SidebarItem
-                            icon={<Trash2 className="w-4 h-4" />}
-                            label="Trash"
-                            active={activeTab === 'trash'}
-                            onClick={() => setActiveTab('trash')}
-                        />
-                    </nav>
 
-                    <div className="mt-auto pt-4 border-t border-white/5">
-                        <SidebarItem
-                            icon={<Settings className="w-4 h-4" />}
-                            label="Settings"
-                            active={activeTab === 'settings'}
-                            onClick={() => setActiveTab('settings')}
-                        />
-                    </div>
+                    </nav>
                 </div>
 
                 {/* Main Content */}
                 <div className="flex-1 flex flex-col bg-[#1a1a1a]/40">
                     {/* Toolbar */}
                     <div className="h-14 border-b border-white/5 flex items-center justify-between px-6 bg-white/[0.02]">
-                        <h2 className="font-medium text-white">Inbox</h2>
-                        <button
-                            onClick={handleRefresh}
-                            className={`p-2 rounded-md hover:bg-white/5 text-muted hover:text-white transition-colors ${isLoading ? 'animate-spin' : ''}`}
-                        >
-                            <RefreshCcw className="w-4 h-4" />
-                        </button>
+                        <h2 className="font-medium text-white capitalize">{activeTab.replace('_', ' ')}</h2>
+                        <div className="flex items-center gap-4">
+                            {activeTab === 'inbox' && (
+                                <label className="flex items-center gap-2 cursor-pointer text-xs text-muted">
+                                    <input
+                                        type="checkbox"
+                                        checked={autoRefresh}
+                                        onChange={(e) => setAutoRefresh(e.target.checked)}
+                                        className="rounded border-gray-600 bg-transparent focus:ring-primary"
+                                    />
+                                    Auto Refresh
+                                </label>
+                            )}
+                            <button
+                                onClick={fetchMails}
+                                className={`p-2 rounded-md hover:bg-white/5 text-muted hover:text-white transition-colors ${isLoading ? 'animate-spin' : ''}`}
+                                title="Refresh"
+                            >
+                                <RefreshCcw className="w-4 h-4" />
+                            </button>
+                        </div>
                     </div>
 
-                    {/* Email List */}
-                    <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
-                        {isLoading ? (
-                            <div className="space-y-2 p-4">
-                                {[1, 2, 3].map((i) => (
-                                    <div
-                                        key={i}
-                                        className="h-16 bg-white/5 rounded-lg animate-pulse"
-                                    />
-                                ))}
+                    {/* Content Area */}
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-2 h-full">
+                        {activeTab === 'inbox' && (
+                            <InboxList emails={emails} isLoading={isLoading} onSelect={setSelectedEmail} />
+                        )}
+                        {activeTab === 'outbox' && (
+                            <OutboxList emails={sentEmails} isLoading={isLoading} />
+                        )}
+                        {activeTab === 'compose' && (
+                            <div className="p-6 max-w-2xl mx-auto space-y-4">
+                                {sendSuccess && (
+                                    <div className="bg-green-500/10 border border-green-500/20 text-green-500 p-3 rounded-lg flex items-center gap-2">
+                                        <CheckCircle2 className="w-4 h-4" />
+                                        Email sent successfully!
+                                    </div>
+                                )}
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-400 mb-1">To</label>
+                                    <input value={composeTo} onChange={e => setComposeTo(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary/50" placeholder="recipient@example.com" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-400 mb-1">Subject</label>
+                                    <input value={composeSubject} onChange={e => setComposeSubject(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary/50" placeholder="Enter subject" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-400 mb-1">Message</label>
+                                    <textarea value={composeBody} onChange={e => setComposeBody(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white min-h-[200px] focus:outline-none focus:border-primary/50 font-mono" placeholder="Write your message..." />
+                                </div>
+                                <Button onClick={handleSend} disabled={sending} className="w-full">
+                                    {sending ? 'Sending...' : 'Send Email'}
+                                </Button>
                             </div>
-                        ) : emails.length > 0 ? (
-                            <div className="space-y-1">
-                                {emails.map((email, index) => (
-                                    <motion.div
-                                        key={email.id}
-                                        initial={{
-                                            opacity: 0,
-                                            x: -10,
-                                        }}
-                                        animate={{
-                                            opacity: 1,
-                                            x: 0,
-                                        }}
-                                        transition={{
-                                            delay: index * 0.05,
-                                        }}
-                                        className={`group flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 ${email.unread ? 'bg-white/[0.03] border-l-2 border-primary' : 'hover:bg-white/[0.02] border-l-2 border-transparent'}`}
-                                    >
-                                        <div
-                                            className={`w-2 h-2 rounded-full ${email.unread ? 'bg-primary' : 'bg-transparent'}`}
-                                        />
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-xs font-medium text-white border border-white/10">
-                                            {email.sender[0]}
-                                        </div>
-                                        <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-12 gap-2 items-center">
-                                            <div
-                                                className={`col-span-3 truncate ${email.unread ? 'text-white font-medium' : 'text-gray-400'}`}
-                                            >
-                                                {email.sender}
-                                            </div>
-                                            <div
-                                                className={`col-span-7 truncate ${email.unread ? 'text-gray-200' : 'text-gray-500'}`}
-                                            >
-                                                {email.subject}
-                                            </div>
-                                            <div className="col-span-2 text-right text-xs text-gray-600 font-mono">
-                                                {email.time}
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                ))}
+                        )}
+                        {activeTab === 'account' && (
+                            <div className="p-6 text-center text-gray-400">
+                                <div className="p-4 bg-white/5 rounded-lg inline-block text-left min-w-[300px]">
+                                    <h3 className="text-white font-bold mb-4">Account Details</h3>
+                                    <p className="mb-2"><span className="text-gray-500">Address:</span> {settings?.address || api.getAddress()}</p>
+                                    <p className="mb-2"><span className="text-gray-500">JWT Token:</span> <span className="text-xs font-mono truncate block max-w-[250px]">...</span>(Hidden)</p>
+                                    <div className="mt-4 pt-4 border-t border-white/10">
+                                        <p className="text-xs">Available Domains: {settings?.domains?.join(', ')}</p>
+                                    </div>
+                                </div>
                             </div>
-                        ) : (
-                            <EmptyState />
                         )}
                     </div>
                 </div>
             </motion.div>
+
+            {/* Email View Modal */}
+            <AnimatePresence>
+                {selectedEmail && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setSelectedEmail(null)}>
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-full max-w-3xl bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+                        >
+                            <div className="p-4 border-b border-white/5 flex justify-between items-center bg-white/5 text-white">
+                                <h2 className="text-lg font-bold truncate flex-1 mr-4">{selectedEmail.subject}</h2>
+                                <div className="flex gap-2">
+                                    <button onClick={() => handleDelete(selectedEmail.id)} className="p-2 hover:bg-red-500/10 hover:text-red-500 rounded-lg transition-colors" title="Delete">
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                    <button onClick={() => handleDownload(selectedEmail)} className="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Download">
+                                        <Download className="w-4 h-4" />
+                                    </button>
+                                    <button onClick={() => setSelectedEmail(null)} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                                        <X className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="p-4 bg-[#222] text-sm text-gray-300 border-b border-white/5 flex justify-between">
+                                <div>
+                                    <span className="font-bold text-white">From:</span> {selectedEmail.sender}
+                                </div>
+                                <div>{selectedEmail.fullDate}</div>
+                            </div>
+                            <div className="flex-1 overflow-y-auto p-6 bg-white min-h-[300px] text-black">
+                                {selectedEmail.bodyHtml ? (
+                                    <div dangerouslySetInnerHTML={{ __html: selectedEmail.bodyHtml }} className="prose max-w-none" />
+                                ) : (
+                                    <pre className="whitespace-pre-wrap font-sans">{selectedEmail.bodyText}</pre>
+                                )}
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </section>
     )
 }
+
+function InboxList({ emails, isLoading, onSelect }: any) {
+    if (isLoading && emails.length === 0) return <div className="p-4 text-center text-muted">Loading...</div>
+    if (emails.length === 0) return <EmptyState />
+
+    return (
+        <div className="space-y-1">
+            {emails.map((email: any, index: number) => (
+                <motion.div
+                    key={email.id}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    onClick={() => onSelect(email)}
+                    className="group flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 hover:bg-white/[0.04] border-l-2 border-transparent hover:border-primary"
+                >
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-xs font-medium text-white border border-white/10 shrink-0">
+                        {email.sender[0]}
+                    </div>
+                    <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-12 gap-2 items-center">
+                        <div className="col-span-3 truncate text-white font-medium">{email.sender}</div>
+                        <div className="col-span-7 truncate text-gray-400">{email.subject}</div>
+                        <div className="col-span-2 text-right text-xs text-gray-600 font-mono">{email.time}</div>
+                    </div>
+                </motion.div>
+            ))}
+        </div>
+    )
+}
+
+function OutboxList({ emails, isLoading }: any) {
+    if (isLoading && emails.length === 0) return <div className="p-4 text-center text-muted">Loading...</div>
+    if (!emails || emails.length === 0) return <div className="p-8 text-center text-muted">No sent emails</div>
+
+    return (
+        <div className="space-y-1">
+            {emails.map((email: any, index: number) => (
+                <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="flex items-center gap-4 p-4 rounded-lg bg-white/[0.02]"
+                >
+                    <div className="flex-1 min-w-0">
+                        <div className="text-white font-medium mb-1">To: {email.to_mail}</div>
+                        <div className="text-gray-400 text-sm">{email.subject}</div>
+                    </div>
+                </motion.div>
+            ))}
+        </div>
+    )
+}
+
 
 function SidebarItem({ icon, label, active, onClick, badge }: any) {
     return (

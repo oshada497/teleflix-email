@@ -9,28 +9,24 @@ import { AdminWebhookSettings, WebhookMail, WebhookSettings } from './models';
 const DEFAULT_NAME_REGEX = /[^a-z0-9]/g;
 
 export const generateRandomName = (c: Context<HonoCustomType>): string => {
-    // name min length min 1
-    const minLength = Math.max(
-        getIntValue(c.env.MIN_ADDRESS_LEN, 1),
-        1
-    );
-    // name max length min 1
-    const maxLength = Math.max(
-        getIntValue(c.env.MAX_ADDRESS_LEN, 30),
-        1
-    );
+    // Generate a readable/pronounceable name (4-5 chars)
+    const vowels = "aeiou";
+    const consonants = "bcdfghjklmnpqrstvwxyz";
 
-    // Build full name recursively until minimum length is reached
-    const buildName = (currentName: string = ""): string => {
-        return currentName.length >= minLength
-            ? currentName
-            : buildName(currentName + Math.random().toString(36).substring(2, 15));
-    };
+    // 50% chance of 4 chars, 50% chance of 5 chars
+    const length = Math.random() > 0.5 ? 4 : 5;
 
-    const fullName = buildName();
+    let name = "";
+    for (let i = 0; i < length; i++) {
+        // Alternating Consonant-Vowel
+        if (i % 2 === 0) {
+            name += consonants[Math.floor(Math.random() * consonants.length)];
+        } else {
+            name += vowels[Math.floor(Math.random() * vowels.length)];
+        }
+    }
 
-    // Return truncated to max length
-    return fullName.substring(0, Math.min(fullName.length, maxLength));
+    return name;
 };
 
 const checkNameRegex = (c: Context<HonoCustomType>, name: string) => {
