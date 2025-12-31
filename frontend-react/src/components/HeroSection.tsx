@@ -176,6 +176,7 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt }: HeroSect
                         </div>
                     </div>
                 </div>
+
             </motion.div>
         </section>
     )
