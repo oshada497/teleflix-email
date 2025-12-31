@@ -289,7 +289,7 @@ export function InboxSection() {
                                 {selectedEmail.bodyHtml ? (
                                     <div
                                         dangerouslySetInnerHTML={{ __html: selectedEmail.bodyHtml }}
-                                        className="prose max-w-none text-gray-900 prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline break-words"
+                                        className="prose max-w-none text-gray-900 prose-a:text-blue-600 prose-a:underline break-words"
                                     />
                                 ) : (
                                     <pre className="whitespace-pre-wrap font-sans text-gray-800 text-sm leading-relaxed break-all">
@@ -301,7 +301,7 @@ export function InboxSection() {
                                                         href={part}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="text-blue-600 hover:underline"
+                                                        className="text-blue-600 underline hover:text-blue-800"
                                                     >
                                                         {part}
                                                     </a>
