@@ -1,14 +1,31 @@
-import { motion } from 'framer-motion'
+import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
+import { useState } from 'react'
 import { Github, Globe, Info, Code2 } from 'lucide-react'
 
 export function Navbar() {
+    const { scrollY } = useScroll()
+    const [hidden, setHidden] = useState(false)
+
+    useMotionValueEvent(scrollY, "change", (latest) => {
+        // Hide when scrolling down past 50px, show when near the top
+        if (latest > 50) {
+            setHidden(true)
+        } else {
+            setHidden(false)
+        }
+    })
+
     return (
-        <nav className="fixed top-6 inset-x-0 z-[100] px-6">
+        <nav className="fixed top-6 inset-x-0 z-[100] px-6 pointer-events-none">
             <motion.div
-                initial={{ y: -100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, ease: "circOut" }}
-                className="max-w-5xl w-full mx-auto flex items-center justify-between p-2 bg-[#1a1a1a]/80 backdrop-blur-2xl border border-white/10 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
+                variants={{
+                    visible: { y: 0, opacity: 1 },
+                    hidden: { y: -100, opacity: 0 }
+                }}
+                animate={hidden ? "hidden" : "visible"}
+                initial="visible"
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="pointer-events-auto max-w-5xl w-full mx-auto flex items-center justify-between p-2 bg-[#1a1a1a]/80 backdrop-blur-2xl border border-white/10 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
             >
                 {/* Left: Logo Section */}
                 <div className="flex items-center gap-2 pl-4">
