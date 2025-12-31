@@ -91,6 +91,10 @@ type Bindings = {
     // AI extraction config
     ENABLE_AI_EMAIL_EXTRACT: string | boolean | undefined
     AI_EXTRACT_MODEL: string | undefined
+
+    // Pusher config
+    PUSHER_URL: string | undefined
+    PUSH_SECRET: string | undefined
 }
 
 type JwtPayload = {

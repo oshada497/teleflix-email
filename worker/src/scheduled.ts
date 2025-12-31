@@ -7,6 +7,16 @@ import { executeCustomSqlCleanup } from './admin_api/cleanup_api';
 
 export async function scheduled(event: ScheduledEvent, env: Bindings, ctx: any) {
     console.log("Scheduled event: ", event);
+
+    // Keep Render Pusher awake
+    if (env.PUSHER_URL) {
+        try {
+            await fetch(`${env.PUSHER_URL}/ping`);
+            console.log("Render Pusher pinged successfully");
+        } catch (error) {
+            console.error("Render Pusher ping failed", error);
+        }
+    }
     const autoCleanupSetting = await getJsonSetting<CleanupSettings>(
         { env: env, } as Context<HonoCustomType>,
         CONSTANTS.AUTO_CLEANUP_KEY

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { io } from 'socket.io-client'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
     Inbox, // For Account/Settings
@@ -14,6 +15,8 @@ import {
 import { api } from '../services/api'
 import { Button } from './ui/Button'
 import { ConfirmModal } from './ui/ConfirmModal'
+
+const PUSHER_URL = "https://swiftmail-pusher.onrender.com"
 
 interface UIMail {
     id: number
@@ -83,6 +86,28 @@ export function InboxSection({ onModalToggle }: InboxSectionProps) {
         }
     }
 
+    // WebSocket Setup
+    useEffect(() => {
+        const address = api.getAddress()
+        if (!address) return
+
+        const socket = io(PUSHER_URL)
+
+        socket.on('connect', () => {
+            console.log("Connected to Pusher")
+            socket.emit('join', address)
+        })
+
+        socket.on('new_email', () => {
+            console.log("Push notification received! Fetching mails...")
+            fetchMails()
+        })
+
+        return () => {
+            socket.disconnect()
+        }
+    }, [])
+
     const [isVisible, setIsVisible] = useState(!document.hidden)
 
     useEffect(() => {
@@ -108,8 +133,8 @@ export function InboxSection({ onModalToggle }: InboxSectionProps) {
         fetchMails()
         let interval: any;
         if (autoRefresh && activeTab === 'inbox') {
-            // Increased from 10s to 15s to save costs without hurting UX
-            interval = setInterval(fetchMails, 15000)
+            // Background poll remains as failsafe but much slower (2.5 mins instead of 15s)
+            interval = setInterval(fetchMails, 150000)
         }
         return () => clearInterval(interval)
     }, [activeTab, autoRefresh, isVisible])

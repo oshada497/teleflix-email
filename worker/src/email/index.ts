@@ -78,6 +78,23 @@ async function email(message: ForwardableEmailMessage, env: Bindings, ctx: Execu
         console.error("save email error", error);
     }
 
+    // Ping Render Pusher if configured
+    if (env.PUSHER_URL) {
+        try {
+            await fetch(`${env.PUSHER_URL}/notify`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    to: message.to,
+                    secret: env.PUSH_SECRET || "default_secret"
+                })
+            });
+            console.log(`Pusher notified for ${message.to}`);
+        } catch (error) {
+            console.error("Pusher notification error", error);
+        }
+    }
+
     // forward email
     try {
         const forwardAddressList = getEnvStringList(env.FORWARD_ADDRESS_LIST)
