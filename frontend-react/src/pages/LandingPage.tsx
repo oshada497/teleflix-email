@@ -8,25 +8,41 @@ export function LandingPage() {
     const [email, setEmail] = useState<string | null>(null);
     const [createdAt, setCreatedAt] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [domains, setDomains] = useState<string[]>([]);
+    const [selectedDomain, setSelectedDomain] = useState<string>('');
 
     useEffect(() => {
-        const stored = api.getAddress();
-        const storedCreatedAt = api.getCreatedAt();
-        if (stored) {
-            setEmail(stored);
-            setCreatedAt(storedCreatedAt);
-        } else {
-            handleRefresh();
-        }
+        const init = async () => {
+            const fetchedDomains = await api.getDomains();
+            setDomains(fetchedDomains);
+
+            const stored = api.getAddress();
+            const storedCreatedAt = api.getCreatedAt();
+
+            if (stored) {
+                setEmail(stored);
+                setCreatedAt(storedCreatedAt);
+                const domain = stored.split('@')[1];
+                if (domain) setSelectedDomain(domain);
+            } else if (fetchedDomains.length > 0) {
+                // Pick a random domain for the first-time user
+                const randomIndex = Math.floor(Math.random() * fetchedDomains.length);
+                const randomDomain = fetchedDomains[randomIndex];
+                setSelectedDomain(randomDomain);
+                handleRefresh(randomDomain);
+            }
+        };
+        init();
     }, []);
 
-    const handleRefresh = async () => {
+    const handleRefresh = async (domainOverride?: string) => {
         setIsLoading(true);
         try {
-            const domains = await api.getDomains();
-            const { address } = await api.createAddress(domains[0]); // Use first domain for now
+            const domainToUse = domainOverride || selectedDomain || (domains.length > 0 ? domains[0] : undefined);
+            const { address } = await api.createAddress(domainToUse);
             setEmail(address);
             setCreatedAt(api.getCreatedAt());
+            if (domainToUse) setSelectedDomain(domainToUse);
         } catch (e) {
             console.error("Failed to create address", e);
         } finally {
@@ -87,6 +103,12 @@ export function LandingPage() {
                         isLoading={isLoading}
                         onRefresh={handleRefresh}
                         createdAt={createdAt}
+                        domains={domains}
+                        selectedDomain={selectedDomain}
+                        onDomainChange={(d) => {
+                            setSelectedDomain(d);
+                            handleRefresh(d);
+                        }}
                     />
                     <InboxSection key={email} />
                     <FeaturesGrid />

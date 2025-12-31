@@ -6,11 +6,14 @@ import { Button } from './ui/Button'
 interface HeroSectionProps {
     email: string
     isLoading: boolean
-    onRefresh: () => void
+    onRefresh: (domain?: string) => void
     createdAt: number | null
+    domains: string[]
+    selectedDomain: string
+    onDomainChange: (domain: string) => void
 }
 
-export function HeroSection({ email, isLoading, onRefresh, createdAt }: HeroSectionProps) {
+export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, selectedDomain, onDomainChange }: HeroSectionProps) {
     const [copied, setCopied] = useState(false)
     const [timeLeft, setTimeLeft] = useState(24 * 60 * 60)
 
@@ -99,35 +102,41 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt }: HeroSect
                     <div className="relative flex flex-col md:flex-row items-center gap-3 p-2 bg-[#1a1a1a]/80 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl">
                         {/* Email Display */}
                         <div className="flex-1 w-full relative group">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <div
-                                    className={`h-2 w-2 rounded-full ${isLoading ? 'bg-yellow-500' : 'bg-green-500'}`}
-                                ></div>
+                            <div className="flex-1 flex flex-col md:flex-row items-center w-full">
+                                <AnimatePresence mode="wait">
+                                    <motion.input
+                                        key={email}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        transition={{ duration: 0.2 }}
+                                        type="text"
+                                        readOnly
+                                        value={email.split('@')[0]}
+                                        className="flex-1 w-full pl-10 pr-4 py-3 bg-transparent border-none text-white font-mono text-base md:text-xl focus:ring-0 placeholder-gray-500 text-ellipsis text-right md:text-left"
+                                    />
+                                </AnimatePresence>
+
+                                <div className="flex items-center px-4 py-3 md:py-0 text-gray-500 font-mono text-base md:text-xl">@</div>
+
+                                {domains.length > 1 ? (
+                                    <select
+                                        value={selectedDomain}
+                                        onChange={(e) => onDomainChange(e.target.value)}
+                                        className="bg-transparent border-none text-primary font-mono text-base md:text-xl focus:ring-0 cursor-pointer hover:text-primary/80 transition-colors pr-10"
+                                    >
+                                        {domains.map(d => (
+                                            <option key={d} value={d} className="bg-[#1a1a1a] text-white">
+                                                {d}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <span className="text-primary font-mono text-base md:text-xl pr-10">
+                                        {selectedDomain || domains[0]}
+                                    </span>
+                                )}
                             </div>
-                            <AnimatePresence mode="wait">
-                                <motion.input
-                                    key={email}
-                                    initial={{
-                                        opacity: 0,
-                                        y: 10,
-                                    }}
-                                    animate={{
-                                        opacity: 1,
-                                        y: 0,
-                                    }}
-                                    exit={{
-                                        opacity: 0,
-                                        y: -10,
-                                    }}
-                                    transition={{
-                                        duration: 0.2,
-                                    }}
-                                    type="text"
-                                    readOnly
-                                    value={email}
-                                    className="block w-full pl-10 pr-4 md:pr-36 py-3 bg-transparent border-none text-white font-mono text-base md:text-xl focus:ring-0 placeholder-gray-500 text-ellipsis"
-                                />
-                            </AnimatePresence>
 
                             {/* Timer Badge inside input on desktop */}
                             <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden md:flex items-center px-2 py-1 rounded bg-white/5 border border-white/5 text-xs text-muted font-mono">
