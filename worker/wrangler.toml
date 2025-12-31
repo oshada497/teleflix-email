@@ -10,11 +10,6 @@ routes = [
 	{ pattern = "tempxmail.qzz.io", custom_domain = true },
 ]
 
-# if you want deploy worker with frontend assets, you need to add assets
-[assets]
-directory = "../frontend-react/dist"
-binding = "ASSETS"
-run_worker_first = true
 
 # enable cron for auto clean up (runs every hour)
 [triggers]

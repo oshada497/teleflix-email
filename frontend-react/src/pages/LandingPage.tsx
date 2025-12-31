@@ -10,8 +10,8 @@ export function LandingPage() {
     const [email, setEmail] = useState<string | null>(null);
     const [createdAt, setCreatedAt] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [domains, setDomains] = useState<string[]>([]);
-    const [selectedDomain, setSelectedDomain] = useState<string>('');
+    const [domains, setDomains] = useState<string[]>(["fbflix.online", "tempxmail.qzz.io", "teleflix.online"]);
+    const [selectedDomain, setSelectedDomain] = useState<string>("fbflix.online");
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {

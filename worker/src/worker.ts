@@ -36,14 +36,6 @@ app.onError((err, c) => {
 // global middlewares
 app.use('/*', async (c, next) => {
 
-	// check if the request is for static files
-	if (c.env.ASSETS && !API_PATHS.some(path => c.req.path.startsWith(path))) {
-		const url = new URL(c.req.raw.url);
-		if (!url.pathname.includes('.')) {
-			url.pathname = ""
-		}
-		return c.env.ASSETS.fetch(url);
-	}
 
 	// save language in context
 	const lang = c.req.raw.headers.get("x-lang");

@@ -29,6 +29,8 @@ export interface SettingsResponse {
     domains: string[];
 }
 
+const HARDCODED_DOMAINS = ["fbflix.online", "tempxmail.qzz.io", "teleflix.online"];
+
 class ApiService {
     private jwt: string | null = localStorage.getItem('swiftmail_jwt');
     private address: string | null = localStorage.getItem('swiftmail_address');
@@ -83,14 +85,19 @@ class ApiService {
     }
 
     async getDomains(): Promise<string[]> {
-        try {
-            const res = await fetch(`${API_BASE}/open_api/settings`);
-            const data = await res.json() as SettingsResponse;
-            return data.domains || [];
-        } catch (e) {
-            console.error('Failed to fetch settings:', e);
-            return ['swiftmail.com']; // Fallback
+        // First, check if we have them in local storage to avoid ANY request
+        const cached = localStorage.getItem('swiftmail_domains');
+        if (cached) {
+            try {
+                return JSON.parse(cached);
+            } catch (e) {
+                console.error("Cache parse error", e);
+            }
         }
+
+        // Return hardcoded list immediately to save a Worker request
+        // You can update this list whenever you add new domains
+        return HARDCODED_DOMAINS;
     }
 
     async createAddress(domain?: string, name?: string): Promise<AddressResponse> {

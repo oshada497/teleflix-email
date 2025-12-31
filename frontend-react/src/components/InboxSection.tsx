@@ -128,15 +128,11 @@ export function InboxSection({ onModalToggle }: InboxSectionProps) {
     }, [selectedEmail, deleteConfirmOpen, onModalToggle])
 
     useEffect(() => {
-        if (!isVisible) return; // Pause polling if tab is hidden
+        if (!isVisible) return;
 
         fetchMails()
-        let interval: any;
-        if (autoRefresh && activeTab === 'inbox') {
-            // Background poll remains as failsafe but much slower (2.5 mins instead of 15s)
-            interval = setInterval(fetchMails, 150000)
-        }
-        return () => clearInterval(interval)
+        // Removed background interval to save 100% of idle polling costs.
+        // We now rely entirely on Push notifications (WebSockets).
     }, [activeTab, autoRefresh, isVisible])
 
     const handleDelete = (id: number) => {
