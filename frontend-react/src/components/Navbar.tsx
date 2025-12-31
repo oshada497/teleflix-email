@@ -7,8 +7,8 @@ export function Navbar() {
     const [hidden, setHidden] = useState(false)
 
     useMotionValueEvent(scrollY, "change", (latest) => {
-        // Hide when scrolling down past 50px, show when near the top
-        if (latest > 50) {
+        // Hide when scrolling down past 400px (around Inbox start), show when near the top
+        if (latest > 400) {
             setHidden(true)
         } else {
             setHidden(false)
