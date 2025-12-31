@@ -2,7 +2,7 @@ import { Context, Hono } from 'hono'
 
 import i18n from '../i18n';
 import { getBooleanValue, getJsonSetting, checkCfTurnstile, getStringValue, getSplitStringListValue } from '../utils';
-import { newAddress, handleListQuery, deleteAddressWithData, getAddressPrefix, getAllowDomains, updateAddressUpdatedAt, generateRandomName } from '../common'
+import { newAddress, handleListQuery, deleteAddressWithData, getAddressPrefix, getAllowDomains, updateAddressUpdatedAt, generateRandomName, commonParseMail } from '../common'
 import { CONSTANTS } from '../constants'
 import auto_reply from './auto_reply'
 import webhook_settings from './webhook_settings';
@@ -40,7 +40,16 @@ api.get('/api/mail/:mail_id', async (c) => {
     const { mail_id } = c.req.param();
     const result = await c.env.DB.prepare(
         `SELECT * FROM raw_mails where id = ? and address = ?`
-    ).bind(mail_id, address).first();
+    ).bind(mail_id, address).first<any>();
+    if (result && result.raw) {
+        const parsed = await commonParseMail({ rawEmail: result.raw });
+        if (parsed) {
+            return c.json({
+                ...result,
+                ...parsed
+            });
+        }
+    }
     return c.json(result);
 })
 
