@@ -15,9 +15,9 @@ directory = "../frontend"
 binding = "ASSETS"
 run_worker_first = true
 
-# enable cron if you want set auto clean up
-# [triggers]
-# crons = [ "0 0 * * *" ]
+# enable cron for auto clean up (runs every hour)
+[triggers]
+crons = [ "0 * * * *" ]
 
 # send_email = [
 #    { name = "SEND_MAIL" },
@@ -29,7 +29,7 @@ run_worker_first = true
 # ANNOUNCEMENT = "Custom Announcement"
 # always show ANNOUNCEMENT even no changes
 # ALWAYS_SHOW_ANNOUNCEMENT = true
-PREFIX = "tmp"
+PREFIX = ""
 # address check REGEX, if not set, will not check
 # ADDRESS_CHECK_REGEX = "^(?!.*admin).*"
 # address name replace REGEX, if not set, the default is [^a-z0-9]

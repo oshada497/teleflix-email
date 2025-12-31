@@ -1,8 +1,39 @@
+import { useState, useEffect } from 'react'
 import { HeroSection } from '../components/HeroSection'
 import { InboxSection } from '../components/InboxSection'
 import { FeaturesGrid } from '../components/FeaturesGrid'
+import { api } from '../services/api'
 
 export function LandingPage() {
+    const [email, setEmail] = useState<string | null>(null);
+    const [createdAt, setCreatedAt] = useState<number | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        const stored = api.getAddress();
+        const storedCreatedAt = api.getCreatedAt();
+        if (stored) {
+            setEmail(stored);
+            setCreatedAt(storedCreatedAt);
+        } else {
+            handleRefresh();
+        }
+    }, []);
+
+    const handleRefresh = async () => {
+        setIsLoading(true);
+        try {
+            const domains = await api.getDomains();
+            const { address } = await api.createAddress(domains[0]); // Use first domain for now
+            setEmail(address);
+            setCreatedAt(api.getCreatedAt());
+        } catch (e) {
+            console.error("Failed to create address", e);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     return (
         <div className="min-h-screen w-full bg-background text-white selection:bg-primary/30 overflow-x-hidden">
             {/* Background Gradients */}
@@ -37,6 +68,7 @@ export function LandingPage() {
                             >
                                 About
                             </a>
+
                             <a
                                 href="https://github.com"
                                 target="_blank"
@@ -50,8 +82,13 @@ export function LandingPage() {
                 </header>
 
                 <main className="flex-1 flex flex-col items-center">
-                    <HeroSection />
-                    <InboxSection />
+                    <HeroSection
+                        email={email || 'Generating...'}
+                        isLoading={isLoading}
+                        onRefresh={handleRefresh}
+                        createdAt={createdAt}
+                    />
+                    <InboxSection key={email} />
                     <FeaturesGrid />
                 </main>
 

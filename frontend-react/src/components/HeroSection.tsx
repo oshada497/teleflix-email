@@ -3,19 +3,39 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Copy, RefreshCw, Check, Clock } from 'lucide-react'
 import { Button } from './ui/Button'
 
-export function HeroSection() {
-    const [email, setEmail] = useState('hello@swiftmail.com')
+interface HeroSectionProps {
+    email: string
+    isLoading: boolean
+    onRefresh: () => void
+    createdAt: number | null
+}
+
+export function HeroSection({ email, isLoading, onRefresh, createdAt }: HeroSectionProps) {
     const [copied, setCopied] = useState(false)
-    const [timeLeft, setTimeLeft] = useState(24 * 60 * 60) // 24 hours in seconds
-    const [isRefreshing, setIsRefreshing] = useState(false)
+    const [timeLeft, setTimeLeft] = useState(24 * 60 * 60)
 
     // Countdown timer logic
     useEffect(() => {
+        if (!createdAt) {
+            setTimeLeft(24 * 60 * 60)
+            return
+        }
+
+        const calculateTimeLeft = () => {
+            const now = Date.now()
+            const elapsed = Math.floor((now - createdAt) / 1000)
+            const remaining = (24 * 60 * 60) - elapsed
+            return remaining > 0 ? remaining : 0
+        }
+
+        setTimeLeft(calculateTimeLeft())
+
         const timer = setInterval(() => {
-            setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0))
+            setTimeLeft(calculateTimeLeft())
         }, 1000)
+
         return () => clearInterval(timer)
-    }, [])
+    }, [createdAt, email])
 
     // Format seconds to HH:MM:SS
     const formatTime = (seconds: number) => {
@@ -32,14 +52,9 @@ export function HeroSection() {
     }
 
     const handleRefresh = () => {
-        setIsRefreshing(true)
-        // Simulate API call/generation delay
-        setTimeout(() => {
-            const randomStr = Math.random().toString(36).substring(7)
-            setEmail(`${randomStr}@swiftmail.com`)
-            setTimeLeft(24 * 60 * 60) // Reset timer
-            setIsRefreshing(false)
-        }, 600)
+        if (window.confirm("Are you sure you want to change your email address? Your current inbox will be lost.")) {
+            onRefresh();
+        }
     }
 
     return (
@@ -86,7 +101,7 @@ export function HeroSection() {
                         <div className="flex-1 w-full relative group">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <div
-                                    className={`h-2 w-2 rounded-full ${isRefreshing ? 'bg-yellow-500' : 'bg-green-500'}`}
+                                    className={`h-2 w-2 rounded-full ${isLoading ? 'bg-yellow-500' : 'bg-green-500'}`}
                                 ></div>
                             </div>
                             <AnimatePresence mode="wait">
@@ -110,7 +125,7 @@ export function HeroSection() {
                                     type="text"
                                     readOnly
                                     value={email}
-                                    className="block w-full pl-10 pr-24 py-3 bg-transparent border-none text-white font-mono text-lg md:text-xl focus:ring-0 placeholder-gray-500"
+                                    className="block w-full pl-10 pr-36 py-3 bg-transparent border-none text-white font-mono text-lg md:text-xl focus:ring-0 placeholder-gray-500 text-ellipsis"
                                 />
                             </AnimatePresence>
 
@@ -147,7 +162,7 @@ export function HeroSection() {
                                 aria-label="Generate new email"
                             >
                                 <RefreshCw
-                                    className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`}
+                                    className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`}
                                 />
                             </Button>
                         </div>
