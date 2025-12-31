@@ -11,7 +11,7 @@ routes = [
 
 # if you want deploy worker with frontend assets, you need to add assets
 [assets]
-directory = "../frontend"
+directory = "../frontend-react/dist"
 binding = "ASSETS"
 run_worker_first = true
 
