@@ -102,12 +102,10 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/50 to-purple-500/50 rounded-xl blur opacity-30 group-hover:opacity-50 transition duration-1000"></div>
                         <div className="relative flex flex-col md:flex-row items-center gap-3 p-2 bg-[#1a1a1a]/80 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl">
                             {/* Email Display */}
-                            <div className="flex-1 w-full relative group">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <div
-                                        className={`h-2 w-2 rounded-full ${isLoading ? 'bg-yellow-500' : 'bg-green-500'}`}
-                                    ></div>
-                                </div>
+                            <div className="flex-1 w-full flex items-center min-w-0 bg-white/5 rounded-lg px-4 py-3 border border-white/5">
+                                <div
+                                    className={`h-2 w-2 rounded-full mr-3 shrink-0 ${isLoading ? 'bg-yellow-500' : 'bg-green-500'}`}
+                                ></div>
                                 <AnimatePresence mode="wait">
                                     <motion.input
                                         key={email}
@@ -118,12 +116,12 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                                         type="text"
                                         readOnly
                                         value={email}
-                                        className="block w-full pl-10 pr-4 md:pr-36 py-3 bg-transparent border-none text-white font-mono text-base md:text-xl focus:ring-0 placeholder-gray-500 text-ellipsis"
+                                        className="bg-transparent border-none text-white font-mono text-base md:text-lg focus:ring-0 placeholder-gray-500 w-full p-0"
                                     />
                                 </AnimatePresence>
 
-                                {/* Timer Badge inside input on desktop */}
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden md:flex items-center px-2 py-1 rounded bg-white/5 border border-white/5 text-xs text-muted font-mono">
+                                {/* Timer Badge for Desktop - Flex instead of Absolute */}
+                                <div className="hidden md:flex items-center px-2 py-1 ml-3 rounded bg-white/5 border border-white/5 text-[10px] text-muted font-mono shrink-0">
                                     <Clock className="w-3 h-3 mr-1.5" />
                                     {formatTime(timeLeft)}
                                 </div>
