@@ -270,10 +270,13 @@ const app = {
                     content = parsed.html || parsed.text;
                     subject = subject || parsed.subject;
                     from = from || (parsed.from ? (parsed.from.name ? `${parsed.from.name} <${parsed.from.address}>` : parsed.from.address) : from);
-
-                    // console.log('Parsed email:', parsed);
                 } catch (e) {
-                    console.error('Failed to parse raw email', e);
+                    console.warn('Failed to parse raw email with PostalMime:', e);
+                    parseError = true;
+                    // Fallback to basic text extraction if possible or just raw
+                    content = `<div style="padding: 20px; color: #ff6b6b; background: rgba(255,0,0,0.1); border-radius: 8px; margin-bottom: 20px;">
+                        <strong>Note:</strong> Simplified view (Parsing failed)
+                    </div><pre style="white-space: pre-wrap;">${this.escape(mail.text || mail.raw)}</pre>`;
                 }
             }
 
@@ -281,7 +284,7 @@ const app = {
             this.elements.displays.reader.from.textContent = from ? `From: ${from}` : 'From: Unknown';
             this.elements.displays.reader.time.textContent = new Date(mail.created_at).toLocaleString();
 
-            // Fallback content
+            // Fallback content if everything failed or was empty
             if (!content) {
                 content = `<pre style="white-space: pre-wrap; word-break: break-all; font-family: monospace;">${this.escape(mail.text || mail.raw)}</pre>`;
             }
