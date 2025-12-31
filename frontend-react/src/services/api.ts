@@ -43,6 +43,7 @@ class ApiService {
     }
 
     constructor() {
+        console.log("SwiftMail Client v2.1 - Timer Fix Active");
         // Fix for existing sessions: if we have an address but no timestamp, set it to now
         if (this.address && !this.createdAt) {
             this.createdAt = Date.now();
