@@ -252,28 +252,47 @@ const app = {
             // Show reader
             this.elements.displays.reader.placeholder.classList.add('hidden');
             this.elements.displays.reader.content.classList.remove('hidden');
-            this.elements.displays.reader.container.classList.add('active'); // for mobile
+            this.elements.displays.reader.container.classList.add('active');
 
             this.state.currentMailId = id;
 
-            // Parse raw if needed. Assuming 'raw' is the content.
-            // But usually there is a 'html' field if parsed?
-            // If only 'raw' exists, we need a parser.
-            // worker usually parses it.
-            // If raw_mails has 'raw', 'html', 'text'.
+            let subject = mail.subject;
+            let from = mail.source;
+            let content = mail.html;
 
-            // I'll assume mail object has 'html' or 'text'.
-            // Or 'raw' if we need to display source.
+            // CLIENT-SIDE PARSING OF RAW EMAIL
+            // If the backend returns raw content but no parsed body, we parse it here using PostalMime
+            if (mail.raw && (!content && !mail.text) && typeof PostalMime !== 'undefined') {
+                try {
+                    const parser = new PostalMime();
+                    const parsed = await parser.parse(mail.raw);
 
-            this.elements.displays.reader.subject.textContent = mail.subject || "No Subject";
-            this.elements.displays.reader.from.textContent = `From: ${mail.source}`;
+                    content = parsed.html || parsed.text;
+                    subject = subject || parsed.subject;
+                    from = from || (parsed.from ? (parsed.from.name ? `${parsed.from.name} <${parsed.from.address}>` : parsed.from.address) : from);
+
+                    // console.log('Parsed email:', parsed);
+                } catch (e) {
+                    console.error('Failed to parse raw email', e);
+                }
+            }
+
+            this.elements.displays.reader.subject.textContent = subject || "No Subject";
+            this.elements.displays.reader.from.textContent = from ? `From: ${from}` : 'From: Unknown';
             this.elements.displays.reader.time.textContent = new Date(mail.created_at).toLocaleString();
 
-            // Safety: render HTML in iframe
-            const content = mail.html || (`<pre>${this.escape(mail.text || mail.raw)}</pre>`);
-            this.elements.displays.reader.iframe.srcdoc = content;
+            // Fallback content
+            if (!content) {
+                content = `<pre style="white-space: pre-wrap; word-break: break-all; font-family: monospace;">${this.escape(mail.text || mail.raw)}</pre>`;
+            }
+
+            const iframe = this.elements.displays.reader.iframe;
+            // Set sandbox permissions to allow rendering but block scripts
+            iframe.setAttribute('sandbox', 'allow-popups allow-popups-to-escape-sandbox allow-same-origin');
+            iframe.srcdoc = content;
 
         } catch (error) {
+            console.error(error);
             this.showToast('Failed to load email', 'error');
         } finally {
             this.toggleLoading(false);
