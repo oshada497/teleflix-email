@@ -8,9 +8,10 @@ interface ConfirmModalProps {
     onConfirm: () => void
     title: string
     message: string
+    confirmLabel?: string
 }
 
-export function ConfirmModal({ isOpen, onClose, onConfirm, title, message }: ConfirmModalProps) {
+export function ConfirmModal({ isOpen, onClose, onConfirm, title, message, confirmLabel = "Change Address" }: ConfirmModalProps) {
     return (
         <AnimatePresence>
             {isOpen && (
@@ -59,7 +60,7 @@ export function ConfirmModal({ isOpen, onClose, onConfirm, title, message }: Con
                                     }}
                                     className="flex-1 shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)]"
                                 >
-                                    Change Address
+                                    {confirmLabel}
                                 </Button>
                             </div>
                         </div>

@@ -18,6 +18,7 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
     const [copied, setCopied] = useState(false)
     const [timeLeft, setTimeLeft] = useState(24 * 60 * 60)
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+    const [pendingDomain, setPendingDomain] = useState<string | null>(null)
 
     // Countdown timer logic
     useEffect(() => {
@@ -57,11 +58,22 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
     }
 
     const handleRefresh = () => {
+        setPendingDomain(null);
+        setIsConfirmOpen(true);
+    }
+
+    const handleDomainSelect = (domain: string) => {
+        setPendingDomain(domain);
         setIsConfirmOpen(true);
     }
 
     const confirmRefresh = () => {
-        onRefresh();
+        if (pendingDomain) {
+            onDomainChange(pendingDomain);
+            setPendingDomain(null);
+        } else {
+            onRefresh();
+        }
     }
 
     return (
@@ -170,7 +182,7 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                         <div className="relative group">
                             <select
                                 value={selectedDomain}
-                                onChange={(e) => onDomainChange(e.target.value)}
+                                onChange={(e) => handleDomainSelect(e.target.value)}
                                 className="appearance-none bg-[#1a1a1a] border border-white/10 text-primary text-sm font-medium rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer hover:bg-white/5 transition-all duration-300"
                             >
                                 {domains.map(d => (
@@ -199,10 +211,18 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
             </motion.div>
             <ConfirmModal
                 isOpen={isConfirmOpen}
-                onClose={() => setIsConfirmOpen(false)}
+                onClose={() => {
+                    setIsConfirmOpen(false);
+                    setPendingDomain(null);
+                }}
                 onConfirm={confirmRefresh}
-                title="Change Email Address?"
-                message="Are you sure you want to generate a new email address? All emails in your current inbox will be permanently lost."
+                title={pendingDomain ? "Change Domain?" : "Change Email Address?"}
+                message={
+                    pendingDomain
+                        ? `Are you sure you want to change your domain to @${pendingDomain}? Your current inbox will be permanently lost.`
+                        : "Are you sure you want to generate a new email address? All emails in your current inbox will be permanently lost."
+                }
+                confirmLabel={pendingDomain ? "Change Domain" : "Change Address"}
             />
         </section>
     )
