@@ -188,10 +188,10 @@ export function InboxSection() {
                             )}
                             <button
                                 onClick={fetchMails}
-                                className={`p-2 rounded-md hover:bg-white/5 text-muted hover:text-white transition-colors ${isLoading ? 'animate-spin' : ''}`}
+                                className={`p-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300 ${isLoading ? 'animate-spin' : ''}`}
                                 title="Refresh"
                             >
-                                <RefreshCcw className="w-4 h-4" />
+                                <RefreshCcw className="w-5 h-5" />
                             </button>
                         </div>
                     </div>
