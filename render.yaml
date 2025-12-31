@@ -10,4 +10,4 @@ services:
       - key: PUSH_SECRET
         value: sw_push_78x2y9z_secure_v1
       - key: NODE_VERSION
-        value: 18.0.0
+        value: 20.0.0
