@@ -125,7 +125,7 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt }: HeroSect
                                     type="text"
                                     readOnly
                                     value={email}
-                                    className="block w-full pl-10 pr-36 py-3 bg-transparent border-none text-white font-mono text-lg md:text-xl focus:ring-0 placeholder-gray-500 text-ellipsis"
+                                    className="block w-full pl-10 pr-4 md:pr-36 py-3 bg-transparent border-none text-white font-mono text-base md:text-xl focus:ring-0 placeholder-gray-500 text-ellipsis"
                                 />
                             </AnimatePresence>
 
