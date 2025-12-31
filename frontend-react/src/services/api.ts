@@ -223,7 +223,7 @@ class ApiService {
         });
     }
 
-    async sendMail(to: string, subject: string, content: string, is_html: boolean = false): Promise<boolean> {
+    async sendMail(to: string, subject: string, content: string, is_html: boolean = false, cf_token?: string): Promise<boolean> {
         if (!this.jwt) throw new Error("Not logged in");
         const res = await fetch(`${API_BASE}/api/send_mail`, {
             method: 'POST',
@@ -235,7 +235,8 @@ class ApiService {
                 to_mail: to,
                 subject,
                 content,
-                is_html
+                is_html,
+                cf_token
             })
         });
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import DOMPurify from 'dompurify'
 import { io } from 'socket.io-client'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -357,7 +358,22 @@ export function InboxSection({ onModalToggle }: InboxSectionProps) {
                                 {selectedEmail.bodyHtml ? (
                                     <div
                                         dangerouslySetInnerHTML={{
-                                            __html: selectedEmail.bodyHtml.replace(/<a\s+(?![^>]*target=)/gi, '<a target="_blank" rel="noopener noreferrer" ')
+                                            __html: DOMPurify.sanitize(
+                                                selectedEmail.bodyHtml.replace(/<a\s+(?![^>]*target=)/gi, '<a target="_blank" rel="noopener noreferrer" '),
+                                                {
+                                                    ADD_ATTR: ['target'],
+                                                    ALLOWED_TAGS: [
+                                                        'a', 'b', 'i', 'u', 'strong', 'em', 'p', 'br', 'div', 'span',
+                                                        'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                                                        'table', 'thead', 'tbody', 'tr', 'th', 'td', 'img', 'hr',
+                                                        'font', 'center', 'blockquote', 'pre', 'code'
+                                                    ],
+                                                    ALLOWED_ATTR: [
+                                                        'href', 'src', 'alt', 'title', 'style', 'width', 'height', 'align',
+                                                        'border', 'cellpadding', 'cellspacing', 'bgcolor', 'color', 'face', 'size'
+                                                    ]
+                                                }
+                                            )
                                         }}
                                         className="prose max-w-none text-gray-900 prose-a:text-blue-600 prose-a:underline break-words"
                                     />

@@ -243,6 +243,13 @@ export const sendMail = async (
 api.post('/api/send_mail', async (c) => {
     const { address } = c.get("jwtPayload")
     const reqJson = await c.req.json();
+    const { cf_token } = reqJson;
+    // check cf turnstile
+    try {
+        await checkCfTurnstile(c, cf_token);
+    } catch (error) {
+        return c.text("Captcha check failed", 400)
+    }
     try {
         await sendMail(c, address, reqJson);
     } catch (e) {

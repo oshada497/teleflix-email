@@ -100,11 +100,11 @@ FRONTEND_URL = "https://teleflix.online"
 PUSHER_URL = "https://swiftmail-pusher.onrender.com"
 PUSH_SECRET = "sw_push_78x2y9z_secure_v1"
 # Enable check junk mail
-# ENABLE_CHECK_JUNK_MAIL = false
+ENABLE_CHECK_JUNK_MAIL = true
 # junk mail check list, if status exists and status is not pass, will be marked as junk mail
-# JUNK_MAIL_CHECK_LIST = = ["spf", "dkim", "dmarc"]
+JUNK_MAIL_CHECK_LIST = ["spf", "dkim", "dmarc"]
 # junk mail force check pass list, if no status or status is not pass, will be marked as junk mail
-# JUNK_MAIL_FORCE_PASS_LIST = ["spf", "dkim", "dmarc"]
+JUNK_MAIL_FORCE_PASS_LIST = ["spf"]
 # remove attachment if size exceed 2MB, mail maybe mising some information due to parsing
 # REMOVE_EXCEED_SIZE_ATTACHMENT = true
 # remove all attachment, mail maybe mising some information due to parsing
@@ -143,12 +143,12 @@ database_id = "005b635e-45df-4410-941b-73e533cf9707"
 # id = "xxxx"
 
 # ratelimit config for /api/new_address
-# [[unsafe.bindings]]
-# name = "RATE_LIMITER"
-# type = "ratelimit"
-# namespace_id = "1001"
-# # 10 requests per minute
-# simple = { limit = 10, period = 60 }
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1001"
+# 10 requests per minute
+simple = { limit = 10, period = 60 }
 
 # binding another worker service (parse the code or link), e.g. auth-inbox
 # [[services]]

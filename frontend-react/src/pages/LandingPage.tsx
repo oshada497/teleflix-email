@@ -1,10 +1,18 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { motion } from 'framer-motion'
-import { HeroSection } from '../components/HeroSection'
-import { InboxSection } from '../components/InboxSection'
-import { FeaturesGrid } from '../components/FeaturesGrid'
 import { Navbar } from '../components/Navbar'
+import { HeroSection } from '../components/HeroSection'
 import { api } from '../services/api'
+
+// Lazy load heavy components
+const InboxSection = lazy(() => import('../components/InboxSection').then(m => ({ default: m.InboxSection })))
+const FeaturesGrid = lazy(() => import('../components/FeaturesGrid').then(m => ({ default: m.FeaturesGrid })))
+
+const LoadingSkeleton = () => (
+    <div className="w-full max-w-4xl mx-auto p-8 animate-pulse">
+        <div className="h-64 bg-white/5 rounded-2xl"></div>
+    </div>
+)
 
 export function LandingPage() {
     const [email, setEmail] = useState<string | null>(null);
@@ -101,15 +109,20 @@ export function LandingPage() {
                         }}
                         onModalToggle={setIsModalOpen}
                     />
-                    <InboxSection key={email} onModalToggle={setIsModalOpen} />
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                    >
-                        <FeaturesGrid />
-                    </motion.div>
+                    <Suspense fallback={<LoadingSkeleton />}>
+                        <InboxSection key={email} onModalToggle={setIsModalOpen} />
+                    </Suspense>
+
+                    <Suspense fallback={<div className="h-32" />}>
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                        >
+                            <FeaturesGrid />
+                        </motion.div>
+                    </Suspense>
                 </main>
 
                 {/* Footer */}
