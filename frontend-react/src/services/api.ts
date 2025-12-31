@@ -1,6 +1,6 @@
 import PostalMime from 'postal-mime';
 
-const API_BASE = ''; // Relative path, as Worker serves frontend
+const API_BASE = 'https://temp-email-api.teleflix.online'; // Point to Worker API
 
 export interface Mail {
     id: number;
@@ -35,7 +35,6 @@ class ApiService {
 
     private initCreatedAt(): number | null {
         const stored = localStorage.getItem('swiftmail_created_at');
-        console.log("Raw stored createdAt:", stored);
         if (stored && stored !== "null" && stored !== "undefined") {
             const parsed = parseInt(stored);
             return isNaN(parsed) ? null : parsed;
@@ -44,17 +43,11 @@ class ApiService {
     }
 
     constructor() {
-        if (this.jwt) {
-            console.log('Restored session for:', this.address);
-        }
-
         // Fix for existing sessions: if we have an address but no timestamp, set it to now
         if (this.address && !this.createdAt) {
-            console.log('Backfilling missing createdAt timestamp');
             this.createdAt = Date.now();
             localStorage.setItem('swiftmail_created_at', this.createdAt.toString());
         }
-        console.log('ApiService initialized. Address:', this.address, 'CreatedAt:', this.createdAt);
     }
 
     getJwt() {
