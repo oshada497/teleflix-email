@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Copy, Pencil, Check, Clock } from 'lucide-react'
+import { Copy, Pencil, Check, Clock, QrCode } from 'lucide-react'
 import { Button } from './ui/Button'
 import { ConfirmModal } from './ui/ConfirmModal'
+import { QRCodeModal } from './ui/QRCodeModal'
 
 interface HeroSectionProps {
     email: string
@@ -19,6 +20,7 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
     const [copied, setCopied] = useState(false)
     const [timeLeft, setTimeLeft] = useState(24 * 60 * 60)
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+    const [isQRModalOpen, setIsQRModalOpen] = useState(false)
     const [pendingDomain, setPendingDomain] = useState<string | null>(null)
 
     useEffect(() => {
@@ -180,6 +182,16 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                                 <Button
                                     variant="secondary"
                                     size="lg"
+                                    onClick={() => setIsQRModalOpen(true)}
+                                    className="flex-none"
+                                    aria-label="Show QR Code"
+                                >
+                                    <QrCode className="w-5 h-5" />
+                                </Button>
+
+                                <Button
+                                    variant="secondary"
+                                    size="lg"
                                     onClick={handleRefresh}
                                     className="flex-none"
                                     aria-label="Generate new email"
@@ -225,6 +237,11 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                 </div>
 
             </motion.div>
+            <QRCodeModal
+                email={email}
+                isOpen={isQRModalOpen}
+                onClose={() => setIsQRModalOpen(false)}
+            />
             <ConfirmModal
                 isOpen={isConfirmOpen}
                 onClose={() => {
