@@ -162,21 +162,27 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                         </div>
                     </div>
 
-                    {/* Domain Selection Pills Under the Bar */}
-                    <div className="flex flex-wrap items-center justify-center gap-2">
-                        <span className="text-xs text-gray-500 uppercase tracking-widest font-semibold mr-2">Available Domains:</span>
-                        {domains.map(d => (
-                            <button
-                                key={d}
-                                onClick={() => onDomainChange(d)}
-                                className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-300 border ${selectedDomain === d
-                                        ? 'bg-primary/20 border-primary text-primary shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)]'
-                                        : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:border-white/20'
-                                    }`}
+                    {/* Domain Selection Dropdown Under the Bar */}
+                    <div className="flex items-center justify-center gap-3">
+                        <span className="text-xs text-secondary uppercase tracking-widest font-semibold">Domain:</span>
+                        <div className="relative group">
+                            <select
+                                value={selectedDomain}
+                                onChange={(e) => onDomainChange(e.target.value)}
+                                className="appearance-none bg-[#1a1a1a] border border-white/10 text-primary text-sm font-medium rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer hover:bg-white/5 transition-all duration-300"
                             >
-                                @{d}
-                            </button>
-                        ))}
+                                {domains.map(d => (
+                                    <option key={d} value={d} className="bg-[#1a1a1a] text-white">
+                                        @{d}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Mobile Timer (below input) */}
