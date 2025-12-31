@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Copy, RefreshCw, Check, Clock } from 'lucide-react'
+import { Copy, Pencil, Check, Clock } from 'lucide-react'
 import { Button } from './ui/Button'
 import { ConfirmModal } from './ui/ConfirmModal'
 
@@ -168,8 +168,8 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                                     className="flex-none"
                                     aria-label="Generate new email"
                                 >
-                                    <RefreshCw
-                                        className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`}
+                                    <Pencil
+                                        className={`w-5 h-5 ${isLoading ? 'animate-pulse' : ''}`}
                                     />
                                 </Button>
                             </div>
