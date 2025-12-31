@@ -37,6 +37,11 @@ class ApiService {
         if (this.jwt) {
             console.log('Restored session for:', this.address);
         }
+        // Fix for existing sessions: if we have an address but no timestamp, set it to now
+        if (this.address && (!this.createdAt || isNaN(this.createdAt))) {
+            this.createdAt = Date.now();
+            localStorage.setItem('swiftmail_created_at', this.createdAt.toString());
+        }
     }
 
     getJwt() {
