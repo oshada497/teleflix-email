@@ -261,10 +261,17 @@ const app = {
             let content = mail.html;
 
             // CLIENT-SIDE PARSING OF RAW EMAIL
-            // If the backend returns raw content but no parsed body, we parse it here using PostalMime
-            if (mail.raw && (!content && !mail.text) && typeof PostalMime !== 'undefined') {
+            let parseError = false;
+            // Check if PostalMime is available in global scope
+            const PostalMimeClass = typeof PostalMime !== 'undefined'
+                ? PostalMime
+                : (typeof window.PostalMime !== 'undefined' ? window.PostalMime : null);
+
+            if (mail.raw && (!content && !mail.text) && PostalMimeClass) {
                 try {
-                    const parser = new PostalMime();
+                    // Handle potential default export in UMD/ESM builds
+                    const Parser = PostalMimeClass.default ? PostalMimeClass.default : PostalMimeClass;
+                    const parser = new Parser();
                     const parsed = await parser.parse(mail.raw);
 
                     content = parsed.html || parsed.text;
@@ -273,11 +280,11 @@ const app = {
                 } catch (e) {
                     console.warn('Failed to parse raw email with PostalMime:', e);
                     parseError = true;
-                    // Fallback to basic text extraction if possible or just raw
-                    content = `<div style="padding: 20px; color: #ff6b6b; background: rgba(255,0,0,0.1); border-radius: 8px; margin-bottom: 20px;">
-                        <strong>Note:</strong> Simplified view (Parsing failed)
-                    </div><pre style="white-space: pre-wrap;">${this.escape(mail.text || mail.raw)}</pre>`;
+                    this.showToast('Email parsing failed, showing raw', 'error');
                 }
+            } else if (mail.raw && !content && !PostalMimeClass) {
+                console.warn('PostalMime library not loaded');
+                this.showToast('Parser library missing', 'error');
             }
 
             this.elements.displays.reader.subject.textContent = subject || "No Subject";
