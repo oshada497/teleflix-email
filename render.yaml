@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: swiftmail-pusher
+    env: node
+    plan: free
+    rootDir: render-pusher
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: PUSH_SECRET
+        value: swift-secret-pusher-123
+      - key: NODE_VERSION
+        value: 18.0.0
