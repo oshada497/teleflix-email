@@ -197,50 +197,61 @@ export function InboxSection() {
                     </div>
 
                     {/* Content Area */}
-                    <div className="flex-1 overflow-y-auto custom-scrollbar p-2 h-full">
-                        {activeTab === 'inbox' && (
-                            <InboxList emails={emails} isLoading={isLoading} onSelect={setSelectedEmail} />
-                        )}
-                        {activeTab === 'outbox' && (
-                            <OutboxList emails={sentEmails} isLoading={isLoading} />
-                        )}
-                        {activeTab === 'compose' && (
-                            <div className="p-6 max-w-2xl mx-auto space-y-4">
-                                {sendSuccess && (
-                                    <div className="bg-green-500/10 border border-green-500/20 text-green-500 p-3 rounded-lg flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4" />
-                                        Email sent successfully!
+                    <div className="flex-1 overflow-y-auto custom-scrollbar h-full">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={activeTab}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 0.2 }}
+                                className="p-2 h-full"
+                            >
+                                {activeTab === 'inbox' && (
+                                    <InboxList emails={emails} isLoading={isLoading} onSelect={setSelectedEmail} />
+                                )}
+                                {activeTab === 'outbox' && (
+                                    <OutboxList emails={sentEmails} isLoading={isLoading} />
+                                )}
+                                {activeTab === 'compose' && (
+                                    <div className="p-6 max-w-2xl mx-auto space-y-4">
+                                        {sendSuccess && (
+                                            <div className="bg-green-500/10 border border-green-500/20 text-green-500 p-3 rounded-lg flex items-center gap-2">
+                                                <CheckCircle2 className="w-4 h-4" />
+                                                Email sent successfully!
+                                            </div>
+                                        )}
+                                        <div>
+                                            <label className="block text-xs font-medium text-gray-400 mb-1">To</label>
+                                            <input value={composeTo} onChange={e => setComposeTo(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary/50" placeholder="recipient@example.com" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-medium text-gray-400 mb-1">Subject</label>
+                                            <input value={composeSubject} onChange={e => setComposeSubject(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary/50" placeholder="Enter subject" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-medium text-gray-400 mb-1">Message</label>
+                                            <textarea value={composeBody} onChange={e => setComposeBody(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white min-h-[200px] focus:outline-none focus:border-primary/50 font-mono" placeholder="Write your message..." />
+                                        </div>
+                                        <Button onClick={handleSend} disabled={sending} className="w-full">
+                                            {sending ? 'Sending...' : 'Send Email'}
+                                        </Button>
                                     </div>
                                 )}
-                                <div>
-                                    <label className="block text-xs font-medium text-gray-400 mb-1">To</label>
-                                    <input value={composeTo} onChange={e => setComposeTo(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary/50" placeholder="recipient@example.com" />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-medium text-gray-400 mb-1">Subject</label>
-                                    <input value={composeSubject} onChange={e => setComposeSubject(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary/50" placeholder="Enter subject" />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-medium text-gray-400 mb-1">Message</label>
-                                    <textarea value={composeBody} onChange={e => setComposeBody(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white min-h-[200px] focus:outline-none focus:border-primary/50 font-mono" placeholder="Write your message..." />
-                                </div>
-                                <Button onClick={handleSend} disabled={sending} className="w-full">
-                                    {sending ? 'Sending...' : 'Send Email'}
-                                </Button>
-                            </div>
-                        )}
-                        {activeTab === 'account' && (
-                            <div className="p-6 text-center text-gray-400">
-                                <div className="p-4 bg-white/5 rounded-lg inline-block text-left min-w-[300px]">
-                                    <h3 className="text-white font-bold mb-4">Account Details</h3>
-                                    <p className="mb-2"><span className="text-gray-500">Address:</span> {settings?.address || api.getAddress()}</p>
-                                    <p className="mb-2"><span className="text-gray-500">JWT Token:</span> <span className="text-xs font-mono truncate block max-w-[250px]">...</span>(Hidden)</p>
-                                    <div className="mt-4 pt-4 border-t border-white/10">
-                                        <p className="text-xs">Available Domains: {settings?.domains?.join(', ')}</p>
+                                {activeTab === 'account' && (
+                                    <div className="p-6 text-center text-gray-400">
+                                        <div className="p-4 bg-white/5 rounded-lg inline-block text-left min-w-[300px]">
+                                            <h3 className="text-white font-bold mb-4">Account Details</h3>
+                                            <p className="mb-2"><span className="text-gray-500">Address:</span> {settings?.address || api.getAddress()}</p>
+                                            <p className="mb-2"><span className="text-gray-500">JWT Token:</span> <span className="text-xs font-mono truncate block max-w-[250px]">...</span>(Hidden)</p>
+                                            <div className="mt-4 pt-4 border-t border-white/10">
+                                                <p className="text-xs">Available Domains: {settings?.domains?.join(', ')}</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        )}
+                                )}
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
                 </div>
             </motion.div>

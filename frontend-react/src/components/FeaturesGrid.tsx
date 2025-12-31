@@ -48,7 +48,10 @@ export function FeaturesGrid() {
                         }}
                         transition={{
                             delay: index * 0.1,
-                            duration: 0.5,
+                            type: "spring",
+                            stiffness: 100,
+                            damping: 15,
+                            duration: 0.8,
                         }}
                         whileHover={{
                             y: -5,

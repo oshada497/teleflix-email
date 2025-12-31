@@ -82,14 +82,17 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                 initial={{
                     opacity: 0,
                     y: 20,
+                    scale: 0.95
                 }}
                 animate={{
                     opacity: 1,
                     y: 0,
+                    scale: 1
                 }}
                 transition={{
-                    duration: 0.6,
-                    ease: 'easeOut',
+                    duration: 0.8,
+                    type: "spring",
+                    bounce: 0.3
                 }}
             >
                 <div className="inline-flex items-center justify-center px-3 py-1 mb-6 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium tracking-wide uppercase">
@@ -116,12 +119,18 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                 <div className="relative max-w-2xl mx-auto space-y-4">
                     <div className="relative">
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/50 to-purple-500/50 rounded-xl blur opacity-30 group-hover:opacity-50 transition duration-1000"></div>
-                        <div className="relative flex flex-col md:flex-row items-center gap-3 p-2 bg-[#1a1a1a]/80 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl">
+                        <motion.div
+                            whileHover={{ scale: 1.01 }}
+                            transition={{ duration: 0.2 }}
+                            className="relative flex flex-col md:flex-row items-center gap-3 p-2 bg-[#1a1a1a]/80 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl"
+                        >
                             {/* Email Display */}
                             <div className="flex-1 w-full flex items-center min-w-0 bg-white/5 rounded-lg px-4 py-3 border border-white/5">
-                                <div
+                                <motion.div
+                                    animate={isLoading ? {} : { scale: [1, 1.2, 1] }}
+                                    transition={{ duration: 2, repeat: Infinity }}
                                     className={`h-2 w-2 rounded-full mr-3 shrink-0 ${isLoading ? 'bg-yellow-500' : 'bg-green-500'}`}
-                                ></div>
+                                ></motion.div>
                                 <AnimatePresence mode="wait">
                                     <motion.input
                                         key={email}
@@ -173,7 +182,7 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                                     />
                                 </Button>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
 
                     {/* Domain Selection Dropdown Under the Bar */}
@@ -224,6 +233,6 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                 }
                 confirmLabel={pendingDomain ? "Change Domain" : "Change Address"}
             />
-        </section>
+        </section >
     )
 }

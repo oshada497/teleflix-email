@@ -49,8 +49,10 @@ export function Navbar() {
 
 function NavLink({ icon, label, href, active = false }: { icon: React.ReactNode, label: string, href: string, active?: boolean }) {
     return (
-        <a
+        <motion.a
             href={href}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             className={`
                 flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-300
                 ${active
@@ -60,6 +62,6 @@ function NavLink({ icon, label, href, active = false }: { icon: React.ReactNode,
         >
             {icon}
             <span className="hidden md:block">{label}</span>
-        </a>
+        </motion.a>
     )
 }

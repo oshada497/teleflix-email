@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { HeroSection } from '../components/HeroSection'
 import { InboxSection } from '../components/InboxSection'
 import { FeaturesGrid } from '../components/FeaturesGrid'
@@ -55,8 +56,30 @@ export function LandingPage() {
         <div className="min-h-screen w-full bg-background text-white selection:bg-primary/30 overflow-x-hidden">
             {/* Background Gradients */}
             <div className="fixed inset-0 z-0 pointer-events-none">
-                <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/10 blur-[120px] rounded-full opacity-50"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[600px] bg-purple-900/10 blur-[100px] rounded-full opacity-30"></div>
+                <motion.div
+                    animate={{
+                        x: [0, 50, 0],
+                        y: [0, -30, 0],
+                    }}
+                    transition={{
+                        duration: 20,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                    className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/10 blur-[120px] rounded-full opacity-50"
+                ></motion.div>
+                <motion.div
+                    animate={{
+                        x: [0, -40, 0],
+                        y: [0, 40, 0],
+                    }}
+                    transition={{
+                        duration: 25,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                    className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[600px] bg-purple-900/10 blur-[100px] rounded-full opacity-30"
+                ></motion.div>
             </div>
 
             {/* Content */}
@@ -77,7 +100,14 @@ export function LandingPage() {
                         }}
                     />
                     <InboxSection key={email} />
-                    <FeaturesGrid />
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                    >
+                        <FeaturesGrid />
+                    </motion.div>
                 </main>
 
                 {/* Footer */}
