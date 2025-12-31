@@ -31,14 +31,25 @@ export interface SettingsResponse {
 class ApiService {
     private jwt: string | null = localStorage.getItem('swiftmail_jwt');
     private address: string | null = localStorage.getItem('swiftmail_address');
-    private createdAt: number | null = localStorage.getItem('swiftmail_created_at') ? parseInt(localStorage.getItem('swiftmail_created_at')!) : null;
+    private createdAt: number | null = this.initCreatedAt();
+
+    private initCreatedAt(): number | null {
+        const stored = localStorage.getItem('swiftmail_created_at');
+        console.log("Raw stored createdAt:", stored);
+        if (stored && stored !== "null" && stored !== "undefined") {
+            const parsed = parseInt(stored);
+            return isNaN(parsed) ? null : parsed;
+        }
+        return null;
+    }
 
     constructor() {
         if (this.jwt) {
             console.log('Restored session for:', this.address);
         }
+
         // Fix for existing sessions: if we have an address but no timestamp, set it to now
-        if (this.address && (!this.createdAt || isNaN(this.createdAt))) {
+        if (this.address && !this.createdAt) {
             console.log('Backfilling missing createdAt timestamp');
             this.createdAt = Date.now();
             localStorage.setItem('swiftmail_created_at', this.createdAt.toString());
