@@ -285,11 +285,31 @@ export function InboxSection() {
                                 </div>
                             )}
 
-                            <div className="flex-1 overflow-y-auto p-6 bg-white min-h-[300px] text-gray-900">
+                            <div className="flex-1 overflow-y-auto p-6 bg-white min-h-[300px] text-gray-900 border-t border-gray-100">
                                 {selectedEmail.bodyHtml ? (
-                                    <div dangerouslySetInnerHTML={{ __html: selectedEmail.bodyHtml }} className="prose max-w-none text-gray-900" />
+                                    <div
+                                        dangerouslySetInnerHTML={{ __html: selectedEmail.bodyHtml }}
+                                        className="prose max-w-none text-gray-900 prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline break-words"
+                                    />
                                 ) : (
-                                    <pre className="whitespace-pre-wrap font-sans text-gray-900">{selectedEmail.bodyText}</pre>
+                                    <pre className="whitespace-pre-wrap font-sans text-gray-800 text-sm leading-relaxed break-all">
+                                        {selectedEmail.bodyText?.split(/(https?:\/\/[^\s]+)/g).map((part, i) => {
+                                            if (part.match(/https?:\/\/[^\s]+/)) {
+                                                return (
+                                                    <a
+                                                        key={i}
+                                                        href={part}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-blue-600 hover:underline"
+                                                    >
+                                                        {part}
+                                                    </a>
+                                                );
+                                            }
+                                            return part;
+                                        })}
+                                    </pre>
                                 )}
                             </div>
                         </motion.div>
