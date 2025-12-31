@@ -3,6 +3,6 @@
     "version": "2.0.0",
     "description": "Teleflix Temp Mail Frontend",
     "scripts": {
-        "build": "mkdir -p dist && cp index.html style.css app.js dist/"
+        "build": "echo 'Build assets are already in dist/'"
     }
 }
