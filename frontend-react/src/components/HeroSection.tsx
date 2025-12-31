@@ -77,7 +77,7 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
     }
 
     return (
-        <section className="relative w-full max-w-4xl mx-auto px-4 pt-20 pb-12 text-center z-10">
+        <section className="relative w-full max-w-4xl mx-auto px-4 pt-32 pb-12 text-center z-10">
             <motion.div
                 initial={{
                     opacity: 0,

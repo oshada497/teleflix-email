@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { HeroSection } from '../components/HeroSection'
 import { InboxSection } from '../components/InboxSection'
 import { FeaturesGrid } from '../components/FeaturesGrid'
+import { Navbar } from '../components/Navbar'
 import { api } from '../services/api'
 
 export function LandingPage() {
@@ -60,42 +61,7 @@ export function LandingPage() {
 
             {/* Content */}
             <div className="relative z-10 flex flex-col min-h-screen">
-                {/* Navbar */}
-                <header className="w-full border-b border-white/5 bg-background/50 backdrop-blur-md sticky top-0 z-50">
-                    <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-gradient-to-br from-primary to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                                S
-                            </div>
-                            <span className="font-bold text-lg tracking-tight">
-                                SwiftMail
-                            </span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <a
-                                href="#"
-                                className="text-sm text-gray-400 hover:text-white transition-colors hidden md:block"
-                            >
-                                API
-                            </a>
-                            <a
-                                href="#"
-                                className="text-sm text-gray-400 hover:text-white transition-colors hidden md:block"
-                            >
-                                About
-                            </a>
-
-                            <a
-                                href="https://github.com"
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-sm text-gray-400 hover:text-white transition-colors"
-                            >
-                                GitHub
-                            </a>
-                        </div>
-                    </div>
-                </header>
+                <Navbar />
 
                 <main className="flex-1 flex flex-col items-center">
                     <HeroSection
