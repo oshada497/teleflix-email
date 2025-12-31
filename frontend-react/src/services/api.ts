@@ -39,9 +39,11 @@ class ApiService {
         }
         // Fix for existing sessions: if we have an address but no timestamp, set it to now
         if (this.address && (!this.createdAt || isNaN(this.createdAt))) {
+            console.log('Backfilling missing createdAt timestamp');
             this.createdAt = Date.now();
             localStorage.setItem('swiftmail_created_at', this.createdAt.toString());
         }
+        console.log('ApiService initialized. Address:', this.address, 'CreatedAt:', this.createdAt);
     }
 
     getJwt() {
