@@ -16,6 +16,7 @@ export interface Mail {
         html: string;
         text: string;
         date: string;
+        attachments: any[];
     };
 }
 
@@ -153,7 +154,8 @@ class ApiService {
                             subject: parsed.subject || '(No Subject)',
                             html: parsed.html || '',
                             text: parsed.text || '',
-                            date: parsed.date || mail.created_at
+                            date: parsed.date || mail.created_at,
+                            attachments: parsed.attachments || []
                         }
                     };
                 } catch (e) {
@@ -165,7 +167,8 @@ class ApiService {
                             subject: '(Parse Error)',
                             html: '',
                             text: 'Failed to parse',
-                            date: mail.created_at
+                            date: mail.created_at,
+                            attachments: []
                         }
                     };
                 }
