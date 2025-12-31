@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { api } from '../services/api'
 import { Button } from './ui/Button'
+import { ConfirmModal } from './ui/ConfirmModal'
 
 interface UIMail {
     id: number
@@ -41,6 +42,8 @@ export function InboxSection() {
     const [composeBody, setComposeBody] = useState('')
     const [sending, setSending] = useState(false)
     const [sendSuccess, setSendSuccess] = useState(false)
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+    const [emailToDelete, setEmailToDelete] = useState<number | null>(null)
 
     // settings
     const [settings, setSettings] = useState<any>(null)
@@ -85,11 +88,18 @@ export function InboxSection() {
         return () => clearInterval(interval)
     }, [activeTab, autoRefresh])
 
-    const handleDelete = async (id: number) => {
-        if (!confirm('Are you sure you want to delete this email?')) return;
-        await api.deleteMail(id);
-        setSelectedEmail(null);
-        fetchMails();
+    const handleDelete = (id: number) => {
+        setEmailToDelete(id);
+        setDeleteConfirmOpen(true);
+    }
+
+    const confirmDelete = async () => {
+        if (emailToDelete !== null) {
+            await api.deleteMail(emailToDelete);
+            setSelectedEmail(null);
+            fetchMails();
+            setEmailToDelete(null);
+        }
     }
 
     const handleSend = async () => {
@@ -318,6 +328,14 @@ export function InboxSection() {
                     </div>
                 )}
             </AnimatePresence>
+            {/* Deletion Confirmation Modal */}
+            <ConfirmModal
+                isOpen={deleteConfirmOpen}
+                onClose={() => setDeleteConfirmOpen(false)}
+                onConfirm={confirmDelete}
+                title="Delete Email?"
+                message="Are you sure you want to delete this email? This action cannot be undone."
+            />
         </section>
     )
 }

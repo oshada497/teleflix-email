@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Copy, RefreshCw, Check, Clock } from 'lucide-react'
 import { Button } from './ui/Button'
+import { ConfirmModal } from './ui/ConfirmModal'
 
 interface HeroSectionProps {
     email: string
@@ -16,6 +17,7 @@ interface HeroSectionProps {
 export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, selectedDomain, onDomainChange }: HeroSectionProps) {
     const [copied, setCopied] = useState(false)
     const [timeLeft, setTimeLeft] = useState(24 * 60 * 60)
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
     // Countdown timer logic
     useEffect(() => {
@@ -55,9 +57,11 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
     }
 
     const handleRefresh = () => {
-        if (window.confirm("Are you sure you want to change your email address? Your current inbox will be lost.")) {
-            onRefresh();
-        }
+        setIsConfirmOpen(true);
+    }
+
+    const confirmRefresh = () => {
+        onRefresh();
     }
 
     return (
@@ -193,6 +197,13 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                 </div>
 
             </motion.div>
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                onClose={() => setIsConfirmOpen(false)}
+                onConfirm={confirmRefresh}
+                title="Change Email Address?"
+                message="Are you sure you want to generate a new email address? All emails in your current inbox will be permanently lost."
+            />
         </section>
     )
 }
