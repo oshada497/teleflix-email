@@ -83,6 +83,19 @@ export function InboxSection({ onModalToggle }: InboxSectionProps) {
         }
     }
 
+    const [isVisible, setIsVisible] = useState(!document.hidden)
+
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            setIsVisible(!document.hidden)
+            if (!document.hidden && activeTab === 'inbox') {
+                fetchMails() // Refresh immediately when user returns to tab
+            }
+        }
+        document.addEventListener("visibilitychange", handleVisibilityChange)
+        return () => document.removeEventListener("visibilitychange", handleVisibilityChange)
+    }, [activeTab])
+
     useEffect(() => {
         if (onModalToggle) {
             onModalToggle(!!selectedEmail || deleteConfirmOpen)
@@ -90,13 +103,16 @@ export function InboxSection({ onModalToggle }: InboxSectionProps) {
     }, [selectedEmail, deleteConfirmOpen, onModalToggle])
 
     useEffect(() => {
+        if (!isVisible) return; // Pause polling if tab is hidden
+
         fetchMails()
         let interval: any;
         if (autoRefresh && activeTab === 'inbox') {
-            interval = setInterval(fetchMails, 10000)
+            // Increased from 10s to 15s to save costs without hurting UX
+            interval = setInterval(fetchMails, 15000)
         }
         return () => clearInterval(interval)
-    }, [activeTab, autoRefresh])
+    }, [activeTab, autoRefresh, isVisible])
 
     const handleDelete = (id: number) => {
         setEmailToDelete(id);
