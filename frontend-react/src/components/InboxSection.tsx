@@ -269,13 +269,13 @@ export function InboxSection() {
 
                             {/* Attachments Section */}
                             {selectedEmail.attachments && selectedEmail.attachments.length > 0 && (
-                                <div className="p-3 bg-[#1e1e1e] border-b border-white/5 flex flex-wrap gap-2 text-sm text-gray-300 items-center">
-                                    <span className="font-bold flex items-center mr-2 text-gray-500"><Paperclip className="w-3 h-3 mr-1" /> Attachments:</span>
+                                <div className="p-3 bg-white/[0.02] border-b border-white/5 flex flex-wrap gap-2 text-sm text-gray-300 items-center">
+                                    <span className="font-bold flex items-center mr-2 text-primary/80"><Paperclip className="w-3 h-3 mr-1" /> Attachments:</span>
                                     {selectedEmail.attachments.map((att: any, i: number) => (
                                         <button
                                             key={i}
                                             onClick={() => handleDownloadAttachment(att)}
-                                            className="flex items-center gap-2 px-3 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-md transition-colors text-xs text-primary"
+                                            className="flex items-center gap-2 px-3 py-1 bg-primary/10 hover:bg-primary/20 border border-primary/20 rounded-md transition-colors text-xs text-primary"
                                         >
                                             <Download className="w-3 h-3" />
                                             <span className="truncate max-w-[150px]">{att.filename || 'Attachment'}</span>
@@ -285,11 +285,11 @@ export function InboxSection() {
                                 </div>
                             )}
 
-                            <div className="flex-1 overflow-y-auto p-6 bg-white min-h-[300px] text-black">
+                            <div className="flex-1 overflow-y-auto p-6 bg-[#0a0a0a] min-h-[300px] text-gray-200">
                                 {selectedEmail.bodyHtml ? (
-                                    <div dangerouslySetInnerHTML={{ __html: selectedEmail.bodyHtml }} className="prose max-w-none" />
+                                    <div dangerouslySetInnerHTML={{ __html: selectedEmail.bodyHtml }} className="prose prose-invert max-w-none text-gray-200" />
                                 ) : (
-                                    <pre className="whitespace-pre-wrap font-sans">{selectedEmail.bodyText}</pre>
+                                    <pre className="whitespace-pre-wrap font-sans text-gray-200">{selectedEmail.bodyText}</pre>
                                 )}
                             </div>
                         </motion.div>
