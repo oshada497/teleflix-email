@@ -3,6 +3,6 @@
     "version": "2.0.0",
     "description": "Teleflix Temp Mail Frontend",
     "scripts": {
-        "build": "mkdir -p dist && cp -r ../frontend-ui/. dist/"
+        "build": "mkdir -p dist && cp index.html style.css app.js dist/"
     }
 }
