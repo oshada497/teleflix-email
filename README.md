@@ -166,6 +166,7 @@ A high-performance temporary email service built on **Cloudflare Workers**, **D1
 *   **Floating Window Design**: Dashboard lives inside a sleek, macOS-style window frame.
 *   **Unified Dashboard**: Address bar, controls, and inbox all in one view.
 *   **Visual Indicators**: Time used progress bars and status lights.
+*   **Frontend Technology**: Rebuilt with **React** (`frontend-react`) for better performance and maintainability.
 
 ![UI Screenshot](https://raw.githubusercontent.com/dreamhunter2333/cloudflare_temp_email/main/doc/screenshot.png) 
 *(Note: Screenshot above is the original UI, deploy to see the new Teleflix Modern UI)*
