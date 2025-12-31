@@ -1,0 +1,216 @@
+﻿{
+  "result": [
+    {
+      "created_on": "2025-12-08T06:50:19.133083Z",
+      "modified_on": "2025-12-08T11:08:12.220763Z",
+      "id": "autofilter-bot",
+      "tag": "3ec13ce5efce4eb4b53e2a894c08b4d1",
+      "tags": [],
+      "deployment_id": "",
+      "tail_consumers": null,
+      "logpush": false,
+      "has_assets": false,
+      "has_modules": true,
+      "etag": "4b7ef8dbf38eba0098c348704e6a6f574fcf23ed5715491ec98c05fae5bad520",
+      "handlers": [
+        "fetch"
+      ],
+      "last_deployed_from": "api",
+      "compatibility_date": "2024-11-12",
+      "compatibility_flags": [
+        "nodejs_compat"
+      ],
+      "usage_model": "standard",
+      "routes": null
+    },
+    {
+      "created_on": "2025-11-10T06:36:11.715985Z",
+      "modified_on": "2025-11-10T06:36:13.745513Z",
+      "id": "billowing-salad-1c75",
+      "tag": "c7d166d4a14b4669965871e89973daee",
+      "tags": null,
+      "deployment_id": "",
+      "tail_consumers": null,
+      "logpush": false,
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true,
+          "invocation_logs": true
+        },
+        "traces": {
+          "enabled": false,
+          "persist": true,
+          "head_sampling_rate": 1
+        }
+      },
+      "has_assets": false,
+      "has_modules": true,
+      "etag": "ca375e44c305a61137bac60f661bab234c9215975b9820c580ef7cdac84edcd3",
+      "handlers": [
+        "fetch"
+      ],
+      "last_deployed_from": "dash_template",
+      "compatibility_date": "2025-11-10",
+      "usage_model": "standard",
+      "routes": null
+    },
+    {
+      "created_on": "2025-12-14T09:56:11.311281Z",
+      "modified_on": "2025-12-14T09:56:14.563945Z",
+      "id": "movie-stream",
+      "tag": "e06e016b7704412c8643230eeb0d3890",
+      "tags": [],
+      "deployment_id": "",
+      "tail_consumers": null,
+      "logpush": false,
+      "has_assets": false,
+      "has_modules": true,
+      "etag": "2b28a2fc6471eff67b64d36e6b92f41ee81e05e0ef30c7f919ce1a2bb14ca617",
+      "handlers": [
+        "fetch"
+      ],
+      "last_deployed_from": "dash_template",
+      "compatibility_date": "2025-12-14",
+      "usage_model": "standard",
+      "routes": null
+    },
+    {
+      "created_on": "2025-12-25T11:11:02.652417Z",
+      "modified_on": "2025-12-25T13:53:36.30713Z",
+      "id": "movx-streaming-backend",
+      "tag": "7e471a5b7b8f4f7f954223dd91c65643",
+      "tags": [],
+      "deployment_id": "",
+      "tail_consumers": null,
+      "logpush": false,
+      "has_assets": false,
+      "has_modules": true,
+      "etag": "ca9cb98ffb25070c97628b9c1dcc710d169a546384f29659a51978dcf73544c0",
+      "handlers": [
+        "fetch"
+      ],
+      "last_deployed_from": "wrangler",
+      "compatibility_date": "2023-12-01",
+      "usage_model": "standard",
+      "routes": null
+    },
+    {
+      "created_on": "2025-12-25T09:48:21.718039Z",
+      "modified_on": "2025-12-25T09:58:38.791301Z",
+      "id": "mute-hall-886d",
+      "tag": "a89fdc2f2bfc4a9ba5321a1367f4ed53",
+      "tags": null,
+      "deployment_id": "",
+      "tail_consumers": null,
+      "logpush": false,
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true,
+          "invocation_logs": true
+        },
+        "traces": {
+          "enabled": false,
+          "persist": true,
+          "head_sampling_rate": 1
+        }
+      },
+      "has_assets": false,
+      "has_modules": true,
+      "etag": "3e38ba1f59c28b48954669b8cbd2367bd25edd7ea9a1690ec0f1102e7d16335b",
+      "handlers": [
+        "fetch"
+      ],
+      "last_deployed_from": "quick_editor",
+      "compatibility_date": "2025-12-25",
+      "usage_model": "standard",
+      "routes": null
+    },
+    {
+      "created_on": "2025-12-25T19:46:19.489314Z",
+      "modified_on": "2025-12-26T14:48:56.898035Z",
+      "id": "spring-wind-6989",
+      "tag": "1ced0aa0efaf450fbd6969b2ea8414a5",
+      "tags": null,
+      "deployment_id": "",
+      "tail_consumers": null,
+      "logpush": false,
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true,
+          "invocation_logs": true
+        },
+        "traces": {
+          "enabled": false,
+          "persist": true,
+          "head_sampling_rate": 1
+        }
+      },
+      "has_assets": false,
+      "has_modules": true,
+      "etag": "589c6a2b3794400658a0f991af018d4a5a18aaeb0f776cc1be1d1ac7936a8dea",
+      "handlers": [
+        "fetch"
+      ],
+      "last_deployed_from": "quick_editor",
+      "compatibility_date": "2025-12-25",
+      "usage_model": "standard",
+      "routes": null
+    },
+    {
+      "created_on": "2025-12-07T17:28:26.39285Z",
+      "modified_on": "2025-12-07T17:48:50.577548Z",
+      "id": "telegram-file-bot",
+      "tag": "41bb9d3e064d4bee9acba871133f29a1",
+      "tags": [],
+      "deployment_id": "",
+      "tail_consumers": null,
+      "logpush": false,
+      "has_assets": false,
+      "has_modules": true,
+      "etag": "33d6de795e087fb6275c586f15da6e4c45d5ea2a05c23fcd2ba62fa78e58e876",
+      "handlers": [
+        "fetch"
+      ],
+      "last_deployed_from": "wrangler",
+      "compatibility_date": "2024-01-01",
+      "usage_model": "standard",
+      "routes": null
+    },
+    {
+      "created_on": "2025-12-07T07:31:44.671883Z",
+      "modified_on": "2025-12-07T08:21:51.952799Z",
+      "id": "tg-filebot-platform",
+      "tag": "5f03bbf53d7d468e8cc6cb516e270462",
+      "tags": [],
+      "deployment_id": "",
+      "tail_consumers": null,
+      "logpush": false,
+      "has_assets": false,
+      "has_modules": true,
+      "etag": "e02282bfdceccca9fe109c27d80ebf90015c4f2575f6cf1cf0c74e3071858781",
+      "handlers": [
+        "fetch"
+      ],
+      "last_deployed_from": "wrangler",
+      "compatibility_date": "2024-01-01",
+      "usage_model": "standard",
+      "routes": null
+    }
+  ],
+  "success": true,
+  "errors": [],
+  "messages": []
+}
+
