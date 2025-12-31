@@ -97,12 +97,17 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                 </p>
 
                 {/* Email Input Box */}
-                <div className="relative max-w-2xl mx-auto">
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/50 to-purple-500/50 rounded-xl blur opacity-30 group-hover:opacity-50 transition duration-1000"></div>
-                    <div className="relative flex flex-col md:flex-row items-center gap-3 p-2 bg-[#1a1a1a]/80 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl">
-                        {/* Email Display */}
-                        <div className="flex-1 w-full relative group">
-                            <div className="flex-1 flex flex-col md:flex-row items-center w-full">
+                <div className="relative max-w-2xl mx-auto space-y-4">
+                    <div className="relative">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/50 to-purple-500/50 rounded-xl blur opacity-30 group-hover:opacity-50 transition duration-1000"></div>
+                        <div className="relative flex flex-col md:flex-row items-center gap-3 p-2 bg-[#1a1a1a]/80 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl">
+                            {/* Email Display */}
+                            <div className="flex-1 w-full relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <div
+                                        className={`h-2 w-2 rounded-full ${isLoading ? 'bg-yellow-500' : 'bg-green-500'}`}
+                                    ></div>
+                                </div>
                                 <AnimatePresence mode="wait">
                                     <motion.input
                                         key={email}
@@ -112,69 +117,66 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                                         transition={{ duration: 0.2 }}
                                         type="text"
                                         readOnly
-                                        value={email.split('@')[0]}
-                                        className="flex-1 w-full pl-10 pr-4 py-3 bg-transparent border-none text-white font-mono text-base md:text-xl focus:ring-0 placeholder-gray-500 text-ellipsis text-right md:text-left"
+                                        value={email}
+                                        className="block w-full pl-10 pr-4 md:pr-36 py-3 bg-transparent border-none text-white font-mono text-base md:text-xl focus:ring-0 placeholder-gray-500 text-ellipsis"
                                     />
                                 </AnimatePresence>
 
-                                <div className="flex items-center px-4 py-3 md:py-0 text-gray-500 font-mono text-base md:text-xl">@</div>
-
-                                {domains.length > 1 ? (
-                                    <select
-                                        value={selectedDomain}
-                                        onChange={(e) => onDomainChange(e.target.value)}
-                                        className="bg-transparent border-none text-primary font-mono text-base md:text-xl focus:ring-0 cursor-pointer hover:text-primary/80 transition-colors pr-10"
-                                    >
-                                        {domains.map(d => (
-                                            <option key={d} value={d} className="bg-[#1a1a1a] text-white">
-                                                {d}
-                                            </option>
-                                        ))}
-                                    </select>
-                                ) : (
-                                    <span className="text-primary font-mono text-base md:text-xl pr-10">
-                                        {selectedDomain || domains[0]}
-                                    </span>
-                                )}
+                                {/* Timer Badge inside input on desktop */}
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden md:flex items-center px-2 py-1 rounded bg-white/5 border border-white/5 text-xs text-muted font-mono">
+                                    <Clock className="w-3 h-3 mr-1.5" />
+                                    {formatTime(timeLeft)}
+                                </div>
                             </div>
 
-                            {/* Timer Badge inside input on desktop */}
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden md:flex items-center px-2 py-1 rounded bg-white/5 border border-white/5 text-xs text-muted font-mono">
-                                <Clock className="w-3 h-3 mr-1.5" />
-                                {formatTime(timeLeft)}
+                            {/* Actions */}
+                            <div className="flex w-full md:w-auto gap-2">
+                                <Button
+                                    variant="primary"
+                                    size="lg"
+                                    onClick={handleCopy}
+                                    className={`flex-1 md:flex-none min-w-[120px] transition-all duration-300 ${copied ? 'bg-green-600 hover:bg-green-700 ring-green-500/50' : ''}`}
+                                    icon={
+                                        copied ? (
+                                            <Check className="w-4 h-4" />
+                                        ) : (
+                                            <Copy className="w-4 h-4" />
+                                        )
+                                    }
+                                >
+                                    {copied ? 'Copied!' : 'Copy'}
+                                </Button>
+
+                                <Button
+                                    variant="secondary"
+                                    size="lg"
+                                    onClick={handleRefresh}
+                                    className="flex-none"
+                                    aria-label="Generate new email"
+                                >
+                                    <RefreshCw
+                                        className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`}
+                                    />
+                                </Button>
                             </div>
                         </div>
+                    </div>
 
-                        {/* Actions */}
-                        <div className="flex w-full md:w-auto gap-2">
-                            <Button
-                                variant="primary"
-                                size="lg"
-                                onClick={handleCopy}
-                                className={`flex-1 md:flex-none min-w-[120px] transition-all duration-300 ${copied ? 'bg-green-600 hover:bg-green-700 ring-green-500/50' : ''}`}
-                                icon={
-                                    copied ? (
-                                        <Check className="w-4 h-4" />
-                                    ) : (
-                                        <Copy className="w-4 h-4" />
-                                    )
-                                }
+                    {/* Domain Selection Pills Under the Bar */}
+                    <div className="flex flex-wrap items-center justify-center gap-2">
+                        <span className="text-xs text-gray-500 uppercase tracking-widest font-semibold mr-2">Available Domains:</span>
+                        {domains.map(d => (
+                            <button
+                                key={d}
+                                onClick={() => onDomainChange(d)}
+                                className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-300 border ${selectedDomain === d
+                                        ? 'bg-primary/20 border-primary text-primary shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)]'
+                                        : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:border-white/20'
+                                    }`}
                             >
-                                {copied ? 'Copied!' : 'Copy'}
-                            </Button>
-
-                            <Button
-                                variant="secondary"
-                                size="lg"
-                                onClick={handleRefresh}
-                                className="flex-none"
-                                aria-label="Generate new email"
-                            >
-                                <RefreshCw
-                                    className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`}
-                                />
-                            </Button>
-                        </div>
+                                @{d}
+                            </button>
+                        ))}
                     </div>
 
                     {/* Mobile Timer (below input) */}
