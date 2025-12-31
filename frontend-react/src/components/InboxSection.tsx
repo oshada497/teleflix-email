@@ -285,11 +285,11 @@ export function InboxSection() {
                                 </div>
                             )}
 
-                            <div className="flex-1 overflow-y-auto p-6 bg-[#0a0a0a] min-h-[300px] text-gray-200">
+                            <div className="flex-1 overflow-y-auto p-6 bg-white min-h-[300px] text-gray-900">
                                 {selectedEmail.bodyHtml ? (
-                                    <div dangerouslySetInnerHTML={{ __html: selectedEmail.bodyHtml }} className="prose prose-invert max-w-none text-gray-200" />
+                                    <div dangerouslySetInnerHTML={{ __html: selectedEmail.bodyHtml }} className="prose max-w-none text-gray-900" />
                                 ) : (
-                                    <pre className="whitespace-pre-wrap font-sans text-gray-200">{selectedEmail.bodyText}</pre>
+                                    <pre className="whitespace-pre-wrap font-sans text-gray-900">{selectedEmail.bodyText}</pre>
                                 )}
                             </div>
                         </motion.div>
