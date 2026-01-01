@@ -1,6 +1,6 @@
 import PostalMime from 'postal-mime';
 
-const API_BASE = 'https://temp-email-api.teleflix.online'; // Point to Worker API
+const API_BASE = 'https://api.wipemymail.com'; // Point to Worker API
 
 export interface Mail {
     id: number;
@@ -29,15 +29,15 @@ export interface SettingsResponse {
     domains: string[];
 }
 
-const HARDCODED_DOMAINS = ["fbflix.online", "tempxmail.qzz.io", "teleflix.online"];
+const HARDCODED_DOMAINS = ["wipemymail.com", "fbflix.online", "tempxmail.qzz.io", "teleflix.online"];
 
 class ApiService {
-    private jwt: string | null = localStorage.getItem('swiftmail_jwt');
-    private address: string | null = localStorage.getItem('swiftmail_address');
+    private jwt: string | null = localStorage.getItem('wipemymail_jwt');
+    private address: string | null = localStorage.getItem('wipemymail_address');
     private createdAt: number | null = this.initCreatedAt();
 
     private initCreatedAt(): number | null {
-        const stored = localStorage.getItem('swiftmail_created_at');
+        const stored = localStorage.getItem('wipemymail_created_at');
         if (stored && stored !== "null" && stored !== "undefined") {
             const parsed = parseInt(stored);
             return isNaN(parsed) ? null : parsed;
@@ -46,11 +46,11 @@ class ApiService {
     }
 
     constructor() {
-        console.log("SwiftMail Client v2.1 - Timer Fix Active");
+        console.log("WipeMyMail Client v1.0 - Domain Migration Active");
         // Fix for existing sessions: if we have an address but no timestamp, set it to now
         if (this.address && !this.createdAt) {
             this.createdAt = Date.now();
-            localStorage.setItem('swiftmail_created_at', this.createdAt.toString());
+            localStorage.setItem('wipemymail_created_at', this.createdAt.toString());
         }
     }
 
@@ -70,23 +70,23 @@ class ApiService {
         this.jwt = jwt;
         this.address = address;
         this.createdAt = Date.now();
-        localStorage.setItem('swiftmail_jwt', jwt);
-        localStorage.setItem('swiftmail_address', address);
-        localStorage.setItem('swiftmail_created_at', this.createdAt.toString());
+        localStorage.setItem('wipemymail_jwt', jwt);
+        localStorage.setItem('wipemymail_address', address);
+        localStorage.setItem('wipemymail_created_at', this.createdAt.toString());
     }
 
     clearSession() {
         this.jwt = null;
         this.address = null;
         this.createdAt = null;
-        localStorage.removeItem('swiftmail_jwt');
-        localStorage.removeItem('swiftmail_address');
-        localStorage.removeItem('swiftmail_created_at');
+        localStorage.removeItem('wipemymail_jwt');
+        localStorage.removeItem('wipemymail_address');
+        localStorage.removeItem('wipemymail_created_at');
     }
 
     async getDomains(): Promise<string[]> {
         // First, check if we have them in local storage to avoid ANY request
-        const cached = localStorage.getItem('swiftmail_domains');
+        const cached = localStorage.getItem('wipemymail_domains');
         if (cached) {
             try {
                 return JSON.parse(cached);

@@ -22,8 +22,8 @@ export function LandingPage() {
     const [email, setEmail] = useState<string | null>(null);
     const [createdAt, setCreatedAt] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [domains, setDomains] = useState<string[]>(["fbflix.online", "tempxmail.qzz.io", "teleflix.online"]);
-    const [selectedDomain, setSelectedDomain] = useState<string>("fbflix.online");
+    const [domains, setDomains] = useState<string[]>(["wipemymail.com", "fbflix.online", "tempxmail.qzz.io", "teleflix.online"]);
+    const [selectedDomain, setSelectedDomain] = useState<string>("wipemymail.com");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
@@ -136,7 +136,7 @@ export function LandingPage() {
                     <footer className="border-t border-white/5 py-12 bg-[#0f0f0f]">
                         <div className="max-w-7xl mx-auto px-4 text-center">
                             <p className="text-gray-500 text-sm">
-                                &copy; {new Date().getFullYear()} SwiftMail. Built for privacy.
+                                &copy; {new Date().getFullYear()} WipeMyMail. Built for privacy.
                             </p>
                         </div>
                     </footer>

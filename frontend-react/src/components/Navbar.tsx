@@ -30,10 +30,10 @@ export function Navbar({ isMobile = false }: { isMobile?: boolean }) {
                 {/* Left: Logo Section */}
                 <div className="flex items-center gap-2 pl-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-primary to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-primary/20">
-                        S
+                        W
                     </div>
                     <span className="font-bold text-base tracking-tight text-white hidden sm:block">
-                        SwiftMail
+                        WipeMyMail
                     </span>
                 </div>
 

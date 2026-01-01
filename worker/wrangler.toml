@@ -1,4 +1,4 @@
-name = "cloudflare_temp_email"
+name = "wipemymail-api"
 main = "src/worker.ts"
 account_id = "7b6e2e1c4bd848d5707f16059e81996d"
 compatibility_date = "2025-04-01"
@@ -6,6 +6,7 @@ compatibility_flags = [ "nodejs_compat" ]
 keep_vars = true
 # if you want use custom_domain, you need to add routes
 routes = [
+	{ pattern = "api.wipemymail.com", custom_domain = true },
 	{ pattern = "temp-email-api.teleflix.online", custom_domain = true },
 	{ pattern = "tempxmail.qzz.io", custom_domain = true },
 ]
@@ -45,8 +46,8 @@ PREFIX = ""
 # ADMIN_CONTACT = "xx@xx.xxx"
 # Create new address with default domain first, if set true, will use first domain from DEFAULT_DOMAINS when no domain specified
 # CREATE_ADDRESS_DEFAULT_DOMAIN_FIRST = false
-DEFAULT_DOMAINS = ["fbflix.online", "tempxmail.qzz.io", "teleflix.online"] # domain name for no role users
-DOMAINS = ["fbflix.online", "tempxmail.qzz.io", "teleflix.online"] # all domain names
+DEFAULT_DOMAINS = ["wipemymail.com", "fbflix.online", "tempxmail.qzz.io", "teleflix.online"] # domain name for no role users
+DOMAINS = ["wipemymail.com", "fbflix.online", "tempxmail.qzz.io", "teleflix.online"] # all domain names
 # For chinese domain name, you can use DOMAIN_LABELS to show chinese domain name
 # DOMAIN_LABELS = ["中文.xxx", "xxx.xxx2"]
 # USER_DEFAULT_ROLE = "vip" # default role for new users(only when enable mail verification)
@@ -94,7 +95,7 @@ ENABLE_AUTO_REPLY = false
 # ]
 # """
 # Frontend URL
-FRONTEND_URL = "https://teleflix.online"
+FRONTEND_URL = "https://wipemymail.com"
 
 # Render Pusher Config
 PUSHER_URL = "https://swiftmail-pusher.onrender.com"

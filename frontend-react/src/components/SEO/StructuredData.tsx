@@ -27,7 +27,7 @@ export function StructuredData() {
     const appData = {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": "SwiftMail",
+        "name": "WipeMyMail",
         "operatingSystem": "All",
         "applicationCategory": "UtilitiesApplication",
         "offers": {

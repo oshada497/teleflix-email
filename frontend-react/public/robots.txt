@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://teleflix.online/sitemap.xml
+Sitemap: https://wipemymail.com/sitemap.xml
