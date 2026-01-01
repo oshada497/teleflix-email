@@ -10,7 +10,11 @@ interface FAQItem {
 const faqData: FAQItem[] = [
     {
         question: "1. What is temporary email?",
-        answer: "Temporary email (also called disposable email, temp mail, or burner email) is an email address that automatically expires after **24 hours**. It allows you to receive emails without using your real email address, protecting your privacy and preventing spam. The email address is generated instantly, requires no registration, and all messages are automatically deleted after expiration."
+        answer: (
+            <>
+                Temporary email (also called disposable email, temp mail, or burner email) is an email address that automatically expires after <span className="text-white font-semibold">24 hours</span>. It allows you to receive emails without using your real email address, protecting your privacy and preventing spam. The email address is generated instantly, requires no registration, and all messages are automatically deleted after expiration.
+            </>
+        )
     },
     {
         question: "2. Is temp email safe to use?",
@@ -18,7 +22,11 @@ const faqData: FAQItem[] = [
     },
     {
         question: "3. How long does a temporary email last?",
-        answer: "Every temporary email address on our service is guaranteed to last for **24 hours**. This provides ample time for any verification process, account setup, or reading long-form newsletters. After 24 hours, the address and all its messages are permanently deleted from our servers for your security."
+        answer: (
+            <>
+                Every temporary email address on our service is guaranteed to last for <span className="text-white font-semibold">24 hours</span>. This provides ample time for any verification process, account setup, or reading long-form newsletters. After 24 hours, the address and all its messages are permanently deleted from our servers for your security.
+            </>
+        )
     },
     {
         question: "4. Do I need to create an account?",
@@ -32,9 +40,9 @@ const faqData: FAQItem[] = [
         question: "6. Why didn't I receive my verification email?",
         answer: (
             <div className="space-y-2">
-                <p>If an email hasn't arrived:</p>
+                <p>Our service is <span className="text-white font-semibold">extremely fast</span>. If an email hasn't arrived immediately:</p>
                 <ul className="list-disc pl-5 space-y-1">
-                    <li>Wait 2-3 minutes as some mail servers are slower than others.</li>
+                    <li>Refresh the inbox or wait a few seconds (occasionally the sender's server may have a slight delay).</li>
                     <li>Check if the sender's service explicitly blocks disposable email providers.</li>
                     <li>Refresh to generate a new address or try a different domain from our list.</li>
                     <li>Ensure you copied the address exactly as shown.</li>
@@ -48,7 +56,11 @@ const faqData: FAQItem[] = [
     },
     {
         question: "8. What happens to my emails after they expire?",
-        answer: "Following our strict 24-hour security policy, once an address expires, all associated emails are **permanently and non-recoverably deleted** from our D1 database. We do not keep backups or archives. If you have important information, please copy it before the 24-hour mark."
+        answer: (
+            <>
+                Following our strict 24-hour security policy, once an address expires, all associated emails are <span className="text-white font-semibold">permanently and non-recoverably deleted</span> from our D1 database. We do not keep backups or archives. If you have important information, please copy it before the 24-hour mark.
+            </>
+        )
     },
     {
         question: "9. Can someone else access my temp email?",
@@ -91,8 +103,8 @@ export function FAQSection() {
                         <button
                             onClick={() => setOpenIndex(openIndex === index ? null : index)}
                             className={`w-full text-left p-5 md:p-6 rounded-2xl border transition-all duration-300 flex items-start gap-4 ${openIndex === index
-                                    ? 'bg-white/10 border-white/20 shadow-xl'
-                                    : 'bg-white/5 border-white/5 hover:bg-white/[0.08] hover:border-white/10'
+                                ? 'bg-white/10 border-white/20 shadow-xl'
+                                : 'bg-white/5 border-white/5 hover:bg-white/[0.08] hover:border-white/10'
                                 }`}
                         >
                             <div className={`mt-1 p-2 rounded-lg transition-colors ${openIndex === index ? 'bg-primary/20 text-primary' : 'bg-white/5 text-gray-400'
