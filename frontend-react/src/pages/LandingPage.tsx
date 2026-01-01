@@ -21,6 +21,14 @@ export function LandingPage() {
     const [domains, setDomains] = useState<string[]>(["fbflix.online", "tempxmail.qzz.io", "teleflix.online"]);
     const [selectedDomain, setSelectedDomain] = useState<string>("fbflix.online");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     useEffect(() => {
         const init = async () => {
@@ -65,33 +73,40 @@ export function LandingPage() {
         <div className="min-h-screen w-full bg-background text-white selection:bg-primary/30 overflow-x-hidden">
             {/* Background Gradients */}
             <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-                <motion.div
-                    animate={{
-                        x: [0, 50, 0],
-                        y: [0, -30, 0],
-                    }}
-                    transition={{
-                        duration: 20,
-                        repeat: Infinity,
-                        ease: "linear"
-                    }}
-                    className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/10 blur-[60px] md:blur-[120px] rounded-full opacity-50 will-change-transform transform-gpu hidden md:block"
-                ></motion.div>
-                <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[400px] h-[300px] bg-primary/10 blur-[40px] rounded-full opacity-40 md:hidden transform-gpu"></div>
-
-                <motion.div
-                    animate={{
-                        x: [0, -40, 0],
-                        y: [0, 40, 0],
-                    }}
-                    transition={{
-                        duration: 25,
-                        repeat: Infinity,
-                        ease: "linear"
-                    }}
-                    className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[600px] bg-purple-900/10 blur-[50px] md:blur-[100px] rounded-full opacity-30 will-change-transform transform-gpu hidden md:block"
-                ></motion.div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[300px] h-[300px] bg-purple-900/10 blur-[40px] rounded-full opacity-20 md:hidden transform-gpu"></div>
+                {!isMobile && (
+                    <>
+                        <motion.div
+                            animate={{
+                                x: [0, 50, 0],
+                                y: [0, -30, 0],
+                            }}
+                            transition={{
+                                duration: 20,
+                                repeat: Infinity,
+                                ease: "linear"
+                            }}
+                            className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/10 blur-[120px] rounded-full opacity-50 will-change-transform transform-gpu"
+                        ></motion.div>
+                        <motion.div
+                            animate={{
+                                x: [0, -40, 0],
+                                y: [0, 40, 0],
+                            }}
+                            transition={{
+                                duration: 25,
+                                repeat: Infinity,
+                                ease: "linear"
+                            }}
+                            className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[600px] bg-purple-900/10 blur-[100px] rounded-full opacity-30 will-change-transform transform-gpu"
+                        ></motion.div>
+                    </>
+                )}
+                {isMobile && (
+                    <>
+                        <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[400px] h-[300px] bg-primary/10 blur-[40px] rounded-full opacity-40 transform-gpu"></div>
+                        <div className="absolute bottom-[-10%] right-[-10%] w-[300px] h-[300px] bg-purple-900/10 blur-[40px] rounded-full opacity-20 transform-gpu"></div>
+                    </>
+                )}
             </div>
 
             {/* Content */}

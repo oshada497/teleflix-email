@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Copy, Pencil, Check, Clock, QrCode } from 'lucide-react'
+import { Copy, Pencil, Check, QrCode } from 'lucide-react'
 import { Button } from './ui/Button'
 import { ConfirmModal } from './ui/ConfirmModal'
 import { QRCodeModal } from './ui/QRCodeModal'
+import { CountdownTimer } from './CountdownTimer'
 
 interface HeroSectionProps {
     email: string
@@ -18,7 +19,6 @@ interface HeroSectionProps {
 
 export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, selectedDomain, onDomainChange, onModalToggle }: HeroSectionProps) {
     const [copied, setCopied] = useState(false)
-    const [timeLeft, setTimeLeft] = useState(24 * 60 * 60)
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
     const [isQRModalOpen, setIsQRModalOpen] = useState(false)
     const [pendingDomain, setPendingDomain] = useState<string | null>(null)
@@ -28,37 +28,6 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
             onModalToggle(isConfirmOpen)
         }
     }, [isConfirmOpen, onModalToggle])
-
-    // Countdown timer logic
-    useEffect(() => {
-        if (!createdAt) {
-            setTimeLeft(24 * 60 * 60)
-            return
-        }
-
-        const calculateTimeLeft = () => {
-            const now = Date.now()
-            const elapsed = Math.floor((now - createdAt) / 1000)
-            const remaining = (24 * 60 * 60) - elapsed
-            return remaining > 0 ? remaining : 0
-        }
-
-        setTimeLeft(calculateTimeLeft())
-
-        const timer = setInterval(() => {
-            setTimeLeft(calculateTimeLeft())
-        }, 1000)
-
-        return () => clearInterval(timer)
-    }, [createdAt, email])
-
-    // Format seconds to HH:MM:SS
-    const formatTime = (seconds: number) => {
-        const h = Math.floor(seconds / 3600)
-        const m = Math.floor((seconds % 3600) / 60)
-        const s = seconds % 60
-        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
-    }
 
     const handleCopy = async () => {
         await navigator.clipboard.writeText(email)
@@ -106,7 +75,7 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
             >
                 <div className="inline-flex items-center justify-center px-3 py-1 mb-6 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium tracking-wide uppercase">
                     <span className="relative flex h-2 w-2 mr-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                        <span className="hidden md:block animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                     </span>
                     Live Temporary Email
@@ -136,9 +105,7 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                             {/* Email Display */}
                             <div className="flex-1 w-full flex items-center min-w-0 bg-white/5 rounded-lg px-4 py-3 border border-white/5">
                                 <motion.div
-                                    animate={isLoading ? {} : { scale: [1, 1.2, 1] }}
-                                    transition={{ duration: 2, repeat: Infinity }}
-                                    className={`h-2 w-2 rounded-full mr-3 shrink-0 ${isLoading ? 'bg-yellow-500' : 'bg-green-500'}`}
+                                    className={`h-2 w-2 rounded-full mr-3 shrink-0 ${isLoading ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'}`}
                                 ></motion.div>
                                 <AnimatePresence mode="wait">
                                     <motion.input
@@ -154,11 +121,7 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                                     />
                                 </AnimatePresence>
 
-                                {/* Timer Badge for Desktop - Flex instead of Absolute */}
-                                <div className="hidden md:flex items-center px-2 py-1 ml-3 rounded bg-white/5 border border-white/5 text-[10px] text-muted font-mono shrink-0">
-                                    <Clock className="w-3 h-3 mr-1.5" />
-                                    {formatTime(timeLeft)}
-                                </div>
+                                <CountdownTimer createdAt={createdAt} email={email} />
                             </div>
 
                             {/* Actions */}
@@ -227,13 +190,7 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                         </div>
                     </div>
 
-                    {/* Mobile Timer (below input) */}
-                    <div className="md:hidden mt-3 flex justify-center">
-                        <div className="flex items-center px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-muted font-mono">
-                            <Clock className="w-3 h-3 mr-2" />
-                            Expires in {formatTime(timeLeft)}
-                        </div>
-                    </div>
+                    {/* CountdownTimer component handles mobile timer display */}
                 </div>
 
             </motion.div>
