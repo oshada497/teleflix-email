@@ -140,8 +140,8 @@ export function HeroSection({
                                 <CountdownTimer createdAt={createdAt} email={email} />
                             </div>
 
-                            {/* Actions */}
-                            <div className="flex w-full md:w-auto gap-2">
+                            {/* Actions - Hidden on Mobile, shown on Desktop */}
+                            <div className="hidden md:flex w-full md:w-auto gap-2">
                                 <Button
                                     variant="primary"
                                     size="lg"
@@ -185,12 +185,12 @@ export function HeroSection({
 
                     {/* Domain Selection Dropdown Under the Bar */}
                     <div className="flex flex-col gap-6">
-                        {/* New Action Bar */}
-                        <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4">
+                        {/* Optimized Mobile Grid / Desktop Flex Bar */}
+                        <div className="grid grid-cols-2 md:flex md:flex-wrap items-center justify-center gap-3 md:gap-4">
                             <button
                                 onClick={handleCopy}
                                 aria-label="Copy email address"
-                                className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm"
+                                className="group flex items-center justify-center gap-2 px-4 md:px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm"
                             >
                                 {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 text-primary" />}
                                 <span className="text-sm font-medium text-gray-300 group-hover:text-white">
@@ -201,18 +201,18 @@ export function HeroSection({
                             <button
                                 onClick={handleManualRefresh}
                                 aria-label="Refresh inbox"
-                                className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm"
+                                className="group flex items-center justify-center gap-2 px-4 md:px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm"
                             >
                                 <RefreshCw className={`w-4 h-4 text-primary transition-all duration-500 ${isRefreshing ? 'animate-spin' : ''}`} />
                                 <span className="text-sm font-medium text-gray-300 group-hover:text-white">Refresh</span>
                             </button>
 
-                            <div className="relative group/change">
+                            <div className="relative group/change col-span-2 md:col-span-1">
                                 <select
                                     value={selectedDomain}
                                     onChange={(e) => handleDomainSelect(e.target.value)}
                                     aria-label="Select email domain"
-                                    className="appearance-none bg-white/5 border border-white/10 text-gray-300 text-sm font-medium rounded-xl pl-12 pr-10 py-3 hover:bg-white/10 hover:border-white/20 hover:text-white transition-all duration-300 cursor-pointer focus:outline-none backdrop-blur-sm z-10"
+                                    className="w-full appearance-none bg-white/5 border border-white/10 text-gray-300 text-sm font-medium rounded-xl pl-12 pr-10 py-3 hover:bg-white/10 hover:border-white/20 hover:text-white transition-all duration-300 cursor-pointer focus:outline-none backdrop-blur-sm z-10"
                                 >
                                     {domains.map(d => (
                                         <option key={d} value={d} className="bg-[#1a1a1a] text-white">
@@ -231,10 +231,10 @@ export function HeroSection({
                             <button
                                 onClick={handleRefresh}
                                 aria-label="Delete current email address and generate new one"
-                                className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-red-500/20 hover:bg-red-500/5 transition-all duration-300 backdrop-blur-sm"
+                                className="group flex items-center justify-center gap-2 px-4 md:px-6 py-3 rounded-xl bg-red-500/5 border border-red-500/10 hover:bg-red-500/10 hover:border-red-500/20 transition-all duration-300 backdrop-blur-sm col-span-2 md:col-span-1"
                             >
                                 <Trash2 className="w-4 h-4 text-red-500" />
-                                <span className="text-sm font-medium text-gray-300 group-hover:text-white">Delete</span>
+                                <span className="text-sm font-medium text-gray-300 group-hover:text-white">New Address</span>
                             </button>
                         </div>
 
