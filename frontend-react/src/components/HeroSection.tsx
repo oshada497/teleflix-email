@@ -131,7 +131,7 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                         <motion.div
                             whileHover={{ scale: 1.01 }}
                             transition={{ duration: 0.2 }}
-                            className="relative flex flex-col md:flex-row items-center gap-3 p-2 bg-[#1a1a1a]/80 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl"
+                            className="relative flex flex-col md:flex-row items-center gap-3 p-2 bg-[#1a1a1a]/80 backdrop-blur-md md:backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl transform-gpu"
                         >
                             {/* Email Display */}
                             <div className="flex-1 w-full flex items-center min-w-0 bg-white/5 rounded-lg px-4 py-3 border border-white/5">

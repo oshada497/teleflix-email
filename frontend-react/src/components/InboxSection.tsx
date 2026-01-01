@@ -195,7 +195,7 @@ export function InboxSection({ onModalToggle }: InboxSectionProps) {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-                className="flex flex-col md:flex-row min-h-[600px] bg-[#1a1a1a]/60 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl"
+                className="flex flex-col md:flex-row min-h-[600px] bg-[#1a1a1a]/60 backdrop-blur-md md:backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl transform-gpu"
             >
                 {/* Sidebar */}
                 <div className="w-full md:w-64 bg-[#151515]/80 border-b md:border-b-0 md:border-r border-white/5 p-4 flex flex-col">

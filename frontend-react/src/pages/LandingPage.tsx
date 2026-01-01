@@ -64,7 +64,7 @@ export function LandingPage() {
     return (
         <div className="min-h-screen w-full bg-background text-white selection:bg-primary/30 overflow-x-hidden">
             {/* Background Gradients */}
-            <div className="fixed inset-0 z-0 pointer-events-none">
+            <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
                 <motion.div
                     animate={{
                         x: [0, 50, 0],
@@ -75,8 +75,10 @@ export function LandingPage() {
                         repeat: Infinity,
                         ease: "linear"
                     }}
-                    className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/10 blur-[120px] rounded-full opacity-50"
+                    className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/10 blur-[60px] md:blur-[120px] rounded-full opacity-50 will-change-transform transform-gpu hidden md:block"
                 ></motion.div>
+                <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[400px] h-[300px] bg-primary/10 blur-[40px] rounded-full opacity-40 md:hidden transform-gpu"></div>
+
                 <motion.div
                     animate={{
                         x: [0, -40, 0],
@@ -87,8 +89,9 @@ export function LandingPage() {
                         repeat: Infinity,
                         ease: "linear"
                     }}
-                    className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[600px] bg-purple-900/10 blur-[100px] rounded-full opacity-30"
+                    className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[600px] bg-purple-900/10 blur-[50px] md:blur-[100px] rounded-full opacity-30 will-change-transform transform-gpu hidden md:block"
                 ></motion.div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[300px] h-[300px] bg-purple-900/10 blur-[40px] rounded-full opacity-20 md:hidden transform-gpu"></div>
             </div>
 
             {/* Content */}
