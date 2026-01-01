@@ -15,9 +15,19 @@ interface HeroSectionProps {
     domains: string[]
     selectedDomain: string
     onDomainChange: (domain: string) => void
+    isMobile?: boolean
 }
 
-export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, selectedDomain, onDomainChange }: HeroSectionProps) {
+export function HeroSection({
+    email,
+    isLoading,
+    onRefresh,
+    createdAt,
+    domains,
+    selectedDomain,
+    onDomainChange,
+    isMobile = false
+}: HeroSectionProps) {
     const [copied, setCopied] = useState(false)
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
     const [isQRModalOpen, setIsQRModalOpen] = useState(false)
@@ -50,7 +60,7 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
     return (
         <section className="relative w-full max-w-4xl mx-auto px-4 pt-32 pb-12 text-center z-10">
             <motion.div
-                initial={{
+                initial={isMobile ? { opacity: 1, y: 0 } : {
                     opacity: 0,
                     y: 20,
                     scale: 0.95
@@ -60,7 +70,7 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                     y: 0,
                     scale: 1
                 }}
-                transition={{
+                transition={isMobile ? { duration: 0 } : {
                     duration: 0.5, // Faster entry
                     type: "tween", // Predictable entry for LCP
                     ease: "easeOut"

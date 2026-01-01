@@ -111,7 +111,7 @@ export function LandingPage() {
 
             {/* Content */}
             <div className="relative z-10 flex flex-col min-h-screen">
-                {!isModalOpen && <Navbar />}
+                {!isModalOpen && <Navbar isMobile={isMobile} />}
 
                 <main className="flex-1 flex flex-col items-center">
                     <HeroSection
@@ -125,19 +125,20 @@ export function LandingPage() {
                             setSelectedDomain(d);
                             handleRefresh(d);
                         }}
+                        isMobile={isMobile}
                     />
                     <Suspense fallback={<LoadingSkeleton />}>
-                        <InboxSection key={email} onModalToggle={setIsModalOpen} />
+                        <InboxSection key={email} onModalToggle={setIsModalOpen} isMobile={isMobile} />
                     </Suspense>
 
                     <Suspense fallback={<div className="h-32" />}>
                         <motion.div
-                            initial={{ opacity: 0, y: 30 }}
+                            initial={isMobile ? { opacity: 0 } : { opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
+                            transition={{ duration: isMobile ? 0.3 : 0.8, delay: isMobile ? 0 : 0.2 }}
                         >
-                            <FeaturesGrid />
+                            <FeaturesGrid isMobile={isMobile} />
                         </motion.div>
                     </Suspense>
                 </main>

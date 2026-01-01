@@ -34,9 +34,10 @@ interface UIMail {
 
 interface InboxSectionProps {
     onModalToggle?: (isOpen: boolean) => void
+    isMobile?: boolean
 }
 
-export function InboxSection({ onModalToggle }: InboxSectionProps) {
+export function InboxSection({ onModalToggle, isMobile = false }: InboxSectionProps) {
     const [activeTab, setActiveTab] = useState('inbox') // inbox, outbox, compose, account
     const [emails, setEmails] = useState<UIMail[]>([])
     const [sentEmails, setSentEmails] = useState<any[]>([])
@@ -192,9 +193,9 @@ export function InboxSection({ onModalToggle }: InboxSectionProps) {
     return (
         <section className="w-full max-w-6xl mx-auto px-4 pb-20 relative">
             <motion.div
-                initial={{ opacity: 0, y: 40 }}
+                initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+                transition={isMobile ? { duration: 0 } : { duration: 0.8, delay: 0.2, ease: 'easeOut' }}
                 className="flex flex-col md:flex-row min-h-[600px] bg-[#1a1a1a]/80 md:bg-[#1a1a1a]/60 backdrop-blur-sm md:backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl transform-gpu"
             >
                 {/* Sidebar */}
@@ -256,7 +257,7 @@ export function InboxSection({ onModalToggle }: InboxSectionProps) {
                                 className="p-2 h-full"
                             >
                                 {activeTab === 'inbox' && (
-                                    <InboxList emails={emails} isLoading={isLoading} onSelect={setSelectedEmail} />
+                                    <InboxList emails={emails} isLoading={isLoading} onSelect={setSelectedEmail} isMobile={isMobile} />
                                 )}
                                 {activeTab === 'outbox' && (
                                     <OutboxList emails={sentEmails} isLoading={isLoading} />
@@ -414,7 +415,7 @@ export function InboxSection({ onModalToggle }: InboxSectionProps) {
     )
 }
 
-function InboxList({ emails, isLoading, onSelect }: any) {
+function InboxList({ emails, isLoading, onSelect, isMobile }: any) {
     if (isLoading && emails.length === 0) return <div className="p-4 text-center text-muted">Loading...</div>
     if (emails.length === 0) return <EmptyState />
 
@@ -423,9 +424,9 @@ function InboxList({ emails, isLoading, onSelect }: any) {
             {emails.map((email: any, index: number) => (
                 <motion.div
                     key={email.id}
-                    initial={{ opacity: 0, x: -10 }}
+                    initial={isMobile ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
+                    transition={isMobile ? { duration: 0 } : { delay: index * 0.05 }}
                     onClick={() => onSelect(email)}
                     className="group flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 hover:bg-white/[0.04] border-l-2 border-transparent hover:border-primary"
                 >

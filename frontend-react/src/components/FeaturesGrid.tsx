@@ -28,14 +28,14 @@ const features = [
     },
 ]
 
-export function FeaturesGrid() {
+export function FeaturesGrid({ isMobile = false }: { isMobile?: boolean }) {
     return (
         <section className="w-full max-w-6xl mx-auto px-4 pb-24">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {features.map((feature, index) => (
                     <motion.div
                         key={index}
-                        initial={{
+                        initial={isMobile ? { opacity: 1, y: 0 } : {
                             opacity: 0,
                             y: 20,
                         }}
@@ -46,14 +46,14 @@ export function FeaturesGrid() {
                         viewport={{
                             once: true,
                         }}
-                        transition={{
+                        transition={isMobile ? { duration: 0 } : {
                             delay: index * 0.1,
                             type: "spring",
                             stiffness: 100,
                             damping: 15,
                             duration: 0.8,
                         }}
-                        whileHover={{
+                        whileHover={isMobile ? {} : {
                             y: -5,
                         }}
                         className="p-6 rounded-xl bg-[#1a1a1a] border border-white/5 hover:border-white/10 transition-colors group"

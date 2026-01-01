@@ -2,7 +2,7 @@ import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
 import { useState } from 'react'
 import { Github, Globe, Info, Code2 } from 'lucide-react'
 
-export function Navbar() {
+export function Navbar({ isMobile = false }: { isMobile?: boolean }) {
     const { scrollY } = useScroll()
     const [hidden, setHidden] = useState(false)
 
@@ -23,8 +23,8 @@ export function Navbar() {
                     hidden: { y: -100, opacity: 0 }
                 }}
                 animate={hidden ? "hidden" : "visible"}
-                initial="visible"
-                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                initial={isMobile ? "visible" : "visible"}
+                transition={isMobile ? { duration: 0 } : { duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                 className="pointer-events-auto max-w-5xl w-full mx-auto flex items-center justify-between p-2 bg-[#1a1a1a]/80 backdrop-blur-2xl border border-white/10 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
             >
                 {/* Left: Logo Section */}
