@@ -110,6 +110,16 @@ export function InboxSection({ onModalToggle, isMobile = false }: InboxSectionPr
         }
     }, [])
 
+    // Global Event Listener for manual refresh (from HeroSection)
+    useEffect(() => {
+        const handleForceRefresh = () => {
+            console.log("Manual refresh triggered!");
+            fetchMails();
+        }
+        window.addEventListener('force-refresh', handleForceRefresh);
+        return () => window.removeEventListener('force-refresh', handleForceRefresh);
+    }, [activeTab])
+
     const [isVisible, setIsVisible] = useState(!document.hidden)
 
     useEffect(() => {

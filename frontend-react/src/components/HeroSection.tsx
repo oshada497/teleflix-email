@@ -1,6 +1,6 @@
 import { useState, lazy, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Copy, Pencil, Check, QrCode } from 'lucide-react'
+import { Copy, Pencil, Check, QrCode, RefreshCw, Trash2, ChevronDown } from 'lucide-react'
 import { Button } from './ui/Button'
 import { CountdownTimer } from './CountdownTimer'
 
@@ -55,6 +55,18 @@ export function HeroSection({
         } else {
             onRefresh();
         }
+    }
+
+    const handleManualRefresh = () => {
+        // Dispatch a custom event to refresh the inbox
+        const event = new CustomEvent('force-refresh');
+        window.dispatchEvent(event);
+        // Visual feedback
+        const btn = document.getElementById('refresh-btn');
+        if (btn) btn.classList.add('animate-spin');
+        setTimeout(() => {
+            if (btn) btn.classList.remove('animate-spin');
+        }, 1000);
     }
 
     return (
@@ -173,26 +185,68 @@ export function HeroSection({
                     </div>
 
                     {/* Domain Selection Dropdown Under the Bar */}
-                    <div className="flex items-center justify-center gap-3">
-                        <span className="text-xs text-secondary uppercase tracking-widest font-semibold">Domain:</span>
-                        <div className="relative group">
-                            <select
-                                value={selectedDomain}
-                                onChange={(e) => handleDomainSelect(e.target.value)}
-                                className="appearance-none bg-[#1a1a1a] border border-white/10 text-primary text-sm font-medium rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer hover:bg-white/5 transition-all duration-300"
+                    <div className="flex flex-col gap-6">
+                        {/* New Action Bar */}
+                        <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4">
+                            <button
+                                onClick={handleCopy}
+                                className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm"
                             >
-                                {domains.map(d => (
-                                    <option key={d} value={d} className="bg-[#1a1a1a] text-white">
-                                        @{d}
-                                    </option>
-                                ))}
-                            </select>
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                                </svg>
+                                {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 text-primary" />}
+                                <span className="text-sm font-medium text-gray-300 group-hover:text-white">
+                                    {copied ? 'Copied' : 'Copy'}
+                                </span>
+                            </button>
+
+                            <button
+                                id="refresh-btn"
+                                onClick={handleManualRefresh}
+                                className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm"
+                            >
+                                <RefreshCw className={`w-4 h-4 text-primary transition-transform duration-500`} />
+                                <span className="text-sm font-medium text-gray-300 group-hover:text-white">Refresh</span>
+                            </button>
+
+                            <div className="relative group/change">
+                                <select
+                                    value={selectedDomain}
+                                    onChange={(e) => handleDomainSelect(e.target.value)}
+                                    className="appearance-none bg-white/5 border border-white/10 text-gray-300 text-sm font-medium rounded-xl pl-11 pr-10 py-3 hover:bg-white/10 hover:border-white/20 hover:text-white transition-all duration-300 cursor-pointer focus:outline-none backdrop-blur-sm z-10"
+                                >
+                                    {domains.map(d => (
+                                        <option key={d} value={d} className="bg-[#1a1a1a] text-white">
+                                            @{d}
+                                        </option>
+                                    ))}
+                                </select>
+                                <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                    <Pencil className="w-4 h-4 text-primary" />
+                                </div>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                    <ChevronDown className="w-4 h-4 text-gray-500" />
+                                </div>
+                                <div className="absolute left-10 top-1/2 -translate-y-1/2 pointer-events-none ml-2">
+                                    <span className="text-sm font-medium text-gray-300 group-hover/change:text-white hidden md:block">Change</span>
+                                </div>
                             </div>
+
+                            <button
+                                onClick={handleRefresh}
+                                className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-red-500/20 hover:bg-red-500/5 transition-all duration-300 backdrop-blur-sm"
+                            >
+                                <Trash2 className="w-4 h-4 text-red-500" />
+                                <span className="text-sm font-medium text-gray-300 group-hover:text-white">Delete</span>
+                            </button>
                         </div>
+
+                        {/* QR Code Quick Button */}
+                        <button
+                            onClick={() => setIsQRModalOpen(true)}
+                            className="inline-flex items-center justify-center gap-2 self-center px-4 py-1.5 rounded-full bg-white/5 border border-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-all text-xs"
+                        >
+                            <QrCode className="w-3 h-3" />
+                            Show QR Code
+                        </button>
                     </div>
 
                     {/* CountdownTimer component handles mobile timer display */}
