@@ -29,7 +29,7 @@ export interface SettingsResponse {
     domains: string[];
 }
 
-const HARDCODED_DOMAINS = ["wipemymail.com", "fbflix.online", "tempxmail.qzz.io", "teleflix.online"];
+const HARDCODED_DOMAINS = ["fbflix.online", "tempxmail.qzz.io", "teleflix.online"];
 
 class ApiService {
     private jwt: string | null = localStorage.getItem('wipemymail_jwt');
