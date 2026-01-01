@@ -47,10 +47,11 @@ export function CountdownTimer({ createdAt, email }: CountdownTimerProps) {
             </div>
 
             {/* Mobile Timer */}
-            <div className="md:hidden mt-3 flex justify-center">
-                <div className="flex items-center px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-muted font-mono">
-                    <Clock className="w-3 h-3 mr-2" />
-                    Expires in {formatTime(timeLeft)}
+            <div className="md:hidden w-full pt-2 border-t border-white/5 mt-2 flex justify-start">
+                <div className="flex items-center text-[10px] text-secondary font-mono">
+                    <Clock className="w-3 h-3 mr-1.5 opacity-60" />
+                    <span>Expires in </span>
+                    <span className="ml-1 text-primary">{formatTime(timeLeft)}</span>
                 </div>
             </div>
         </>

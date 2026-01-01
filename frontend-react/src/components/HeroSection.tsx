@@ -96,23 +96,25 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                             className="relative flex flex-col md:flex-row items-center gap-3 p-2 bg-[#1a1a1a]/80 backdrop-blur-md md:backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl transform-gpu"
                         >
                             {/* Email Display */}
-                            <div className="flex-1 w-full flex items-center min-w-0 bg-white/5 rounded-lg px-4 py-3 border border-white/5">
-                                <motion.div
-                                    className={`h-2 w-2 rounded-full mr-3 shrink-0 ${isLoading ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'}`}
-                                ></motion.div>
-                                <AnimatePresence mode="wait">
-                                    <motion.input
-                                        key={email}
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        transition={{ duration: 0.2 }}
-                                        type="text"
-                                        readOnly
-                                        value={email}
-                                        className="bg-transparent border-none text-white font-mono text-base md:text-lg focus:ring-0 placeholder-gray-500 w-full p-0"
-                                    />
-                                </AnimatePresence>
+                            <div className="flex-1 w-full flex flex-col md:flex-row items-center min-w-0 bg-white/5 rounded-lg px-4 py-3 md:py-3 border border-white/5">
+                                <div className="flex items-center w-full md:w-auto">
+                                    <motion.div
+                                        className={`h-2 w-2 rounded-full mr-3 shrink-0 ${isLoading ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'}`}
+                                    ></motion.div>
+                                    <AnimatePresence mode="wait">
+                                        <motion.input
+                                            key={email}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -10 }}
+                                            transition={{ duration: 0.2 }}
+                                            type="text"
+                                            readOnly
+                                            value={email}
+                                            className="bg-transparent border-none text-white font-mono text-base md:text-lg focus:ring-0 placeholder-gray-500 w-full p-0"
+                                        />
+                                    </AnimatePresence>
+                                </div>
 
                                 <CountdownTimer createdAt={createdAt} email={email} />
                             </div>
