@@ -8,6 +8,7 @@ import { api } from '../services/api'
 const InboxSection = lazy(() => import('../components/InboxSection').then(m => ({ default: m.InboxSection })))
 const FeaturesGrid = lazy(() => import('../components/FeaturesGrid').then(m => ({ default: m.FeaturesGrid })))
 const FAQSection = lazy(() => import('../components/FAQSection').then(m => ({ default: m.FAQSection })))
+const ArticlesSection = lazy(() => import('../components/ArticlesSection').then(m => ({ default: m.ArticlesSection })))
 
 const LoadingSkeleton = () => (
     <div className="w-full max-w-4xl mx-auto p-8 animate-pulse">
@@ -141,6 +142,10 @@ export function LandingPage() {
                         >
                             <FeaturesGrid isMobile={isMobile} />
                         </motion.div>
+                    </Suspense>
+
+                    <Suspense fallback={<div className="h-32" />}>
+                        <ArticlesSection />
                     </Suspense>
 
                     <Suspense fallback={<div className="h-32" />}>
