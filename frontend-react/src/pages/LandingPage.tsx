@@ -16,6 +16,8 @@ const LoadingSkeleton = () => (
     </div>
 )
 
+import { StructuredData } from '../components/SEO/StructuredData'
+
 export function LandingPage() {
     const [email, setEmail] = useState<string | null>(null);
     const [createdAt, setCreatedAt] = useState<number | null>(null);
@@ -72,96 +74,99 @@ export function LandingPage() {
     }
 
     return (
-        <div className="min-h-screen w-full bg-background text-white selection:bg-primary/30 overflow-x-hidden">
-            {/* Background Gradients */}
-            <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-                {!isMobile && (
-                    <>
-                        <motion.div
-                            animate={{
-                                x: [0, 50, 0],
-                                y: [0, -30, 0],
+        <>
+            <StructuredData />
+            <div className="min-h-screen w-full bg-background text-white selection:bg-primary/30 overflow-x-hidden">
+                {/* Background Gradients */}
+                <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+                    {!isMobile && (
+                        <>
+                            <motion.div
+                                animate={{
+                                    x: [0, 50, 0],
+                                    y: [0, -30, 0],
+                                }}
+                                transition={{
+                                    duration: 20,
+                                    repeat: Infinity,
+                                    ease: "linear"
+                                }}
+                                className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/10 blur-[120px] rounded-full opacity-50 will-change-transform transform-gpu"
+                            ></motion.div>
+                            <motion.div
+                                animate={{
+                                    x: [0, -40, 0],
+                                    y: [0, 40, 0],
+                                }}
+                                transition={{
+                                    duration: 25,
+                                    repeat: Infinity,
+                                    ease: "linear"
+                                }}
+                                className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[600px] bg-purple-900/10 blur-[100px] rounded-full opacity-30 will-change-transform transform-gpu"
+                            ></motion.div>
+                        </>
+                    )}
+                    {isMobile && (
+                        <>
+                            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[400px] h-[300px] bg-primary/10 blur-[40px] rounded-full opacity-40 transform-gpu"></div>
+                            <div className="absolute bottom-[-10%] right-[-10%] w-[300px] h-[300px] bg-purple-900/10 blur-[40px] rounded-full opacity-20 transform-gpu"></div>
+                        </>
+                    )}
+                </div>
+
+                {/* Content */}
+                <div className="relative z-10 flex flex-col min-h-screen">
+                    {!isModalOpen && <Navbar isMobile={isMobile} />}
+
+                    <main className="flex-1 flex flex-col items-center">
+                        <HeroSection
+                            email={email || 'Generating...'}
+                            isLoading={isLoading}
+                            onRefresh={handleRefresh}
+                            createdAt={createdAt}
+                            domains={domains}
+                            selectedDomain={selectedDomain}
+                            onDomainChange={(d) => {
+                                setSelectedDomain(d);
+                                handleRefresh(d);
                             }}
-                            transition={{
-                                duration: 20,
-                                repeat: Infinity,
-                                ease: "linear"
-                            }}
-                            className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/10 blur-[120px] rounded-full opacity-50 will-change-transform transform-gpu"
-                        ></motion.div>
-                        <motion.div
-                            animate={{
-                                x: [0, -40, 0],
-                                y: [0, 40, 0],
-                            }}
-                            transition={{
-                                duration: 25,
-                                repeat: Infinity,
-                                ease: "linear"
-                            }}
-                            className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[600px] bg-purple-900/10 blur-[100px] rounded-full opacity-30 will-change-transform transform-gpu"
-                        ></motion.div>
-                    </>
-                )}
-                {isMobile && (
-                    <>
-                        <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[400px] h-[300px] bg-primary/10 blur-[40px] rounded-full opacity-40 transform-gpu"></div>
-                        <div className="absolute bottom-[-10%] right-[-10%] w-[300px] h-[300px] bg-purple-900/10 blur-[40px] rounded-full opacity-20 transform-gpu"></div>
-                    </>
-                )}
+                            isMobile={isMobile}
+                        />
+                        <Suspense fallback={<LoadingSkeleton />}>
+                            <InboxSection key={email} onModalToggle={setIsModalOpen} isMobile={isMobile} />
+                        </Suspense>
+
+                        <Suspense fallback={<div className="h-32" />}>
+                            <motion.div
+                                initial={isMobile ? { opacity: 0 } : { opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: isMobile ? 0.3 : 0.8, delay: isMobile ? 0 : 0.2 }}
+                            >
+                                <FeaturesGrid isMobile={isMobile} />
+                            </motion.div>
+                        </Suspense>
+
+                        <Suspense fallback={<div className="h-32" />}>
+                            <ArticlesSection />
+                        </Suspense>
+
+                        <Suspense fallback={<div className="h-32" />}>
+                            <FAQSection />
+                        </Suspense>
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="border-t border-white/5 py-12 bg-[#0f0f0f]">
+                        <div className="max-w-7xl mx-auto px-4 text-center">
+                            <p className="text-gray-500 text-sm">
+                                &copy; {new Date().getFullYear()} SwiftMail. Built for privacy.
+                            </p>
+                        </div>
+                    </footer>
+                </div>
             </div>
-
-            {/* Content */}
-            <div className="relative z-10 flex flex-col min-h-screen">
-                {!isModalOpen && <Navbar isMobile={isMobile} />}
-
-                <main className="flex-1 flex flex-col items-center">
-                    <HeroSection
-                        email={email || 'Generating...'}
-                        isLoading={isLoading}
-                        onRefresh={handleRefresh}
-                        createdAt={createdAt}
-                        domains={domains}
-                        selectedDomain={selectedDomain}
-                        onDomainChange={(d) => {
-                            setSelectedDomain(d);
-                            handleRefresh(d);
-                        }}
-                        isMobile={isMobile}
-                    />
-                    <Suspense fallback={<LoadingSkeleton />}>
-                        <InboxSection key={email} onModalToggle={setIsModalOpen} isMobile={isMobile} />
-                    </Suspense>
-
-                    <Suspense fallback={<div className="h-32" />}>
-                        <motion.div
-                            initial={isMobile ? { opacity: 0 } : { opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: isMobile ? 0.3 : 0.8, delay: isMobile ? 0 : 0.2 }}
-                        >
-                            <FeaturesGrid isMobile={isMobile} />
-                        </motion.div>
-                    </Suspense>
-
-                    <Suspense fallback={<div className="h-32" />}>
-                        <ArticlesSection />
-                    </Suspense>
-
-                    <Suspense fallback={<div className="h-32" />}>
-                        <FAQSection />
-                    </Suspense>
-                </main>
-
-                {/* Footer */}
-                <footer className="border-t border-white/5 py-12 bg-[#0f0f0f]">
-                    <div className="max-w-7xl mx-auto px-4 text-center">
-                        <p className="text-gray-500 text-sm">
-                            &copy; {new Date().getFullYear()} SwiftMail. Built for privacy.
-                        </p>
-                    </div>
-                </footer>
-            </div>
-        </div>
+        </>
     )
 }

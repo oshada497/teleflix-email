@@ -103,7 +103,7 @@ export function ArticlesSection() {
                         <div className="relative aspect-[16/10] overflow-hidden">
                             <img
                                 src={article.image}
-                                alt={article.title}
+                                alt={`Feature image for: ${article.title}`}
                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
@@ -137,7 +137,7 @@ export function ArticlesSection() {
                             </p>
 
                             <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
-                                <span className="text-primary text-sm font-semibold group-hover:underline">Read Guide</span>
+                                <a href="#" className="text-primary text-sm font-semibold hover:underline">Read Guide</a>
                                 <ChevronRight className="w-4 h-4 text-gray-600 group-hover:text-primary transition-all group-hover:translate-x-1" />
                             </div>
                         </div>
