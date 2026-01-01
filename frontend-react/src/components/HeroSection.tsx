@@ -61,11 +61,11 @@ export function HeroSection({
         // Dispatch a custom event to refresh the inbox
         const event = new CustomEvent('force-refresh');
         window.dispatchEvent(event);
-        // Visual feedback
-        const btn = document.getElementById('refresh-btn');
-        if (btn) btn.classList.add('animate-spin');
+        // Visual feedback - Target icon only
+        const icon = document.getElementById('refresh-icon');
+        if (icon) icon.classList.add('animate-spin');
         setTimeout(() => {
-            if (btn) btn.classList.remove('animate-spin');
+            if (icon) icon.classList.remove('animate-spin');
         }, 1000);
     }
 
@@ -203,7 +203,7 @@ export function HeroSection({
                                 onClick={handleManualRefresh}
                                 className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm"
                             >
-                                <RefreshCw className={`w-4 h-4 text-primary transition-transform duration-500`} />
+                                <RefreshCw id="refresh-icon" className="w-4 h-4 text-primary transition-transform duration-500" />
                                 <span className="text-sm font-medium text-gray-300 group-hover:text-white">Refresh</span>
                             </button>
 
@@ -211,7 +211,7 @@ export function HeroSection({
                                 <select
                                     value={selectedDomain}
                                     onChange={(e) => handleDomainSelect(e.target.value)}
-                                    className="appearance-none bg-white/5 border border-white/10 text-gray-300 text-sm font-medium rounded-xl pl-11 pr-10 py-3 hover:bg-white/10 hover:border-white/20 hover:text-white transition-all duration-300 cursor-pointer focus:outline-none backdrop-blur-sm z-10"
+                                    className="appearance-none bg-white/5 border border-white/10 text-gray-300 text-sm font-medium rounded-xl pl-12 pr-10 py-3 hover:bg-white/10 hover:border-white/20 hover:text-white transition-all duration-300 cursor-pointer focus:outline-none backdrop-blur-sm z-10"
                                 >
                                     {domains.map(d => (
                                         <option key={d} value={d} className="bg-[#1a1a1a] text-white">
@@ -224,9 +224,6 @@ export function HeroSection({
                                 </div>
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                                     <ChevronDown className="w-4 h-4 text-gray-500" />
-                                </div>
-                                <div className="absolute left-10 top-1/2 -translate-y-1/2 pointer-events-none ml-2">
-                                    <span className="text-sm font-medium text-gray-300 group-hover/change:text-white hidden md:block">Change</span>
                                 </div>
                             </div>
 
