@@ -171,14 +171,16 @@ export function HeroSection({
                 {/* Domain Selection Dropdown Under the Bar */}
                 <div className="flex flex-col gap-6">
                     {/* Optimized Mobile Grid / Desktop Flex Bar */}
-                    <div className="grid grid-cols-2 md:flex md:flex-wrap items-center justify-center gap-3 md:gap-4">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 items-center justify-center gap-2 md:gap-3">
                         <button
                             onClick={handleCopy}
                             aria-label="Copy email address"
-                            className="group flex items-center justify-center gap-2 px-4 md:px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm"
+                            className="group flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm"
                         >
-                            {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 text-primary" />}
-                            <span className="text-sm font-medium text-gray-300 group-hover:text-white">
+                            <div className="w-4 h-4 flex items-center justify-center shrink-0">
+                                {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 text-primary" />}
+                            </div>
+                            <span className="text-sm font-medium text-gray-300 group-hover:text-white w-12 text-left">
                                 {copied ? 'Copied' : 'Copy'}
                             </span>
                         </button>
@@ -186,13 +188,13 @@ export function HeroSection({
                         <button
                             onClick={handleManualRefresh}
                             aria-label="Refresh inbox"
-                            className="group flex items-center justify-center gap-2 px-4 md:px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm"
+                            className="group flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm"
                         >
-                            <RefreshCw className={`w-4 h-4 text-primary transition-all duration-500 ${isRefreshing ? 'animate-spin' : ''}`} />
+                            <RefreshCw className={`w-4 h-4 text-primary transition-all duration-500 shrink-0 ${isRefreshing ? 'animate-spin' : ''}`} />
                             <span className="text-sm font-medium text-gray-300 group-hover:text-white">Refresh</span>
                         </button>
 
-                        <div className="relative group/change col-span-2 md:col-span-1">
+                        <div className="relative group/change col-span-2 lg:col-span-1">
                             <select
                                 value={selectedDomain}
                                 onChange={(e) => handleDomainSelect(e.target.value)}
@@ -216,9 +218,9 @@ export function HeroSection({
                         <button
                             onClick={handleRefresh}
                             aria-label="Delete current email address and generate new one"
-                            className="group flex items-center justify-center gap-2 px-4 md:px-6 py-3 rounded-xl bg-red-500/5 border border-red-500/10 hover:bg-red-500/10 hover:border-red-500/20 transition-all duration-300 backdrop-blur-sm col-span-2 md:col-span-1"
+                            className="group flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-500/5 border border-red-500/10 hover:bg-red-500/10 hover:border-red-500/20 transition-all duration-300 backdrop-blur-sm col-span-2 lg:col-span-1"
                         >
-                            <Trash2 className="w-4 h-4 text-red-500" />
+                            <Trash2 className="w-4 h-4 text-red-500 shrink-0" />
                             <span className="text-sm font-medium text-gray-300 group-hover:text-white">New Address</span>
                         </button>
                     </div>
