@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react'
+import { useState, useEffect, memo, useTransition } from 'react'
 import DOMPurify from 'dompurify'
 import { io } from 'socket.io-client'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -43,6 +43,8 @@ export function InboxSection({ onModalToggle, isMobile = false }: InboxSectionPr
     const [sentEmails, setSentEmails] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [selectedEmail, setSelectedEmail] = useState<UIMail | null>(null)
+    const [sanitizedBody, setSanitizedBody] = useState<string | null>(null)
+    const [isPending, startTransition] = useTransition()
     const [autoRefresh, setAutoRefresh] = useState(true)
 
     // Compose State
@@ -138,6 +140,33 @@ export function InboxSection({ onModalToggle, isMobile = false }: InboxSectionPr
             onModalToggle(!!selectedEmail || deleteConfirmOpen)
         }
     }, [selectedEmail, deleteConfirmOpen, onModalToggle])
+
+    const handleSelectEmail = (mail: UIMail) => {
+        startTransition(() => {
+            setSelectedEmail(mail);
+            if (mail.bodyHtml) {
+                const sanitized = DOMPurify.sanitize(
+                    mail.bodyHtml.replace(/<a\s+(?![^>]*target=)/gi, '<a target="_blank" rel="noopener noreferrer" '),
+                    {
+                        ADD_ATTR: ['target'],
+                        ALLOWED_TAGS: [
+                            'a', 'b', 'i', 'u', 'strong', 'em', 'p', 'br', 'div', 'span',
+                            'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                            'table', 'thead', 'tbody', 'tr', 'th', 'td', 'img', 'hr',
+                            'font', 'center', 'blockquote', 'pre', 'code'
+                        ],
+                        ALLOWED_ATTR: [
+                            'href', 'src', 'alt', 'title', 'style', 'width', 'height', 'align',
+                            'border', 'cellpadding', 'cellspacing', 'bgcolor', 'color', 'face', 'size'
+                        ]
+                    }
+                );
+                setSanitizedBody(sanitized);
+            } else {
+                setSanitizedBody(null);
+            }
+        });
+    }
 
     useEffect(() => {
         if (!isVisible) return;
@@ -267,7 +296,7 @@ export function InboxSection({ onModalToggle, isMobile = false }: InboxSectionPr
                                 className="p-2 h-full"
                             >
                                 {activeTab === 'inbox' && (
-                                    <InboxList emails={emails} isLoading={isLoading} onSelect={setSelectedEmail} isMobile={isMobile} />
+                                    <InboxList emails={emails} isLoading={isLoading || isPending} onSelect={handleSelectEmail} isMobile={isMobile} />
                                 )}
                                 {activeTab === 'outbox' && (
                                     <OutboxList emails={sentEmails} isLoading={isLoading} />
@@ -318,7 +347,7 @@ export function InboxSection({ onModalToggle, isMobile = false }: InboxSectionPr
             {/* Email View Modal */}
             <AnimatePresence>
                 {selectedEmail && (
-                    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md" onClick={() => setSelectedEmail(null)}>
+                    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md" onClick={() => { setSelectedEmail(null); setSanitizedBody(null); }}>
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -335,7 +364,7 @@ export function InboxSection({ onModalToggle, isMobile = false }: InboxSectionPr
                                     <button onClick={() => handleDownload(selectedEmail)} className="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Download">
                                         <Download className="w-4 h-4" />
                                     </button>
-                                    <button onClick={() => setSelectedEmail(null)} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                                    <button onClick={() => { setSelectedEmail(null); setSanitizedBody(null); }} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
                                         <X className="w-5 h-5" />
                                     </button>
                                 </div>
@@ -366,47 +395,36 @@ export function InboxSection({ onModalToggle, isMobile = false }: InboxSectionPr
                             )}
 
                             <div className="flex-1 overflow-y-auto p-6 bg-white min-h-[300px] text-gray-900 border-t border-gray-100">
-                                {selectedEmail.bodyHtml ? (
-                                    <div
-                                        dangerouslySetInnerHTML={{
-                                            __html: DOMPurify.sanitize(
-                                                selectedEmail.bodyHtml.replace(/<a\s+(?![^>]*target=)/gi, '<a target="_blank" rel="noopener noreferrer" '),
-                                                {
-                                                    ADD_ATTR: ['target'],
-                                                    ALLOWED_TAGS: [
-                                                        'a', 'b', 'i', 'u', 'strong', 'em', 'p', 'br', 'div', 'span',
-                                                        'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-                                                        'table', 'thead', 'tbody', 'tr', 'th', 'td', 'img', 'hr',
-                                                        'font', 'center', 'blockquote', 'pre', 'code'
-                                                    ],
-                                                    ALLOWED_ATTR: [
-                                                        'href', 'src', 'alt', 'title', 'style', 'width', 'height', 'align',
-                                                        'border', 'cellpadding', 'cellspacing', 'bgcolor', 'color', 'face', 'size'
-                                                    ]
-                                                }
-                                            )
-                                        }}
-                                        className="prose max-w-none text-gray-900 prose-a:text-blue-600 prose-a:underline break-words"
-                                    />
+                                {isPending ? (
+                                    <div className="flex items-center justify-center h-full text-gray-400">Loading content...</div>
                                 ) : (
-                                    <pre className="whitespace-pre-wrap font-sans text-gray-800 text-sm leading-relaxed break-all">
-                                        {selectedEmail.bodyText?.split(/(https?:\/\/[^\s]+)/g).map((part, i) => {
-                                            if (part.match(/https?:\/\/[^\s]+/)) {
-                                                return (
-                                                    <a
-                                                        key={i}
-                                                        href={part}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-blue-600 underline hover:text-blue-800"
-                                                    >
-                                                        {part}
-                                                    </a>
-                                                );
-                                            }
-                                            return part;
-                                        })}
-                                    </pre>
+                                    <>
+                                        {selectedEmail.bodyHtml ? (
+                                            <div
+                                                dangerouslySetInnerHTML={{ __html: sanitizedBody || '' }}
+                                                className="prose max-w-none text-gray-900 prose-a:text-blue-600 prose-a:underline break-words"
+                                            />
+                                        ) : (
+                                            <pre className="whitespace-pre-wrap font-sans text-gray-800 text-sm leading-relaxed break-all">
+                                                {selectedEmail.bodyText?.split(/(https?:\/\/[^\s]+)/g).map((part, i) => {
+                                                    if (part.match(/https?:\/\/[^\s]+/)) {
+                                                        return (
+                                                            <a
+                                                                key={i}
+                                                                href={part}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-blue-600 underline hover:text-blue-800"
+                                                            >
+                                                                {part}
+                                                            </a>
+                                                        );
+                                                    }
+                                                    return part;
+                                                })}
+                                            </pre>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         </motion.div>
