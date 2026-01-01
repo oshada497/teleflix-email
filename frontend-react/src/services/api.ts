@@ -1,6 +1,6 @@
 import PostalMime from 'postal-mime';
 
-const API_BASE = 'https://api.wipemymail.com'; // Point to Worker API
+const API_BASE = 'https://temp-email-api.teleflix.online'; // Point to working Worker API until new domain is ready
 
 export interface Mail {
     id: number;
