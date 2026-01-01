@@ -247,10 +247,10 @@ export function InboxSection({ onModalToggle, isMobile = false }: InboxSectionPr
                             )}
                             <button
                                 onClick={fetchMails}
-                                className={`p-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300 ${isLoading ? 'animate-spin' : ''}`}
+                                className="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300"
                                 title="Refresh"
                             >
-                                <RefreshCcw className="w-5 h-5" />
+                                <RefreshCcw className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
                             </button>
                         </div>
                     </div>

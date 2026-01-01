@@ -32,6 +32,7 @@ export function HeroSection({
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
     const [isQRModalOpen, setIsQRModalOpen] = useState(false)
     const [pendingDomain, setPendingDomain] = useState<string | null>(null)
+    const [isRefreshing, setIsRefreshing] = useState(false)
     const handleCopy = async () => {
         await navigator.clipboard.writeText(email)
         setCopied(true)
@@ -61,12 +62,10 @@ export function HeroSection({
         // Dispatch a custom event to refresh the inbox
         const event = new CustomEvent('force-refresh');
         window.dispatchEvent(event);
-        // Visual feedback - Target icon only
-        const icon = document.getElementById('refresh-icon');
-        if (icon) icon.classList.add('animate-spin');
-        setTimeout(() => {
-            if (icon) icon.classList.remove('animate-spin');
-        }, 1000);
+
+        // Visual feedback
+        setIsRefreshing(true);
+        setTimeout(() => setIsRefreshing(false), 1000);
     }
 
     return (
@@ -199,11 +198,10 @@ export function HeroSection({
                             </button>
 
                             <button
-                                id="refresh-btn"
                                 onClick={handleManualRefresh}
                                 className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm"
                             >
-                                <RefreshCw id="refresh-icon" className="w-4 h-4 text-primary transition-transform duration-500" />
+                                <RefreshCw className={`w-4 h-4 text-primary transition-all duration-500 ${isRefreshing ? 'animate-spin' : ''}`} />
                                 <span className="text-sm font-medium text-gray-300 group-hover:text-white">Refresh</span>
                             </button>
 
