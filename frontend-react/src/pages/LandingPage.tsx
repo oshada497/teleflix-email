@@ -125,7 +125,6 @@ export function LandingPage() {
                             setSelectedDomain(d);
                             handleRefresh(d);
                         }}
-                        onModalToggle={setIsModalOpen}
                     />
                     <Suspense fallback={<LoadingSkeleton />}>
                         <InboxSection key={email} onModalToggle={setIsModalOpen} />

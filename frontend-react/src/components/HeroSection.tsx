@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Copy, Pencil, Check, QrCode } from 'lucide-react'
 import { Button } from './ui/Button'
-import { ConfirmModal } from './ui/ConfirmModal'
-import { QRCodeModal } from './ui/QRCodeModal'
 import { CountdownTimer } from './CountdownTimer'
+
+const QRCodeModal = lazy(() => import('./ui/QRCodeModal').then(m => ({ default: m.QRCodeModal })))
+const ConfirmModal = lazy(() => import('./ui/ConfirmModal').then(m => ({ default: m.ConfirmModal })))
 
 interface HeroSectionProps {
     email: string
@@ -14,21 +15,13 @@ interface HeroSectionProps {
     domains: string[]
     selectedDomain: string
     onDomainChange: (domain: string) => void
-    onModalToggle?: (isOpen: boolean) => void
 }
 
-export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, selectedDomain, onDomainChange, onModalToggle }: HeroSectionProps) {
+export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, selectedDomain, onDomainChange }: HeroSectionProps) {
     const [copied, setCopied] = useState(false)
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
     const [isQRModalOpen, setIsQRModalOpen] = useState(false)
     const [pendingDomain, setPendingDomain] = useState<string | null>(null)
-
-    useEffect(() => {
-        if (onModalToggle) {
-            onModalToggle(isConfirmOpen)
-        }
-    }, [isConfirmOpen, onModalToggle])
-
     const handleCopy = async () => {
         await navigator.clipboard.writeText(email)
         setCopied(true)
@@ -68,9 +61,9 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                     scale: 1
                 }}
                 transition={{
-                    duration: 0.8,
-                    type: "spring",
-                    bounce: 0.3
+                    duration: 0.5, // Faster entry
+                    type: "tween", // Predictable entry for LCP
+                    ease: "easeOut"
                 }}
             >
                 <div className="inline-flex items-center justify-center px-3 py-1 mb-6 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium tracking-wide uppercase">
@@ -194,26 +187,30 @@ export function HeroSection({ email, isLoading, onRefresh, createdAt, domains, s
                 </div>
 
             </motion.div>
-            <QRCodeModal
-                email={email}
-                isOpen={isQRModalOpen}
-                onClose={() => setIsQRModalOpen(false)}
-            />
-            <ConfirmModal
-                isOpen={isConfirmOpen}
-                onClose={() => {
-                    setIsConfirmOpen(false);
-                    setPendingDomain(null);
-                }}
-                onConfirm={confirmRefresh}
-                title={pendingDomain ? "Change Domain?" : "Change Email Address?"}
-                message={
-                    pendingDomain
-                        ? `Are you sure you want to change your domain to @${pendingDomain}? Your current inbox will be permanently lost.`
-                        : "Are you sure you want to generate a new email address? All emails in your current inbox will be permanently lost."
-                }
-                confirmLabel={pendingDomain ? "Change Domain" : "Change Address"}
-            />
+            <Suspense fallback={null}>
+                <QRCodeModal
+                    email={email}
+                    isOpen={isQRModalOpen}
+                    onClose={() => setIsQRModalOpen(false)}
+                />
+            </Suspense>
+            <Suspense fallback={null}>
+                <ConfirmModal
+                    isOpen={isConfirmOpen}
+                    onClose={() => {
+                        setIsConfirmOpen(false);
+                        setPendingDomain(null);
+                    }}
+                    onConfirm={confirmRefresh}
+                    title={pendingDomain ? "Change Domain?" : "Change Email Address?"}
+                    message={
+                        pendingDomain
+                            ? `Are you sure you want to change your domain to @${pendingDomain}? Your current inbox will be permanently lost.`
+                            : "Are you sure you want to generate a new email address? All emails in your current inbox will be permanently lost."
+                    }
+                    confirmLabel={pendingDomain ? "Change Domain" : "Change Address"}
+                />
+            </Suspense>
         </section >
     )
 }
