@@ -97,7 +97,7 @@ export function ArticlesSection() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.5, delay: index * 0.1 }}
-                        className="group relative flex flex-col bg-white/[0.03] border border-white/[0.08] hover:border-primary/30 transition-all duration-500 rounded-3xl overflow-hidden backdrop-blur-sm"
+                        className="group relative flex flex-col bg-white/[0.03] border border-white/[0.08] hover:border-primary/30 transition-all duration-300 rounded-3xl overflow-hidden backdrop-blur-none md:backdrop-blur-sm"
                     >
                         {/* Image Container */}
                         <div className="relative aspect-[16/10] overflow-hidden">

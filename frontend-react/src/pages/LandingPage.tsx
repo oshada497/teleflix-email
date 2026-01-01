@@ -81,37 +81,12 @@ export function LandingPage() {
                 <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
                     {!isMobile && (
                         <>
-                            <motion.div
-                                animate={{
-                                    x: [0, 50, 0],
-                                    y: [0, -30, 0],
-                                }}
-                                transition={{
-                                    duration: 20,
-                                    repeat: Infinity,
-                                    ease: "linear"
-                                }}
-                                className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/10 blur-[120px] rounded-full opacity-50 will-change-transform transform-gpu"
-                            ></motion.div>
-                            <motion.div
-                                animate={{
-                                    x: [0, -40, 0],
-                                    y: [0, 40, 0],
-                                }}
-                                transition={{
-                                    duration: 25,
-                                    repeat: Infinity,
-                                    ease: "linear"
-                                }}
-                                className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[600px] bg-purple-900/10 blur-[100px] rounded-full opacity-30 will-change-transform transform-gpu"
-                            ></motion.div>
+                            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 blur-[80px] rounded-full opacity-40 transform-gpu" />
+                            <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[400px] bg-purple-900/5 blur-[80px] rounded-full opacity-20 transform-gpu" />
                         </>
                     )}
                     {isMobile && (
-                        <>
-                            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[400px] h-[300px] bg-primary/10 blur-[40px] rounded-full opacity-40 transform-gpu"></div>
-                            <div className="absolute bottom-[-10%] right-[-10%] w-[300px] h-[300px] bg-purple-900/10 blur-[40px] rounded-full opacity-20 transform-gpu"></div>
-                        </>
+                        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
                     )}
                 </div>
 
@@ -153,7 +128,7 @@ export function LandingPage() {
                         </Suspense>
 
                         <Suspense fallback={<div className="h-32" />}>
-                            <FAQSection />
+                            <FAQSection isMobile={isMobile} />
                         </Suspense>
                     </main>
 

@@ -25,7 +25,7 @@ export function Navbar({ isMobile = false }: { isMobile?: boolean }) {
                 animate={hidden ? "hidden" : "visible"}
                 initial={isMobile ? "visible" : "visible"}
                 transition={isMobile ? { duration: 0 } : { duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                className="pointer-events-auto max-w-6xl w-full mx-auto flex items-center justify-between p-2 bg-[#1a1a1a]/80 backdrop-blur-2xl border border-white/10 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
+                className="pointer-events-auto max-w-6xl w-full mx-auto flex items-center justify-between p-2 bg-[#1a1a1a]/90 backdrop-blur-md border border-white/10 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
             >
                 {/* Left: Logo Section */}
                 <div className="flex items-center gap-2 pl-4">

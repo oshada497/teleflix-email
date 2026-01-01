@@ -56,7 +56,7 @@ export function FeaturesGrid({ isMobile = false }: { isMobile?: boolean }) {
                         whileHover={isMobile ? {} : {
                             y: -5,
                         }}
-                        className="p-6 rounded-xl bg-[#1a1a1a] border border-white/5 hover:border-white/10 transition-colors group"
+                        className="p-6 rounded-xl bg-[#1a1a1a] border border-white/5 hover:border-white/10 transition-colors group transform-gpu"
                     >
                         <div className="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center mb-4 group-hover:bg-white/10 transition-colors">
                             {feature.icon}

@@ -72,7 +72,7 @@ const faqData: FAQItem[] = [
     }
 ];
 
-export function FAQSection() {
+export function FAQSection({ isMobile = false }: { isMobile?: boolean }) {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -98,13 +98,13 @@ export function FAQSection() {
                     {visibleFaqs.map((item, index) => (
                         <motion.div
                             key={index}
-                            layout
-                            initial={{ opacity: 0, y: 10 }}
+                            layout={!isMobile}
+                            initial={isMobile ? { opacity: 0 } : { opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+                            exit={isMobile ? { opacity: 0 } : { opacity: 0, y: -10 }}
                             transition={{
-                                duration: 0.4,
-                                delay: isExpanded && index >= 5 ? (index - 5) * 0.05 : 0,
+                                duration: isMobile ? 0.3 : 0.4,
+                                delay: !isMobile && isExpanded && index >= 5 ? (index - 5) * 0.05 : 0,
                                 ease: "easeOut"
                             }}
                             className="group"

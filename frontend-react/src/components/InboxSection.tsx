@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 import DOMPurify from 'dompurify'
 import { io } from 'socket.io-client'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -203,10 +203,10 @@ export function InboxSection({ onModalToggle, isMobile = false }: InboxSectionPr
     return (
         <section className="w-full max-w-6xl mx-auto px-4 pb-20 relative">
             <motion.div
-                initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+                initial={isMobile ? { opacity: 0 } : { opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={isMobile ? { duration: 0 } : { duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-                className="flex flex-col md:flex-row min-h-[600px] bg-[#1a1a1a]/80 md:bg-[#1a1a1a]/60 backdrop-blur-sm md:backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl transform-gpu"
+                transition={isMobile ? { duration: 0.3 } : { duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+                className="flex flex-col md:flex-row min-h-[600px] bg-[#1a1a1a]/95 md:bg-[#1a1a1a]/80 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden shadow-2xl transform-gpu"
             >
                 {/* Sidebar */}
                 <div className="w-full md:w-64 bg-[#151515]/80 border-b md:border-b-0 md:border-r border-white/5 p-4 flex flex-col">
@@ -425,6 +425,26 @@ export function InboxSection({ onModalToggle, isMobile = false }: InboxSectionPr
     )
 }
 
+const InboxItem = memo(({ email, index, onSelect, isMobile }: any) => (
+    <motion.div
+        key={email.id}
+        initial={isMobile ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={isMobile ? { duration: 0 } : { delay: index * 0.05 }}
+        onClick={() => onSelect(email)}
+        className="group flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 hover:bg-white/[0.04] border-l-2 border-transparent hover:border-primary"
+    >
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-xs font-medium text-white border border-white/10 shrink-0">
+            {email.sender[0]}
+        </div>
+        <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-12 gap-2 items-center">
+            <div className="col-span-3 truncate text-white font-medium">{email.sender}</div>
+            <div className="col-span-7 truncate text-gray-400">{email.subject}</div>
+            <div className="col-span-2 text-right text-xs text-gray-600 font-mono">{email.time}</div>
+        </div>
+    </motion.div>
+))
+
 function InboxList({ emails, isLoading, onSelect, isMobile }: any) {
     if (isLoading && emails.length === 0) return <div className="p-4 text-center text-muted">Loading...</div>
     if (emails.length === 0) return <EmptyState />
@@ -432,23 +452,7 @@ function InboxList({ emails, isLoading, onSelect, isMobile }: any) {
     return (
         <div className="space-y-1">
             {emails.map((email: any, index: number) => (
-                <motion.div
-                    key={email.id}
-                    initial={isMobile ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={isMobile ? { duration: 0 } : { delay: index * 0.05 }}
-                    onClick={() => onSelect(email)}
-                    className="group flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 hover:bg-white/[0.04] border-l-2 border-transparent hover:border-primary"
-                >
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-xs font-medium text-white border border-white/10 shrink-0">
-                        {email.sender[0]}
-                    </div>
-                    <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-12 gap-2 items-center">
-                        <div className="col-span-3 truncate text-white font-medium">{email.sender}</div>
-                        <div className="col-span-7 truncate text-gray-400">{email.subject}</div>
-                        <div className="col-span-2 text-right text-xs text-gray-600 font-mono">{email.time}</div>
-                    </div>
-                </motion.div>
+                <InboxItem key={email.id} email={email} index={index} onSelect={onSelect} isMobile={isMobile} />
             ))}
         </div>
     )
