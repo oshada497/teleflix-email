@@ -94,13 +94,15 @@ export function FAQSection() {
             </div>
 
             <div className="grid gap-4">
-                <AnimatePresence mode="popLayout">
+                <AnimatePresence mode="popLayout" initial={false}>
                     {visibleFaqs.map((item, index) => (
                         <motion.div
                             key={index}
+                            layout
                             initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
+                            whileInView={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95 }}
+                            viewport={{ once: true }}
                             transition={{ duration: 0.4, delay: isExpanded ? 0 : index * 0.1 }}
                             className="group"
                         >
