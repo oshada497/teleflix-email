@@ -74,6 +74,9 @@ const faqData: FAQItem[] = [
 
 export function FAQSection() {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const visibleFaqs = isExpanded ? faqData : faqData.slice(0, 5);
 
     return (
         <section className="w-full max-w-4xl mx-auto px-4 py-20 relative">
@@ -91,56 +94,68 @@ export function FAQSection() {
             </div>
 
             <div className="grid gap-4">
-                {faqData.map((item, index) => (
-                    <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                        className="group"
-                    >
-                        <button
-                            onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                            className={`w-full text-left p-5 md:p-6 rounded-2xl border transition-all duration-300 flex items-start gap-4 ${openIndex === index
-                                ? 'bg-white/10 border-white/20 shadow-xl'
-                                : 'bg-white/5 border-white/5 hover:bg-white/[0.08] hover:border-white/10'
-                                }`}
+                <AnimatePresence mode="popLayout">
+                    {visibleFaqs.map((item, index) => (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{ duration: 0.4, delay: isExpanded ? 0 : index * 0.1 }}
+                            className="group"
                         >
-                            <div className={`mt-1 p-2 rounded-lg transition-colors ${openIndex === index ? 'bg-primary/20 text-primary' : 'bg-white/5 text-gray-400'
-                                }`}>
-                                <HelpCircle className="w-4 h-4" />
-                            </div>
-
-                            <div className="flex-1">
-                                <div className="flex items-center justify-between gap-4">
-                                    <h3 className={`font-semibold text-lg transition-colors ${openIndex === index ? 'text-white' : 'text-gray-300 group-hover:text-white'
-                                        }`}>
-                                        {item.question}
-                                    </h3>
-                                    <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform duration-300 shrink-0 ${openIndex === index ? 'rotate-180 text-primary' : ''
-                                        }`} />
+                            <button
+                                onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                                className={`w-full text-left p-5 md:p-6 rounded-2xl border transition-all duration-300 flex items-start gap-4 ${openIndex === index
+                                    ? 'bg-white/10 border-white/20 shadow-xl'
+                                    : 'bg-white/5 border-white/5 hover:bg-white/[0.08] hover:border-white/10'
+                                    }`}
+                            >
+                                <div className={`mt-1 p-2 rounded-lg transition-colors ${openIndex === index ? 'bg-primary/20 text-primary' : 'bg-white/5 text-gray-400'
+                                    }`}>
+                                    <HelpCircle className="w-4 h-4" />
                                 </div>
 
-                                <AnimatePresence>
-                                    {openIndex === index && (
-                                        <motion.div
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: 'auto', opacity: 1 }}
-                                            exit={{ height: 0, opacity: 0 }}
-                                            transition={{ duration: 0.3, ease: "easeInOut" }}
-                                            className="overflow-hidden"
-                                        >
-                                            <div className="pt-4 text-gray-400 leading-relaxed text-base">
-                                                {item.answer}
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
-                        </button>
-                    </motion.div>
-                ))}
+                                <div className="flex-1">
+                                    <div className="flex items-center justify-between gap-4">
+                                        <h3 className={`font-semibold text-lg transition-colors ${openIndex === index ? 'text-white' : 'text-gray-300 group-hover:text-white'
+                                            }`}>
+                                            {item.question}
+                                        </h3>
+                                        <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform duration-300 shrink-0 ${openIndex === index ? 'rotate-180 text-primary' : ''
+                                            }`} />
+                                    </div>
+
+                                    <AnimatePresence>
+                                        {openIndex === index && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: 'auto', opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                                                className="overflow-hidden"
+                                            >
+                                                <div className="pt-4 text-gray-400 leading-relaxed text-base">
+                                                    {item.answer}
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                            </button>
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
+            </div>
+
+            <div className="mt-12 text-center">
+                <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all font-medium text-gray-300 hover:text-white group"
+                >
+                    {isExpanded ? 'Show Less' : 'See More Questions'}
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : 'group-hover:translate-y-0.5'}`} />
+                </button>
             </div>
 
             {/* Decorative background element */}
