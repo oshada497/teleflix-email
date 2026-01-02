@@ -64,7 +64,7 @@ function populateDomainSelect() {
 }
 
 // Create new email address
-async createNewAddress(domain) {
+async function createNewAddress(domain) {
     const statusIndicator = document.getElementById('status-indicator');
     statusIndicator.classList.add('loading');
 
