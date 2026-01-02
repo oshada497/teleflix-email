@@ -1,17 +1,20 @@
-import { useEffect, useState } from 'react'
-import { Moon, Sun, Shield, Zap, Lock } from 'lucide-react'
+import { useEffect, useState, useCallback } from 'react'
+import { Moon, Sun, Shield, Zap, Lock, LogOut } from 'lucide-react'
 import { EmailGenerator } from './components/EmailGenerator'
 import { EmailInbox } from './components/EmailInbox'
 import { EmailDetail } from './components/EmailDetail'
-import { generateRandomEmailAddress, generateMockEmail } from './utils/mockData'
 import { Email } from './utils/types'
 import { AnimatePresence } from 'framer-motion'
+import { api } from './services/api'
+import { Button } from './components/ui/Button'
 
 export function App() {
     const [isDark, setIsDark] = useState(false)
-    const [emailAddress, setEmailAddress] = useState('')
+    const [emailAddress, setEmailAddress] = useState<string | null>(null)
     const [emails, setEmails] = useState<Email[]>([])
     const [selectedEmailId, setSelectedEmailId] = useState<string | null>(null)
+    const [isLoading, setIsLoading] = useState(false)
+    const [isGenerating, setIsGenerating] = useState(false)
 
     // Initialize
     useEffect(() => {
@@ -20,12 +23,20 @@ export function App() {
             setIsDark(true)
         }
 
-        // Generate initial email
-        const savedEmail = localStorage.getItem('tempEmail')
-        if (savedEmail) {
-            setEmailAddress(savedEmail)
+        // Check for existing session
+        const session = api.getSession()
+        if (session) {
+            setEmailAddress(session.address)
+            loadEmails()
+            api.connectSocket(handleNewEmail)
         } else {
+            // Optional: Auto-create first email? Or let user click?
+            // Let's create one for them to match previous UX
             createNewEmail()
+        }
+
+        return () => {
+            api.disconnectSocket()
         }
     }, [])
 
@@ -38,26 +49,53 @@ export function App() {
         }
     }, [isDark])
 
-    // Auto-generate incoming emails
-    useEffect(() => {
-        if (!emailAddress) return
+    const handleNewEmail = useCallback((email: Email) => {
+        setEmails((prev) => {
+            // Avoid duplicates
+            if (prev.some(e => e.id === email.id)) return prev
+            return [email, ...prev]
+        })
+    }, [])
 
-        const interval = setInterval(() => {
-            if (Math.random() > 0.3) {
-                // 70% chance to get an email
-                const newEmail = generateMockEmail()
-                setEmails((prev) => [newEmail, ...prev])
-            }
-        }, 10000) // Check every 10 seconds
+    const loadEmails = async () => {
+        setIsLoading(true)
+        try {
+            const fetched = await api.getMails(50)
+            setEmails(fetched)
+        } catch (e) {
+            console.error('Failed to load emails', e)
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
-        return () => clearInterval(interval)
-    }, [emailAddress])
+    const createNewEmail = async () => {
+        setIsGenerating(true)
+        try {
+            api.clearSession() // Clear old session first
+            // Get domain list (fallback to hardcoded)
+            const domains = await api.getDomains()
+            const domain = domains[Math.floor(Math.random() * domains.length)]
 
-    const createNewEmail = () => {
-        const newEmail = generateRandomEmailAddress()
-        setEmailAddress(newEmail)
-        localStorage.setItem('tempEmail', newEmail)
-        setEmails([]) // Clear inbox for new address
+            const session = await api.createAddress(domain)
+            setEmailAddress(session.address)
+            setEmails([])
+            setSelectedEmailId(null)
+
+            // Connect socket for the new address
+            api.connectSocket(handleNewEmail)
+        } catch (e) {
+            console.error('Failed to create email', e)
+            alert('Failed to generate email address. Please try again.')
+        } finally {
+            setIsGenerating(false)
+        }
+    }
+
+    const handleLogout = () => {
+        api.clearSession()
+        setEmailAddress(null)
+        setEmails([])
         setSelectedEmailId(null)
     }
 
@@ -66,14 +104,20 @@ export function App() {
         setEmails((prev) =>
             prev.map((email) =>
                 email.id === id
-                    ? {
-                        ...email,
-                        isRead: true,
-                    }
+                    ? { ...email, isRead: true }
                     : email,
             ),
         )
     }
+
+    // Auto-refresh fallback (every 30s) just in case socket misses something
+    useEffect(() => {
+        if (!emailAddress) return
+        const interval = setInterval(() => {
+            loadEmails()
+        }, 30000)
+        return () => clearInterval(interval)
+    }, [emailAddress])
 
     const selectedEmail = emails.find((e) => e.id === selectedEmailId) || null
 
@@ -91,12 +135,25 @@ export function App() {
                         </span>
                     </div>
 
-                    <button
-                        onClick={() => setIsDark(!isDark)}
-                        className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors"
-                    >
-                        {isDark ? <Sun size={20} /> : <Moon size={20} />}
-                    </button>
+                    <div className="flex items-center gap-2">
+                        {emailAddress && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={handleLogout}
+                                className="hidden md:flex text-slate-500 hover:text-red-500"
+                            >
+                                <LogOut size={16} className="mr-2" />
+                                Exit
+                            </Button>
+                        )}
+                        <button
+                            onClick={() => setIsDark(!isDark)}
+                            className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors"
+                        >
+                            {isDark ? <Sun size={20} /> : <Moon size={20} />}
+                        </button>
+                    </div>
                 </div>
             </header>
 
@@ -116,7 +173,11 @@ export function App() {
                 </div>
 
                 {/* Generator */}
-                <EmailGenerator email={emailAddress} onGenerateNew={createNewEmail} />
+                <EmailGenerator
+                    email={emailAddress || 'Generating...'}
+                    onGenerateNew={createNewEmail}
+                    isLoading={isGenerating}
+                />
 
                 {/* Features Grid (Small) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-12">

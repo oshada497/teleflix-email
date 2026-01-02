@@ -6,9 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 interface EmailGeneratorProps {
     email: string
     onGenerateNew: () => void
+    isLoading?: boolean
 }
 
-export function EmailGenerator({ email, onGenerateNew }: EmailGeneratorProps) {
+export function EmailGenerator({ email, onGenerateNew, isLoading }: EmailGeneratorProps) {
     const [copied, setCopied] = useState(false)
 
     const handleCopy = () => {
@@ -55,23 +56,15 @@ export function EmailGenerator({ email, onGenerateNew }: EmailGeneratorProps) {
                                     onClick={handleCopy}
                                     variant="primary"
                                     className="min-w-[100px]"
+                                    disabled={isLoading}
                                 >
                                     <AnimatePresence mode="wait">
                                         {copied ? (
                                             <motion.div
                                                 key="check"
-                                                initial={{
-                                                    scale: 0.5,
-                                                    opacity: 0,
-                                                }}
-                                                animate={{
-                                                    scale: 1,
-                                                    opacity: 1,
-                                                }}
-                                                exit={{
-                                                    scale: 0.5,
-                                                    opacity: 0,
-                                                }}
+                                                initial={{ scale: 0.5, opacity: 0 }}
+                                                animate={{ scale: 1, opacity: 1 }}
+                                                exit={{ scale: 0.5, opacity: 0 }}
                                                 className="flex items-center gap-2"
                                             >
                                                 <Check size={18} />
@@ -80,18 +73,9 @@ export function EmailGenerator({ email, onGenerateNew }: EmailGeneratorProps) {
                                         ) : (
                                             <motion.div
                                                 key="copy"
-                                                initial={{
-                                                    scale: 0.5,
-                                                    opacity: 0,
-                                                }}
-                                                animate={{
-                                                    scale: 1,
-                                                    opacity: 1,
-                                                }}
-                                                exit={{
-                                                    scale: 0.5,
-                                                    opacity: 0,
-                                                }}
+                                                initial={{ scale: 0.5, opacity: 0 }}
+                                                animate={{ scale: 1, opacity: 1 }}
+                                                exit={{ scale: 0.5, opacity: 0 }}
                                                 className="flex items-center gap-2"
                                             >
                                                 <Copy size={18} />
@@ -109,9 +93,10 @@ export function EmailGenerator({ email, onGenerateNew }: EmailGeneratorProps) {
                             variant="ghost"
                             size="sm"
                             onClick={onGenerateNew}
+                            isLoading={isLoading}
                             className="text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400"
                         >
-                            <RefreshCw size={16} className="mr-2" />
+                            {!isLoading && <RefreshCw size={16} className="mr-2" />}
                             Generate New
                         </Button>
                         <div className="h-4 w-px bg-slate-200 dark:bg-slate-800" />
