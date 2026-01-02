@@ -1,6 +1,5 @@
-import React from 'react'
 import { motion } from 'framer-motion'
-import { X, Reply, Trash2, MoreHorizontal, Download, Star } from 'lucide-react'
+import { X, Reply, Trash2, Download, Star } from 'lucide-react'
 import { Email } from '../utils/types'
 import { Button } from './ui/Button'
 

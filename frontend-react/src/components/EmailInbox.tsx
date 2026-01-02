@@ -1,5 +1,4 @@
-import React from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { Inbox } from 'lucide-react'
 import { Email } from '../utils/types'
 import { EmailListItem } from './EmailListItem'

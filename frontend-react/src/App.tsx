@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Moon, Sun, Shield, Zap, Lock } from 'lucide-react'
 import { EmailGenerator } from './components/EmailGenerator'
 import { EmailInbox } from './components/EmailInbox'

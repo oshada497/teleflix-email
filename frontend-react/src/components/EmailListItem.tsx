@@ -1,6 +1,5 @@
-import React from 'react'
 import { motion } from 'framer-motion'
-import { Mail, Paperclip, ChevronRight } from 'lucide-react'
+import { Paperclip, ChevronRight } from 'lucide-react'
 import { Email } from '../utils/types'
 
 interface EmailListItemProps {

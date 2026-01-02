@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Copy, RefreshCw, Check, Wand2 } from 'lucide-react'
+import { useState } from 'react'
+import { Copy, RefreshCw, Check } from 'lucide-react'
 import { Button } from './ui/Button'
 import { motion, AnimatePresence } from 'framer-motion'
 
