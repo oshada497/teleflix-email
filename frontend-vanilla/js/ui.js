@@ -1,201 +1,164 @@
-// UI Helper Functions
-
-const UI = {
-    // Show/Hide Modal
-    showModal(modalId) {
-        const overlay = document.getElementById('modal-overlay');
-        const modal = document.getElementById(modalId);
-        overlay.classList.remove('hidden');
-        modal.classList.remove('hidden');
+const ui = {
+    init() {
+        // Any init logic
     },
 
-    hideModal(modalId) {
-        const overlay = document.getElementById('modal-overlay');
-        const modal = document.getElementById(modalId);
-        modal.classList.add('hidden');
-        overlay.classList.add('hidden');
-    },
+    renderInbox(mails, onSelect) {
+        const listContainer = document.getElementById('inbox-list');
+        const emptyState = document.getElementById('inbox-empty');
 
-    hideAllModals() {
-        document.getElementById('modal-overlay').classList.add('hidden');
-        document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
-    },
+        if (!listContainer) return;
 
-    // Render Email List
-    renderEmailList(emails) {
-        const list = document.getElementById('inbox-list');
+        // Reset list but keep empty state
+        listContainer.innerHTML = '';
+        if (emptyState) listContainer.appendChild(emptyState);
 
-        if (!emails || emails.length === 0) {
-            list.innerHTML = `
-                <div class="inbox-empty">
-                    <svg class="icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                        <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                    <h3>Your inbox is empty</h3>
-                    <p>Emails sent to your temporary address will appear here instantly.</p>
-                </div>
-            `;
+        if (!mails || mails.length === 0) {
+            if (emptyState) {
+                emptyState.classList.remove('hidden');
+                emptyState.style.display = 'flex';
+            }
             return;
         }
 
-        list.innerHTML = emails.map((email, index) => {
-            const initial = email.parsed.from.charAt(0).toUpperCase();
-            const time = new Date(email.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        if (emptyState) {
+            emptyState.classList.add('hidden');
+            emptyState.style.display = 'none';
+        }
 
-            return `
-                <div class="email-item" data-email-id="${email.id}" data-index="${index}">
-                    <div class="email-avatar">${initial}</div>
-                    <div class="email-content">
-                        <div class="email-header">
-                            <div class="email-from">${this.escapeHtml(email.parsed.from)}</div>
-                            <div class="email-time">${time}</div>
-                        </div>
-                        <div class="email-subject">${this.escapeHtml(email.parsed.subject)}</div>
+        mails.forEach(mail => {
+            const item = document.createElement('div');
+            // 'unread' styling if needed, currently just base class
+            const isUnread = !mail.isRead;
+            item.className = `email-item flex items-start gap-4 ${isUnread ? 'unread' : ''}`;
+            item.setAttribute('data-id', mail.id);
+
+            // Format Time
+            const time = new Date(mail.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const senderName = mail.fromName || mail.from || 'Unknown';
+            const senderInitial = senderName.charAt(0).toUpperCase();
+
+            // Safe HTML construction
+            item.innerHTML = `
+                <div class="mt-1 flex-shrink-0 w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 font-semibold border border-slate-200 dark:border-slate-700">
+                    ${senderInitial}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-1">
+                        <h3 class="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">${escapeHtml(senderName)}</h3>
+                        <span class="text-xs text-slate-400 whitespace-nowrap ml-2">${time}</span>
                     </div>
+                    <h4 class="text-sm text-slate-700 dark:text-slate-300 font-medium mb-1 truncate">${escapeHtml(mail.subject || '(No Subject)')}</h4>
+                    <p class="text-xs text-slate-500 truncate">${escapeHtml(mail.intro || mail.preview || 'No preview available')}</p>
                 </div>
             `;
-        }).join('');
+
+            item.addEventListener('click', () => onSelect(mail.id));
+            listContainer.appendChild(item);
+        });
+
+        // Ensure scrollbar style is applied via CSS class 'custom-scrollbar' on parent
     },
 
-    // Show Email Modal
-    showEmailModal(email) {
-        document.getElementById('email-subject').textContent = email.parsed.subject;
-        document.getElementById('email-from').textContent = email.parsed.from;
-        document.getElementById('email-date').textContent = new Date(email.created_at).toLocaleString();
+    renderEmailDetail(mail) {
+        const placeholder = document.getElementById('detail-placeholder');
+        const contentEl = document.getElementById('detail-content');
 
-        const body = document.getElementById('email-body');
-        if (email.parsed.html) {
-            // Sanitize HTML using DOMPurify
-            const sanitized = DOMPurify.sanitize(
-                email.parsed.html.replace(/<a\s+(?![^>]*target=)/gi, '<a target="_blank" rel="noopener noreferrer" '),
-                {
-                    ADD_ATTR: ['target'],
-                    ALLOWED_TAGS: [
-                        'a', 'b', 'i', 'u', 'strong', 'em', 'p', 'br', 'div', 'span',
-                        'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-                        'table', 'thead', 'tbody', 'tr', 'th', 'td', 'img', 'hr'
-                    ]
-                }
-            );
-            body.innerHTML = sanitized;
-        } else {
-            // Plain text with link detection
-            const text = email.parsed.text || 'No content';
-            const linkedText = text.replace(
-                /(https?:\/\/[^\s]+)/g,
-                '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
-            );
-            body.innerHTML = `<pre style="white-space: pre-wrap; font-family: inherit;">${linkedText}</pre>`;
+        if (placeholder) {
+            placeholder.classList.add('hidden');
+            placeholder.classList.remove('flex');
         }
 
-        this.showModal('email-modal');
+        if (contentEl) {
+            contentEl.classList.remove('hidden');
+            contentEl.classList.add('flex');
+        }
+
+        // Populate Fields
+        const subjectEl = document.getElementById('detail-subject');
+        if (subjectEl) subjectEl.textContent = mail.subject || '(No Subject)';
+
+        const senderEl = document.getElementById('detail-sender');
+        if (senderEl) senderEl.textContent = mail.fromName || mail.from;
+
+        const fromEl = document.getElementById('detail-from');
+        if (fromEl) fromEl.textContent = `<${mail.from}>`;
+
+        const dateEl = document.getElementById('detail-date');
+        if (dateEl) dateEl.textContent = new Date(mail.createdAt || Date.now()).toLocaleString();
+
+        // Body Content (Sanitized)
+        const bodyContainer = document.getElementById('detail-body');
+        if (bodyContainer) {
+            const cleanHtml = DOMPurify.sanitize(mail.html || mail.text || '<i>No content</i>');
+            bodyContainer.innerHTML = cleanHtml;
+        }
     },
 
-    // Show QR Code
-    async showQRCode(email) {
+    clearDetailView() {
+        const placeholder = document.getElementById('detail-placeholder');
+        const contentEl = document.getElementById('detail-content');
+
+        if (placeholder) {
+            placeholder.classList.remove('hidden');
+            placeholder.classList.add('flex');
+        }
+
+        if (contentEl) {
+            contentEl.classList.add('hidden');
+            contentEl.classList.remove('flex');
+        }
+    },
+
+    showQRCode(text) {
+        const modal = document.getElementById('qr-modal');
+        const overlay = document.getElementById('modal-overlay');
         const qrContainer = document.getElementById('qr-code');
-        qrContainer.innerHTML = ''; // Clear previous
+        const emailText = document.getElementById('qr-email');
 
-        document.getElementById('qr-email').textContent = email;
+        if (!modal || !overlay || !qrContainer) return;
 
-        if (typeof QRCode !== 'undefined') {
-            try {
-                await QRCode.toCanvas(
-                    qrContainer,
-                    email,
-                    {
-                        width: 256,
-                        margin: 2,
-                        color: {
-                            dark: '#000000',
-                            light: '#ffffff'
-                        }
-                    }
-                );
-            } catch (err) {
-                console.error('QR code generation failed:', err);
-                qrContainer.innerHTML = '<p style="color: #ef4444;">Failed to generate QR code</p>';
+        qrContainer.innerHTML = '';
+        if (emailText) emailText.textContent = text;
+
+        new QRCode(qrContainer, {
+            text: text,
+            width: 200,
+            height: 200
+        });
+
+        modal.classList.remove('hidden');
+        overlay.classList.remove('hidden');
+
+        // Close handlers logic moved to app.js or handled here? 
+        // Let's keep distinct close handler logic in HTML/globally if possible, or bind once
+        // For now, simpler to re-bind or rely on global close
+        const closeBtn = document.getElementById('close-qr-modal');
+        if (closeBtn) {
+            closeBtn.onclick = () => {
+                modal.classList.add('hidden');
+                overlay.classList.add('hidden');
+            };
+        }
+
+        overlay.onclick = (e) => {
+            if (e.target === overlay) {
+                modal.classList.add('hidden');
+                overlay.classList.add('hidden');
             }
-        } else {
-            qrContainer.innerHTML = '<p style="color: #ef4444;">QR library not loaded</p>';
-        }
-
-        this.showModal('qr-modal');
-    },
-
-    // Show Confirmation Dialog
-    showConfirm(title, message, onConfirm) {
-        document.getElementById('confirm-title').textContent = title;
-        document.getElementById('confirm-message').textContent = message;
-
-        const confirmBtn = document.getElementById('confirm-ok');
-        const cancelBtn = document.getElementById('confirm-cancel');
-
-        // Remove old listeners
-        const newConfirmBtn = confirmBtn.cloneNode(true);
-        const newCancelBtn = cancelBtn.cloneNode(true);
-        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-        cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
-
-        newConfirmBtn.addEventListener('click', () => {
-            this.hideModal('confirm-modal');
-            onConfirm();
-        });
-
-        newCancelBtn.addEventListener('click', () => {
-            this.hideModal('confirm-modal');
-        });
-
-        this.showModal('confirm-modal');
-    },
-
-    // Update Countdown Timer
-    updateCountdown(createdAt) {
-        if (!createdAt) return;
-
-        const timer = document.getElementById('countdown-timer');
-        const elapsed = Date.now() - createdAt;
-        const remaining = Math.max(0, 24 * 60 * 60 * 1000 - elapsed);
-
-        const hours = Math.floor(remaining / (60 * 60 * 1000));
-        const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
-        const seconds = Math.floor((remaining % (60 * 1000)) / 1000);
-
-        timer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-
-        if (remaining === 0) {
-            timer.textContent = 'EXPIRED';
-        }
-    },
-
-    // Copy to Clipboard
-    async copyToClipboard(text) {
-        try {
-            await navigator.clipboard.writeText(text);
-            return true;
-        } catch (err) {
-            console.error('Copy failed:', err);
-            return false;
-        }
-    },
-
-    // Escape HTML
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    },
-
-    // Show Loading State
-    setLoading(elementId, isLoading) {
-        const element = document.getElementById(elementId);
-        if (!element) return;
-
-        if (isLoading) {
-            element.classList.add('rotate');
-        } else {
-            element.classList.remove('rotate');
         }
     }
 };
+
+// Simple HTML escaper
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.toString().replace(/[&<>"']/g, function (m) { return map[m]; });
+}
