@@ -14,6 +14,22 @@ class ApiService {
             this.createdAt = Date.now();
             localStorage.setItem('wipemymail_created_at', this.createdAt.toString());
         }
+
+        // Cache for libraries
+        this.PostalMime = null;
+    }
+
+    async loadPostalMime() {
+        if (this.PostalMime) return this.PostalMime;
+        try {
+            // Load ES Module version dynamically
+            const module = await import('https://cdn.jsdelivr.net/npm/postal-mime@2.7.1/+esm');
+            this.PostalMime = module.default;
+            return this.PostalMime;
+        } catch (e) {
+            console.error("Could not load PostalMime library:", e);
+            return null;
+        }
     }
 
     initCreatedAt() {
@@ -115,27 +131,19 @@ class ApiService {
         const data = await res.json();
         const rawMails = data.results || [];
 
-        // Parse mails using postal-mime
-        // Wait for library to load (max 5s)
-        let PostalMimeLib = window.PostalMime || window.postalMime;
-        if (!PostalMimeLib) {
-            console.log('PostalMime not immediate, waiting...');
-            for (let i = 0; i < 50; i++) {
-                await new Promise(r => setTimeout(r, 100));
-                PostalMimeLib = window.PostalMime || window.postalMime;
-                if (PostalMimeLib) break;
-            }
+        // Parse mails using postal-mime behavior
+        // Load library first (once)
+        const PostalMime = await this.loadPostalMime();
+        if (!PostalMime) {
+            console.warn('PostalMime failed to load - showing raw content');
+            // Fallback to basic parsing if library fails
+            return rawMails.map(mail => this.createFallbackMail(mail));
         }
 
         const parsedMails = await Promise.all(
             rawMails.map(async (mail) => {
                 try {
-                    if (!PostalMimeLib) {
-                        console.warn('PostalMime not loaded after wait');
-                        return this.createFallbackMail(mail);
-                    }
-
-                    const parser = new (PostalMimeLib.default || PostalMimeLib)();
+                    const parser = new PostalMime();
                     const parsed = await parser.parse(mail.raw);
 
                     return {
