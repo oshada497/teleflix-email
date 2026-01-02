@@ -1,41 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --font-outfit: 'Outfit', sans-serif;
-  }
+    :root {
+        --background: 210 40% 98%;
+        --foreground: 222 47% 11%;
+        --card: 0 0% 100%;
+        --card-foreground: 222 47% 11%;
+        --primary: 189 94% 43%;
+        --primary-foreground: 210 40% 98%;
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+        --border: 214.3 31.8% 91.4%;
+    }
 
-  body {
-    @apply bg-background text-white font-sans antialiased selection:bg-primary/30 selection:text-white;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-  }
+    .dark {
+        --background: 222 47% 11%;
+        --foreground: 210 40% 98%;
+        --card: 222 47% 11%;
+        --card-foreground: 210 40% 98%;
+        --primary: 189 94% 43%;
+        --primary-foreground: 222 47% 11%;
+        --muted: 217.2 32.6% 17.5%;
+        --muted-foreground: 215 20.2% 65.1%;
+        --border: 217.2 32.6% 17.5%;
+    }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-outfit);
-  }
+    body {
+        @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 font-sans antialiased;
+        font-family: 'Inter', sans-serif;
+    }
 }
 
-/* Custom scrollbar for the inbox table */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* Custom scrollbar for email content */
+.email-content::-webkit-scrollbar {
+    width: 8px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  @apply bg-transparent;
+.email-content::-webkit-scrollbar-track {
+    background: transparent;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-border rounded-full;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  @apply bg-muted;
+.email-content::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 dark:bg-slate-700 rounded-full;
 }
