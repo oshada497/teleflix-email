@@ -136,12 +136,12 @@ function setupRealtimeUpdates() {
             }
         });
 
-        state.socket.on('new_mail', (mail) => {
-            console.log('New mail received!');
+        state.socket.on('new_email', (data) => {
+            console.log('New mail notification received!', data);
             // Show notification if supported
             if (Notification.permission === 'granted') {
                 new Notification('New Email Received', {
-                    body: `From: ${mail.from || 'Unknown'}`,
+                    body: 'You have a new message',
                     icon: '/favicon.ico'
                 });
             }
