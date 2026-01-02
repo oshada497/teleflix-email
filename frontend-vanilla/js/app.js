@@ -67,7 +67,7 @@ function populateDomainSelect() {
 // Create new email address
 async function createNewAddress(domain) {
     const statusIndicator = document.getElementById('status-indicator');
-    statusIndicator.classList.add('loading');
+    statusIndicator.classList.add('is-loading');
 
     try {
         const data = await api.createAddress(domain || state.selectedDomain);
@@ -87,7 +87,7 @@ async function createNewAddress(domain) {
         console.error('Failed to create address:', error);
         alert('Failed to create email address. Please try again.');
     } finally {
-        statusIndicator.classList.remove('loading');
+        statusIndicator.classList.remove('is-loading');
     }
 }
 

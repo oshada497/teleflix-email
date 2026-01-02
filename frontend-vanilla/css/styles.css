@@ -192,7 +192,7 @@ select {
     /* Prevent stretching */
 }
 
-.status-indicator.loading {
+.status-indicator.is-loading {
     background: #eab308;
     animation: pulse 1s infinite;
 }
