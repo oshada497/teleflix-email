@@ -1,302 +1,185 @@
-// Main Application Logic
-const PUSHER_URL = "https://swiftmail-pusher.onrender.com";
-
-// Global state
+// State Management
 const state = {
-    currentEmail: null,
-    createdAt: null,
-    domains: [],
-    selectedDomain: null,
-    emails: [],
-    refreshInterval: null,
-    countdownInterval: null,
-    countdownInterval: null,
-    socket: null
+    currentEmail: localStorage.getItem('currentEmail') || '',
+    token: localStorage.getItem('token') || '',
+    createdAt: localStorage.getItem('createdAt') || '',
+    mails: [],
+    selectedDomain: 'teleflix.online',
+    socket: null,
+    isDarkMode: localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)
 };
 
-// Initialize app
+// Initialize Application
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('WipeMyMail - Initializing...');
-
-    // Load domains
-    state.domains = await api.getDomains();
-    populateDomainSelect();
-
-    // Check existing session
-    const existingEmail = api.getAddress();
-    const existingCreatedAt = api.getCreatedAt();
-
-    if (existingEmail) {
-        state.currentEmail = existingEmail;
-        state.createdAt = existingCreatedAt;
-        const domain = existingEmail.split('@')[1];
-        if (domain) state.selectedDomain = domain;
-
-        updateEmailDisplay();
-        await fetchMails();
-        setupRealtimeUpdates();
-    } else if (state.domains.length > 0) {
-        // Generate first email
-        const randomDomain = state.domains[Math.floor(Math.random() * state.domains.length)];
-        state.selectedDomain = randomDomain;
-        await createNewAddress(randomDomain);
+    // 1. Initialize Theme
+    if (state.isDarkMode) {
+        document.body.setAttribute('data-theme', 'dark');
+        const themeIcon = document.getElementById('theme-icon');
+        if (themeIcon) themeIcon.setAttribute('data-lucide', 'sun');
     }
 
-    // Start countdown timer
-    startCountdownTimer();
+    // 2. Render Icons
+    if (window.lucide) lucide.createIcons();
 
-    // Setup auto-refresh on visibility change
-    document.addEventListener('visibilitychange', () => {
-        if (!document.hidden) {
-            fetchMails();
+    // 3. Setup Event Listeners
+    setupEventListeners();
+
+    // 4. Restore Session or Create New
+    const existingAddress = localStorage.getItem('currentEmail');
+    if (existingAddress) {
+        state.currentEmail = existingAddress;
+        updateEmailDisplay();
+
+        // Restore/Check token valid
+        const savedToken = localStorage.getItem('token');
+        if (savedToken) {
+            api.setJwt(savedToken);
+            await fetchMails();
+            setupRealtimeUpdates();
+        } else {
+            // Token missing but email exists? edge case, regenerate
+            createNewAddress();
         }
-    });
-
-    // Initialize event listeners
-    initEventListeners();
+    } else {
+        createNewAddress();
+    }
 });
 
-// Populate domain selector
-function populateDomainSelect() {
-    const select = document.getElementById('domain-select');
-    select.innerHTML = state.domains.map(d =>
-        `<option value="${d}" ${d === state.selectedDomain ? 'selected' : ''}>@${d}</option>`
-    ).join('');
-}
+function setupEventListeners() {
+    const newAddrBtn = document.getElementById('new-address-btn');
+    if (newAddrBtn) newAddrBtn.addEventListener('click', () => createNewAddress());
 
-// Create new email address
-async function createNewAddress(domain) {
-    const statusIndicator = document.getElementById('status-indicator');
-    statusIndicator.classList.add('is-loading');
+    const copyBtn = document.getElementById('copy-btn');
+    if (copyBtn) copyBtn.addEventListener('click', copyToClipboard);
 
-    try {
-        const data = await api.createAddress(domain || state.selectedDomain);
-        state.currentEmail = data.address;
-        state.createdAt = api.getCreatedAt();
-
-        const domainPart = data.address.split('@')[1];
-        if (domainPart) {
-            state.selectedDomain = domainPart;
-            populateDomainSelect();
-        }
-
-        updateEmailDisplay();
-        await fetchMails();
-        setupRealtimeUpdates();
-    } catch (error) {
-        console.error('Failed to create address:', error);
-        alert('Failed to create email address. Please try again.');
-    } finally {
-        statusIndicator.classList.remove('is-loading');
+    // Mobile Detail View Close
+    const closeDetailBtn = document.getElementById('close-detail-btn');
+    if (closeDetailBtn) {
+        closeDetailBtn.addEventListener('click', () => {
+            document.body.classList.remove('viewing-detail');
+            // Clear selection visual
+            document.querySelectorAll('.email-item').forEach(el => el.classList.remove('selected'));
+        });
     }
+
+    // Theme Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
 }
 
-// Update email display
-function updateEmailDisplay() {
-    const emailInput = document.getElementById('email-address');
-    emailInput.value = state.currentEmail || 'Generating...';
+function toggleTheme() {
+    state.isDarkMode = !state.isDarkMode;
+    const themeIcon = document.getElementById('theme-icon');
+
+    if (state.isDarkMode) {
+        document.body.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        if (themeIcon) themeIcon.setAttribute('data-lucide', 'sun');
+    } else {
+        document.body.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        if (themeIcon) themeIcon.setAttribute('data-lucide', 'moon');
+    }
+    if (window.lucide) lucide.createIcons();
 }
 
-// Fetch emails
 async function fetchMails() {
     try {
         const mails = await api.getMails();
-        state.emails = mails;
-        UI.renderEmailList(mails);
+        state.mails = mails;
+        ui.renderInbox(mails, onEmailSelect); // Pass click handler
+
+        // Update helper badge
+        const countBadge = document.getElementById('email-count');
+        if (countBadge) countBadge.textContent = `${mails.length} messages`;
+
     } catch (error) {
         console.error('Failed to fetch mails:', error);
     }
 }
 
-// Setup real-time updates using Socket.IO
-function setupRealtimeUpdates() {
-    // Clean up existing connection
-    if (state.socket) {
-        state.socket.disconnect();
-    }
+// Handler for when an email is clicked in the list
+function onEmailSelect(mailId) {
+    const mail = state.mails.find(m => m.id === mailId);
+    if (!mail) return;
 
-    // Clear polling if active
-    if (state.refreshInterval) {
-        clearInterval(state.refreshInterval);
-    }
+    // 1. Mark UI selected
+    document.querySelectorAll('.email-item').forEach(el => el.classList.remove('selected'));
+    const selectedEl = document.querySelector(`[data-id="${mailId}"]`);
+    if (selectedEl) selectedEl.classList.add('selected');
 
-    if (typeof io === 'undefined') {
-        console.warn('Socket.IO not loaded. Real-time updates disabled to save costs. Manual refresh required.');
-        return;
-    }
+    // 2. Show Detail View
+    ui.renderEmailDetail(mail);
+
+    // 3. Mobile Logic
+    document.body.classList.add('viewing-detail');
+}
+
+async function createNewAddress(domain) {
+    const statusIndicator = document.getElementById('status-indicator');
+    if (statusIndicator) statusIndicator.classList.add('is-loading'); // Yellow
 
     try {
-        state.socket = io(PUSHER_URL);
+        const data = await api.createAddress(domain || state.selectedDomain);
+        state.currentEmail = data.address;
+        localStorage.setItem('currentEmail', data.address);
 
+        // Update UI
+        updateEmailDisplay();
+
+        // Clear Inbox
+        state.mails = [];
+        ui.renderInbox([], onEmailSelect);
+        ui.clearDetailView(); // user defined function to reset right pane
+
+        setupRealtimeUpdates();
+
+    } catch (error) {
+        console.error("Create Address Error", error);
+        alert("Could not generate email.");
+    } finally {
+        if (statusIndicator) statusIndicator.classList.remove('is-loading');
+    }
+}
+
+function updateEmailDisplay() {
+    const emailInput = document.getElementById('email-address');
+    if (emailInput) emailInput.value = state.currentEmail;
+}
+
+function copyToClipboard() {
+    const email = state.currentEmail;
+    if (!email) return;
+
+    navigator.clipboard.writeText(email).then(() => {
+        const btnText = document.getElementById('copy-text');
+        if (!btnText) return;
+
+        const originalText = btnText.textContent;
+        btnText.textContent = 'Copied!';
+        setTimeout(() => btnText.textContent = originalText, 2000);
+    });
+}
+
+function setupRealtimeUpdates() {
+    if (state.socket) state.socket.disconnect();
+
+    const address = state.currentEmail;
+    if (!address) return;
+
+    try {
+        state.socket = io('https://swiftmail-pusher.onrender.com');
         state.socket.on('connect', () => {
-            console.log('Connected to real-time updates');
-            const address = api.getAddress();
-            if (address) {
-                state.socket.emit('join', address);
-            }
+            console.log('Connected to socket');
+            state.socket.emit('join', address);
         });
 
-        state.socket.on('new_email', (data) => {
-            console.log('New mail notification received!', data);
-            // Show notification if supported
-            if (Notification.permission === 'granted') {
-                new Notification('New Email Received', {
-                    body: 'You have a new message',
-                    icon: '/favicon.ico'
-                });
-            }
-            fetchMails();
-        });
-
-        state.socket.on('connect_error', (error) => {
-            console.error('Socket connection error:', error);
+        state.socket.on('new_email', () => {
+            console.log('New Email Notification!');
+            fetchMails(); // Refresh inbox
         });
 
     } catch (e) {
-        console.error('Socket initialization failed:', e);
+        console.error("Socket error", e);
     }
 }
-
-// Start countdown timer
-function startCountdownTimer() {
-    if (state.countdownInterval) {
-        clearInterval(state.countdownInterval);
-    }
-
-    state.countdownInterval = setInterval(() => {
-        UI.updateCountdown(state.createdAt);
-    }, 1000);
-
-    UI.updateCountdown(state.createdAt);
-}
-
-// Event Listeners
-function initEventListeners() {
-    // Copy button
-    document.getElementById('copy-btn').addEventListener('click', async () => {
-        const success = await UI.copyToClipboard(state.currentEmail);
-        const copyText = document.getElementById('copy-text');
-        if (success) {
-            copyText.textContent = 'Copied!';
-            setTimeout(() => {
-                copyText.textContent = 'Copy';
-            }, 2000);
-        }
-    });
-
-    // Refresh inbox button
-    document.getElementById('refresh-btn').addEventListener('click', async () => {
-        UI.setLoading('refresh-btn', true);
-        await fetchMails();
-        setTimeout(() => UI.setLoading('refresh-btn', false), 500);
-    });
-
-    document.getElementById('inbox-refresh-btn').addEventListener('click', async () => {
-        UI.setLoading('inbox-refresh-btn', true);
-        await fetchMails();
-        setTimeout(() => UI.setLoading('inbox-refresh-btn', false), 500);
-    });
-
-    // Domain selector
-    document.getElementById('domain-select').addEventListener('change', (e) => {
-        const newDomain = e.target.value;
-        UI.showConfirm(
-            'Change Domain?',
-            `Are you sure you want to change your domain to @${newDomain}? Your current inbox will be permanently lost.`,
-            async () => {
-                state.selectedDomain = newDomain;
-                await createNewAddress(newDomain);
-            }
-        );
-    });
-
-    // New address button
-    document.getElementById('new-address-btn').addEventListener('click', () => {
-        UI.showConfirm(
-            'Change Email Address?',
-            'Are you sure you want to generate a new email address? All emails in your current inbox will be permanently lost.',
-            async () => {
-                await createNewAddress(state.selectedDomain);
-            }
-        );
-    });
-
-    // QR code button
-    document.getElementById('qr-btn').addEventListener('click', () => {
-        UI.showQRCode(state.currentEmail);
-    });
-
-    // Email item click (event delegation)
-    document.getElementById('inbox-list').addEventListener('click', (e) => {
-        const emailItem = e.target.closest('.email-item');
-        if (emailItem) {
-            const index = parseInt(emailItem.dataset.index);
-            const email = state.emails[index];
-            if (email) {
-                UI.showEmailModal(email);
-            }
-        }
-    });
-
-    // Close email modal
-    document.getElementById('close-email-modal').addEventListener('click', () => {
-        UI.hideModal('email-modal');
-    });
-
-    // Close QR modal
-    document.getElementById('close-qr-modal').addEventListener('click', () => {
-        UI.hideModal('qr-modal');
-    });
-
-    // Close modals on overlay click
-    document.getElementById('modal-overlay').addEventListener('click', (e) => {
-        if (e.target.id === 'modal-overlay') {
-            UI.hideAllModals();
-        }
-    });
-
-    // FAQ accordion
-    document.querySelectorAll('.faq-question').forEach(button => {
-        button.addEventListener('click', () => {
-            const item = button.parentElement;
-            const wasActive = item.classList.contains('active');
-
-            // Close all items
-            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
-
-            // Toggle current item
-            if (!wasActive) {
-                item.classList.add('active');
-            }
-        });
-    });
-
-    // Smooth scroll for nav links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-}
-
-// Cleanup on page unload
-window.addEventListener('beforeunload', () => {
-    if (state.socket) {
-        state.socket.disconnect();
-    }
-    if (state.refreshInterval) {
-        clearInterval(state.refreshInterval);
-    }
-    if (state.countdownInterval) {
-        clearInterval(state.countdownInterval);
-    }
-});
-
-console.log('WipeMyMail - Ready!');
