@@ -116,13 +116,22 @@ class ApiService {
         const rawMails = data.results || [];
 
         // Parse mails using postal-mime
+        // Wait for library to load (max 5s)
+        let PostalMimeLib = window.PostalMime || window.postalMime;
+        if (!PostalMimeLib) {
+            console.log('PostalMime not immediate, waiting...');
+            for (let i = 0; i < 50; i++) {
+                await new Promise(r => setTimeout(r, 100));
+                PostalMimeLib = window.PostalMime || window.postalMime;
+                if (PostalMimeLib) break;
+            }
+        }
+
         const parsedMails = await Promise.all(
             rawMails.map(async (mail) => {
                 try {
-                    const PostalMimeLib = window.PostalMime || window.postalMime;
-
                     if (!PostalMimeLib) {
-                        console.warn('PostalMime not loaded');
+                        console.warn('PostalMime not loaded after wait');
                         return this.createFallbackMail(mail);
                     }
 
