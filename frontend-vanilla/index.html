@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>WipeMyMail | Free Temporary Email Service</title>
+    <meta name="description"
+        content="Get a free temporary email address from WipeMyMail. Stay anonymous, prevent spam, and keep your primary inbox clean with our secure, self-destructing disposable email service.">
+    <link rel="canonical" href="https://wipemymail.com/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wipemymail.com/">
+    <meta property="og:title" content="WipeMyMail | Free Temporary Email Service">
+    <meta property="og:description"
+        content="Secure, anonymous, and free temporary email in seconds. No registration required. Your inbox auto-deletes in 24 hours.">
+    <meta property="og:image" content="https://wipemymail.com/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://wipemymail.com/">
+    <meta property="twitter:title" content="WipeMyMail | Free Temporary Email Service">
+    <meta property="twitter:description"
+        content="Secure, anonymous, and free temporary email in seconds. No registration required. Your inbox auto-deletes in 24 hours.">
+    <meta property="twitter:image" content="https://wipemymail.com/og-image.png">
+
+    <meta name="theme-color" content="#7c3aed">
+
+    <!-- Preconnect to API -->
+    <link rel="preconnect" href="https://temp-email-api.teleflix.online">
+
+    <!-- Inline Critical CSS for LCP -->
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #6d28d9;
+            --bg: #0c0c0c;
+            --bg-elevated: #1a1a1a;
+            --text: #ffffff;
+            --text-muted: #9ca3af;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .bg-gradient {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at 50% -10%, rgba(124, 58, 237, 0.05), transparent 70%);
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Loading state */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+        }
+    </style>
+
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="bg-gradient"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <h2 class="logo">WipeMyMail</h2>
+                <div class="nav-links">
+                    <a href="#features">Features</a>
+                    <a href="#faq">FAQ</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="badge">
+                    <span class="status-dot"></span>
+                    Live Temporary Email
+                </div>
+
+                <h1 class="hero-title">
+                    Temporary Email in <span class="gradient-text">Seconds</span>
+                </h1>
+
+                <p class="hero-subtitle">
+                    Secure, anonymous, and free. No registration required. Your inbox auto-deletes in 24 hours.
+                </p>
+
+                <div class="email-container">
+                    <div class="email-box">
+                        <div class="email-display">
+                            <span class="status-indicator" id="status-indicator"></span>
+                            <input type="text" id="email-address" readonly value="Generating...">
+                            <div class="countdown" id="countdown-timer"></div>
+                        </div>
+                    </div>
+
+                    <div class="action-grid">
+                        <button class="btn btn-action" id="copy-btn">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            <span id="copy-text">Copy</span>
+                        </button>
+
+                        <button class="btn btn-action" id="refresh-btn">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
+                            </svg>
+                            <span>Refresh</span>
+                        </button>
+
+                        <select class="btn btn-action btn-select" id="domain-select">
+                            <option value="">Loading...</option>
+                        </select>
+
+                        <button class="btn btn-danger" id="new-address-btn">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path
+                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                </path>
+                            </svg>
+                            <span>New Address</span>
+                        </button>
+                    </div>
+
+                    <button class="btn btn-link" id="qr-btn">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        </svg>
+                        Show QR Code
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Inbox Section -->
+        <section class="inbox-section">
+            <div class="container">
+                <div class="inbox-container">
+                    <div class="inbox-header">
+                        <h2>Inbox</h2>
+                        <button class="btn btn-icon" id="inbox-refresh-btn" title="Refresh inbox">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="inbox-list" id="inbox-list">
+                        <div class="inbox-empty">
+                            <svg class="icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                </path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <h3>Your inbox is empty</h3>
+                            <p>Emails sent to your temporary address will appear here instantly.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <div class="container">
+                <h2 class="section-title">Why Choose WipeMyMail?</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>100% Anonymous</h3>
+                        <p>No registration, no personal info, no tracking. Complete privacy guaranteed.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Instant Setup</h3>
+                        <p>Your temporary email is ready in seconds. No waiting, no hassle.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h3>Auto-Delete</h3>
+                        <p>Your inbox automatically self-destructs after 24 hours for maximum security.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3>Mobile Friendly</h3>
+                        <p>Works perfectly on all devices. Access your temp email anywhere.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🚫</div>
+                        <h3>Spam Protection</h3>
+                        <p>Keep your real email clean from spam, newsletters, and junk mail.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💯</div>
+                        <h3>Always Free</h3>
+                        <p>Unlimited temporary emails. No premium plans, no hidden charges.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="faq" id="faq">
+            <div class="container">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>What is a temporary email?</span>
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>A temporary email (also known as disposable email or temp mail) is a temporary email
+                                address that self-destructs after a short period. It's perfect for one-time
+                                registrations, avoiding spam, and protecting your privacy online.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>How long does my temporary email last?</span>
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Your temporary email address lasts for 24 hours from creation. After this time, the
+                                address and all emails are automatically deleted.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Can I send emails with my temporary address?</span>
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Currently, WipeMyMail focuses on receiving emails. Sending functionality may be added in
+                                the future based on user demand.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Is WipeMyMail really free?</span>
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Yes! WipeMyMail is completely free with no limitations. You can create unlimited
+                                temporary email addresses without any registration or payment.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Is my data secure?</span>
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Absolutely! We don't collect any personal information. Your emails are automatically
+                                deleted after 24 hours, and we use industry-standard security practices to protect your
+                                data while it exists.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; <span id="year"></span> WipeMyMail. Built for privacy.</p>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <!-- Email Viewer Modal -->
+        <div id="email-modal" class="modal hidden">
+            <div class="modal-header">
+                <h2 id="email-subject"></h2>
+                <button class="btn btn-icon" id="close-email-modal">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-meta">
+                <div><strong>From:</strong> <span id="email-from"></span></div>
+                <div><span id="email-date"></span></div>
+            </div>
+            <div class="modal-body" id="email-body"></div>
+        </div>
+
+        <!-- QR Code Modal -->
+        <div id="qr-modal" class="modal modal-small hidden">
+            <div class="modal-header">
+                <h2>Scan QR Code</h2>
+                <button class="btn btn-icon" id="close-qr-modal">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body qr-container">
+                <div id="qr-code"></div>
+                <p id="qr-email"></p>
+            </div>
+        </div>
+
+        <!-- Confirm Modal -->
+        <div id="confirm-modal" class="modal modal-small hidden">
+            <div class="modal-header">
+                <h2 id="confirm-title"></h2>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="confirm-cancel">Cancel</button>
+                <button class="btn btn-primary" id="confirm-ok">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/postal-mime@2.7.1/dist/postal-mime.min.js"></script>
+    <script src="js/api.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/app.js" defer></script>
+    <script>
+        // Set current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>
