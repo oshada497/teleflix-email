@@ -126,12 +126,10 @@ function setupRealtimeUpdates() {
     }
 
     try {
-        state.socket = io(PUSHER_URL, {
-            transports: ['websocket'] // Enforce WebSocket only (no polling)
-        });
+        state.socket = io(PUSHER_URL);
 
         state.socket.on('connect', () => {
-            console.log('Connected to real-time updates (WebSocket)');
+            console.log('Connected to real-time updates');
             const address = api.getAddress();
             if (address) {
                 state.socket.emit('join', address);

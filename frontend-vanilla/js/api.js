@@ -115,7 +115,7 @@ class ApiService {
     async getMails(limit = 20, offset = 0) {
         if (!this.jwt) return [];
 
-        const res = await fetch(`${API_BASE}/api/mails?limit=${limit}&offset=${offset}`, {
+        const res = await fetch(`${API_BASE}/api/mails?limit=${limit}&offset=${offset}&_t=${Date.now()}`, {
             headers: {
                 'Authorization': `Bearer ${this.jwt}`
             }
