@@ -121,13 +121,7 @@ function setupRealtimeUpdates() {
     }
 
     if (typeof io === 'undefined') {
-        console.warn('Socket.IO not loaded, falling back to polling');
-        // Fallback to polling
-        state.refreshInterval = setInterval(() => {
-            if (!document.hidden) {
-                fetchMails();
-            }
-        }, 10000);
+        console.warn('Socket.IO not loaded. Real-time updates disabled to save costs. Manual refresh required.');
         return;
     }
 

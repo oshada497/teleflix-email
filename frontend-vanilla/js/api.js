@@ -174,6 +174,56 @@ class ApiService {
         });
         return res.ok;
     }
+
+    async getSendbox(limit = 20, offset = 0) {
+        if (!this.jwt) return [];
+
+        const res = await fetch(`${API_BASE}/api/sendbox?limit=${limit}&offset=${offset}`, {
+            headers: {
+                'Authorization': `Bearer ${this.jwt}`
+            }
+        });
+
+        if (!res.ok) return [];
+        const data = await res.json();
+        return (data.results || []).map((item) => {
+            try {
+                const content = JSON.parse(item.raw);
+                return {
+                    ...item,
+                    ...content,
+                    to_mail: content.to_mail || 'Unknown',
+                    subject: content.subject || '(No Subject)'
+                };
+            } catch {
+                return item;
+            }
+        });
+    }
+
+    async sendMail(to, subject, content, is_html = false, cf_token) {
+        if (!this.jwt) throw new Error("Not logged in");
+        const res = await fetch(`${API_BASE}/api/send_mail`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${this.jwt}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                to_mail: to,
+                subject,
+                content,
+                is_html,
+                cf_token
+            })
+        });
+
+        if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(errText || res.statusText);
+        }
+        return true;
+    }
 }
 
 // Export global instance
