@@ -119,12 +119,14 @@ class ApiService {
         const parsedMails = await Promise.all(
             rawMails.map(async (mail) => {
                 try {
-                    if (typeof PostalMime === 'undefined') {
+                    const PostalMimeLib = window.PostalMime || window.postalMime;
+
+                    if (!PostalMimeLib) {
                         console.warn('PostalMime not loaded');
                         return this.createFallbackMail(mail);
                     }
 
-                    const parser = new PostalMime.default();
+                    const parser = new (PostalMimeLib.default || PostalMimeLib)();
                     const parsed = await parser.parse(mail.raw);
 
                     return {

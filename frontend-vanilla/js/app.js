@@ -10,7 +10,8 @@ const state = {
     emails: [],
     refreshInterval: null,
     countdownInterval: null,
-    eventSource: null
+    countdownInterval: null,
+    socket: null
 };
 
 // Initialize app
@@ -107,28 +108,59 @@ async function fetchMails() {
     }
 }
 
-// Setup real-time updates using EventSource (Server-Sent Events)
+// Setup real-time updates using Socket.IO
 function setupRealtimeUpdates() {
     // Clean up existing connection
-    if (state.eventSource) {
-        state.eventSource.close();
+    if (state.socket) {
+        state.socket.disconnect();
     }
 
-    // Try to use EventSource for real-time updates
-    // Note: This requires backend support for SSE
-    // Fallback to polling if not available
-
-    // For now, use simple polling as fallback
+    // Clear polling if active
     if (state.refreshInterval) {
         clearInterval(state.refreshInterval);
     }
 
-    // Poll every 10 seconds when tab is visible
-    state.refreshInterval = setInterval(() => {
-        if (!document.hidden) {
+    if (typeof io === 'undefined') {
+        console.warn('Socket.IO not loaded, falling back to polling');
+        // Fallback to polling
+        state.refreshInterval = setInterval(() => {
+            if (!document.hidden) {
+                fetchMails();
+            }
+        }, 10000);
+        return;
+    }
+
+    try {
+        state.socket = io(PUSHER_URL);
+
+        state.socket.on('connect', () => {
+            console.log('Connected to real-time updates');
+            const address = api.getAddress();
+            if (address) {
+                state.socket.emit('join', address);
+            }
+        });
+
+        state.socket.on('new_mail', (mail) => {
+            console.log('New mail received!');
+            // Show notification if supported
+            if (Notification.permission === 'granted') {
+                new Notification('New Email Received', {
+                    body: `From: ${mail.from || 'Unknown'}`,
+                    icon: '/favicon.ico'
+                });
+            }
             fetchMails();
-        }
-    }, 10000);
+        });
+
+        state.socket.on('connect_error', (error) => {
+            console.error('Socket connection error:', error);
+        });
+
+    } catch (e) {
+        console.error('Socket initialization failed:', e);
+    }
 }
 
 // Start countdown timer
@@ -262,8 +294,8 @@ function initEventListeners() {
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', () => {
-    if (state.eventSource) {
-        state.eventSource.close();
+    if (state.socket) {
+        state.socket.disconnect();
     }
     if (state.refreshInterval) {
         clearInterval(state.refreshInterval);
