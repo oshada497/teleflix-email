@@ -188,6 +188,8 @@ select {
     border-radius: 50%;
     background: var(--success);
     flex-shrink: 0;
+    align-self: center;
+    /* Prevent stretching */
 }
 
 .status-indicator.loading {
