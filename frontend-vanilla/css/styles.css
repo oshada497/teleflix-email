@@ -183,8 +183,8 @@ select {
 
 .status-indicator {
     display: block;
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 0.5rem !important;
+    height: 0.5rem !important;
     border-radius: 50%;
     background: var(--success);
     flex-shrink: 0;
