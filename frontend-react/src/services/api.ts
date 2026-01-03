@@ -40,7 +40,6 @@ class ApiService {
         localStorage.setItem('wipemymail_jwt', jwt)
         localStorage.setItem('wipemymail_address', address)
         localStorage.setItem('wipemymail_created_at', this.createdAt.toString())
-        this.connectSocket()
     }
 
     clearSession() {
@@ -176,43 +175,64 @@ class ApiService {
     // --- Real-time Updates ---
 
     connectSocket(onNewMail?: (mail: Email) => void) {
-        if (!this.address) return
+        if (!this.address) {
+            console.warn('[Socket] No address available, skipping connection')
+            return
+        }
+
+        // Use a property on the socket to track which address it's for
+        const currentSocket = this.socket as any
+
+        // Check if already connected to this address
+        if (this.socket?.connected && currentSocket?._address === this.address) {
+            console.log('[Socket] Already connected to', this.address)
+            // Still update the handler in case it changed
+            if (onNewMail) {
+                this.socket.removeAllListeners('new_email')
+                this.socket.on('new_email', (rawMail: any) => this.handleIncomingMail(rawMail, onNewMail))
+            }
+            return
+        }
+
+        console.log('[Socket] Connecting for address:', this.address)
 
         if (this.socket) {
             this.socket.disconnect()
         }
 
         this.socket = io(PUSHER_BASE)
+            ; (this.socket as any)._address = this.address
 
         this.socket.on('connect', () => {
-            console.log('Socket connected')
+            console.log('[Socket] Connected, registering:', this.address)
             this.socket?.emit('register', this.address)
         })
 
-        this.socket.on('new_email', async (rawMail: any) => {
-            console.log('New email received', rawMail)
-            if (onNewMail) {
-                // Parse the single new email
-                try {
-                    const parser = new PostalMime()
-                    const parsed = await parser.parse(rawMail.raw)
-                    const email: Email = {
-                        id: rawMail.id || Math.random().toString(36), // fallback ID if not provided
-                        sender: parsed.from ? (parsed.from.name || parsed.from.address || 'Unknown') : 'Unknown',
-                        senderEmail: parsed.from?.address || 'unknown@example.com',
-                        subject: parsed.subject || '(No Subject)',
-                        preview: parsed.text?.substring(0, 100) || '',
-                        content: parsed.html || parsed.text || '',
-                        timestamp: new Date(),
-                        isRead: false,
-                        hasAttachments: parsed.attachments && parsed.attachments.length > 0
-                    }
-                    onNewMail(email)
-                } catch (e) {
-                    console.error('Failed to parse incoming socket mail', e)
-                }
+        this.socket.on('new_email', (rawMail: any) => this.handleIncomingMail(rawMail, onNewMail))
+    }
+
+    private async handleIncomingMail(rawMail: any, onNewMail?: (mail: Email) => void) {
+        console.log('[Socket] New email signal received', rawMail)
+        if (!onNewMail) return
+
+        try {
+            const parser = new PostalMime()
+            const parsed = await parser.parse(rawMail.raw)
+            const email: Email = {
+                id: rawMail.id || `sock-${Date.now()}`,
+                sender: parsed.from ? (parsed.from.name || parsed.from.address || 'Unknown') : 'Unknown',
+                senderEmail: parsed.from?.address || 'unknown@example.com',
+                subject: parsed.subject || '(No Subject)',
+                preview: parsed.text?.substring(0, 100) || '',
+                content: parsed.html || parsed.text || '',
+                timestamp: new Date(),
+                isRead: false,
+                hasAttachments: parsed.attachments && parsed.attachments.length > 0
             }
-        })
+            onNewMail(email)
+        } catch (e) {
+            console.error('[Socket] Failed to parse incoming mail', e)
+        }
     }
 
     disconnectSocket() {
