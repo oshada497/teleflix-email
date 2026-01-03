@@ -33,9 +33,9 @@ export function App() {
 
         // Check for session in URL (QR Scan recovery)
         const params = new URLSearchParams(window.location.search)
-        const token = params.get('token')
-        const addr = params.get('addr')
-        const ts = params.get('ts')
+        const token = params.get('t')
+        const addr = params.get('a')
+        const ts = params.get('c')
 
         if (token && addr && ts) {
             api.restoreSession(token, addr, parseInt(ts))
@@ -315,7 +315,7 @@ export function App() {
             <QRCodeModal
                 isOpen={isQRModalOpen}
                 onClose={() => setIsQRModalOpen(false)}
-                sessionUrl={`${window.location.origin}${window.location.pathname}?token=${encodeURIComponent(api.getSession()?.jwt || '')}&addr=${encodeURIComponent(api.getSession()?.address || '')}&ts=${api.getSession()?.createdAt || ''}`}
+                sessionUrl={`${window.location.origin}${window.location.pathname}?t=${encodeURIComponent(api.getSession()?.jwt || '')}&a=${encodeURIComponent(api.getSession()?.address || '')}&c=${api.getSession()?.createdAt || ''}`}
             />
         </div>
     )

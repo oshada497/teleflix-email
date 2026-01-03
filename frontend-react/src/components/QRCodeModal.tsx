@@ -52,7 +52,7 @@ export function QRCodeModal({ isOpen, onClose, sessionUrl }: QRCodeModalProps) {
                                     <QRCodeSVG
                                         value={sessionUrl}
                                         size={220}
-                                        level="H"
+                                        level="L"
                                         includeMargin
                                     />
                                 </div>
