@@ -43,7 +43,7 @@ export function EmailGenerator({
                         </p>
                     </div>
 
-                    <div className="flex flex-col gap-4 w-full">
+                    <div className="w-full space-y-4">
                         <div className="relative group w-full">
                             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl blur-xl transition-opacity opacity-50 group-hover:opacity-100" />
                             <div className="relative flex items-center justify-between bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-xl p-2 pr-2 transition-colors hover:border-cyan-500/30 dark:hover:border-cyan-500/30">
@@ -101,13 +101,13 @@ export function EmailGenerator({
                             </div>
                         </div>
 
-                        <div className="flex flex-col md:flex-row items-center gap-3">
-                            <div className="w-full md:flex-1">
-                                <label className="sr-only">Select Domain</label>
+                        {/* Compact Domain Selector */}
+                        <div className="flex justify-center">
+                            <div className="w-full max-w-xs relative">
                                 <select
                                     value={selectedDomain}
                                     onChange={(e) => onDomainChange(e.target.value)}
-                                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all appearance-none cursor-pointer"
+                                    className="w-full bg-slate-50/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all appearance-none cursor-pointer text-center"
                                     style={{
                                         backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='C19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
                                         backgroundRepeat: 'no-repeat',
@@ -122,34 +122,37 @@ export function EmailGenerator({
                                     ))}
                                 </select>
                             </div>
-
-                            <div className="flex items-center gap-3 w-full md:w-auto">
-                                <Button
-                                    variant="outline"
-                                    className="flex-1 md:flex-none border-slate-200 dark:border-slate-800"
-                                    onClick={onGenerateNew}
-                                    isLoading={isLoading}
-                                >
-                                    <RefreshCw size={18} className="mr-2" />
-                                    New
-                                </Button>
-                                <Button
-                                    variant="danger"
-                                    className="flex-1 md:flex-none"
-                                    onClick={onDelete}
-                                    disabled={isLoading}
-                                >
-                                    <Trash2 size={18} className="mr-2" />
-                                    Delete
-                                </Button>
-                            </div>
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-center pt-2 gap-4">
+                    <div className="flex items-center justify-between w-full pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <div className="flex items-center gap-4">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={onGenerateNew}
+                                isLoading={isLoading}
+                                className="text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400"
+                            >
+                                {!isLoading && <RefreshCw size={16} className="mr-2" />}
+                                Generate New
+                            </Button>
+                            <div className="h-4 w-px bg-slate-200 dark:bg-slate-800" />
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={onDelete}
+                                disabled={isLoading}
+                                className="text-slate-400 hover:text-red-500 dark:hover:text-red-400"
+                            >
+                                <Trash2 size={16} className="mr-2" />
+                                Delete
+                            </Button>
+                        </div>
+
                         <div className="flex items-center text-xs text-slate-400">
                             <div className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
-                            Status: Active
+                            Active
                         </div>
                     </div>
                 </div>
