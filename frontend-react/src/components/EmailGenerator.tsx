@@ -184,10 +184,7 @@ export function EmailGenerator({
                     <div className="flex items-center justify-between w-full pt-4 border-t border-slate-100 dark:border-slate-800">
                         <div className="flex items-center text-xs text-slate-400">
                             <div className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
-                            Status: Active
-                        </div>
-                        <div className="text-[10px] text-slate-400 uppercase tracking-widest font-medium">
-                            Auto-refresh enabled
+                            Active
                         </div>
                     </div>
                 </div>
