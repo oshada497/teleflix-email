@@ -36,8 +36,7 @@ function EmailInboxComponent({
                         <motion.button
                             onClick={onRefresh}
                             disabled={isLoading}
-                            whileHover="hover"
-                            whileTap={{ scale: 0.95 }}
+                            whileTap="tap"
                             className={`p-2 rounded-lg transition-colors duration-300 ${isLoading
                                 ? 'text-cyan-500'
                                 : 'text-slate-500 hover:text-cyan-600 hover:bg-slate-200 dark:hover:bg-slate-800'
@@ -45,8 +44,8 @@ function EmailInboxComponent({
                             title="Refresh Inbox"
                         >
                             <motion.div
-                                variants={{ hover: { rotate: 180 } }}
-                                transition={{ duration: 0.5, ease: "easeInOut" }}
+                                variants={{ tap: { rotate: 180, scale: 0.9 } }}
+                                transition={{ duration: 0.3, ease: "easeInOut" }}
                                 className={isLoading ? 'animate-spin' : ''}
                             >
                                 <RefreshCw size={18} />
