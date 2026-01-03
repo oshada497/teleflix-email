@@ -4,7 +4,7 @@ import { EmailGenerator } from './components/EmailGenerator'
 import { EmailInbox } from './components/EmailInbox'
 import { EmailDetail } from './components/EmailDetail'
 import { Email } from './utils/types'
-import { AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { api } from './services/api'
 import { Button } from './components/ui/Button'
 
@@ -17,6 +17,7 @@ export function App() {
     const [isGenerating, setIsGenerating] = useState(false)
     const [domains, setDomains] = useState<string[]>([])
     const [selectedDomain, setSelectedDomain] = useState<string>('')
+    const [createdAt, setCreatedAt] = useState<number | null>(null)
 
     // Initialize
     useEffect(() => {
@@ -29,6 +30,7 @@ export function App() {
         const session = api.getSession()
         if (session) {
             setEmailAddress(session.address)
+            setCreatedAt(session.createdAt)
             loadEmails()
             api.connectSocket(handleNewEmail)
         }
@@ -89,6 +91,7 @@ export function App() {
 
             const session = await api.createAddress(domain)
             setEmailAddress(session.address)
+            setCreatedAt(session.createdAt)
             setEmails([])
             setSelectedEmailId(null)
 
@@ -125,6 +128,7 @@ export function App() {
         try {
             await api.deleteAddress()
             setEmailAddress(null)
+            setCreatedAt(null)
             setEmails([])
             setSelectedEmailId(null)
             createNewEmail()
@@ -134,9 +138,9 @@ export function App() {
         }
     }
 
-    const handleDomainChange = (domain: string) => {
-        setSelectedDomain(domain)
-        createNewEmail(domain)
+    const handleDomainChange = (newDomain: string) => {
+        setSelectedDomain(newDomain)
+        createNewEmail(newDomain)
     }
 
     // Auto-refresh fallback (every 30s) just in case socket misses something
@@ -153,21 +157,26 @@ export function App() {
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
             {/* Header */}
-            <header className="sticky top-0 z-30 w-full border-b border-slate-300 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md">
-                <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+            <header className="border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-cyan-500 flex items-center justify-center text-white">
-                            <Shield size={20} />
+                        <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-600 shadow-lg shadow-cyan-500/20">
+                            <Shield className="text-white" size={24} />
                         </div>
-                        <span className="font-bold text-xl tracking-tight text-slate-900 dark:text-white">
-                            Temp<span className="text-cyan-500">Mail</span>
-                        </span>
+                        <div>
+                            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">
+                                WipeMyMail
+                            </h1>
+                            <p className="text-[10px] text-cyan-600 dark:text-cyan-400 font-bold uppercase tracking-widest leading-none">
+                                Teleflix Edition
+                            </p>
+                        </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                         <button
                             onClick={() => setIsDark(!isDark)}
-                            className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors"
+                            className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
                         >
                             {isDark ? <Sun size={20} /> : <Moon size={20} />}
                         </button>
@@ -175,31 +184,41 @@ export function App() {
                 </div>
             </header>
 
-            <main className="container mx-auto px-4 py-8 md:py-12">
-                {/* Hero Section */}
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4 tracking-tight">
-                        Disposable email for{' '}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500">
-                            privacy
-                        </span>
-                    </h1>
-                    <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                        Keep your real inbox clean and secure. Use our temporary email
-                        service for verifications, sign-ups, and testing.
-                    </p>
-                </div>
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+                <div className="space-y-12">
+                    {/* Hero Section */}
+                    <div className="text-center space-y-4">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-4"
+                        >
+                            <Zap size={14} />
+                            Powered by Cloudflare
+                        </motion.div>
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                            Disposable <span className="text-cyan-600 dark:text-cyan-400">Secure</span> Email
+                        </h2>
+                        <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
+                            Protect your privacy and keep your real inbox clean from spam, trackers, and bots.
+                            Completely free and instant.
+                        </p>
+                    </div>
 
-                {/* Generator */}
-                <EmailGenerator
-                    email={emailAddress || 'Generating...'}
-                    onGenerateNew={() => createNewEmail()}
-                    isLoading={isGenerating}
-                    domains={domains}
-                    selectedDomain={selectedDomain}
-                    onDomainChange={handleDomainChange}
-                    onDelete={handleDeleteAddress}
-                />
+                    {/* Generator Section */}
+                    {emailAddress && (
+                        <EmailGenerator
+                            email={emailAddress}
+                            createdAt={createdAt}
+                            onGenerateNew={() => createNewEmail()}
+                            onDelete={handleDeleteAddress}
+                            isLoading={isGenerating}
+                            domains={domains}
+                            selectedDomain={selectedDomain}
+                            onDomainChange={handleDomainChange}
+                        />
+                    )}
+                </div>
 
                 {/* Features Grid (Small) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-12">

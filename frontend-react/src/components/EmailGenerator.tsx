@@ -1,10 +1,11 @@
-import { useState } from 'react'
-import { Copy, RefreshCw, Check, Trash2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Copy, RefreshCw, Check, Trash2, Clock } from 'lucide-react'
 import { Button } from './ui/Button'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface EmailGeneratorProps {
     email: string
+    createdAt: number | null
     onGenerateNew: () => void
     onDelete: () => void
     isLoading?: boolean
@@ -15,6 +16,7 @@ interface EmailGeneratorProps {
 
 export function EmailGenerator({
     email,
+    createdAt,
     onGenerateNew,
     onDelete,
     isLoading,
@@ -23,12 +25,40 @@ export function EmailGenerator({
     onDomainChange
 }: EmailGeneratorProps) {
     const [copied, setCopied] = useState(false)
+    const [timeLeft, setTimeLeft] = useState<string>('24:00:00')
 
     const handleCopy = () => {
         navigator.clipboard.writeText(email)
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
     }
+
+    // Timer Logic
+    useEffect(() => {
+        if (!createdAt) return
+
+        const updateTimer = () => {
+            const now = Date.now()
+            const expiry = createdAt + 24 * 60 * 60 * 1000
+            const diff = expiry - now
+
+            if (diff <= 0) {
+                setTimeLeft('00:00:00')
+                return
+            }
+
+            const h = Math.floor(diff / (1000 * 60 * 60))
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+            const s = Math.floor((diff % (1000 * 60)) / 1000)
+
+            const pad = (n: number) => n.toString().padStart(2, '0')
+            setTimeLeft(`${pad(h)}:${pad(m)}:${pad(s)}`)
+        }
+
+        updateTimer()
+        const interval = setInterval(updateTimer, 1000)
+        return () => clearInterval(interval)
+    }, [createdAt])
 
     return (
         <div className="w-full max-w-2xl mx-auto mb-8">
@@ -38,9 +68,10 @@ export function EmailGenerator({
                         <h2 className="text-sm font-semibold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">
                             Your Temporary Address
                         </h2>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm">
-                            Emails are available for 24 hours
-                        </p>
+                        <div className="flex items-center justify-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
+                            <Clock size={14} className="text-cyan-500" />
+                            <span>Valid for: <span className="font-mono font-bold text-slate-900 dark:text-slate-100">{timeLeft}</span></span>
+                        </div>
                     </div>
 
                     <div className="w-full space-y-4">
@@ -101,26 +132,16 @@ export function EmailGenerator({
                             </div>
                         </div>
 
-                        {/* Control Row: Delete | Domain | New */}
-                        <div className="flex flex-col sm:flex-row items-center gap-4">
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={onDelete}
-                                disabled={isLoading}
-                                className="w-full sm:w-auto text-slate-400 hover:text-red-500"
-                            >
-                                <Trash2 size={16} className="mr-2" />
-                                Delete
-                            </Button>
-
+                        {/* Control Row: Domain | New | Delete */}
+                        <div className="flex flex-col sm:flex-row items-center gap-3">
+                            {/* Domain Selector (Left) */}
                             <div className="flex-1 w-full sm:w-auto relative">
                                 <select
                                     value={selectedDomain}
                                     onChange={(e) => onDomainChange(e.target.value)}
                                     className="w-full h-9 bg-slate-50/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-lg px-3 text-sm font-medium text-slate-600 dark:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all appearance-none cursor-pointer text-center"
                                     style={{
-                                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='C19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
                                         backgroundRepeat: 'no-repeat',
                                         backgroundPosition: 'right 0.75rem center',
                                         backgroundSize: '1em',
@@ -134,6 +155,7 @@ export function EmailGenerator({
                                 </select>
                             </div>
 
+                            {/* Generate New (Center) */}
                             <Button
                                 variant="ghost"
                                 size="sm"
@@ -144,13 +166,28 @@ export function EmailGenerator({
                                 {!isLoading && <RefreshCw size={16} className="mr-2" />}
                                 Generate New
                             </Button>
+
+                            {/* Delete (Right) */}
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={onDelete}
+                                disabled={isLoading}
+                                className="w-full sm:w-auto text-slate-400 hover:text-red-500"
+                            >
+                                <Trash2 size={16} className="mr-2" />
+                                Delete
+                            </Button>
                         </div>
                     </div>
 
                     <div className="flex items-center justify-between w-full pt-4 border-t border-slate-100 dark:border-slate-800">
                         <div className="flex items-center text-xs text-slate-400">
                             <div className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
-                            Active
+                            Status: Active
+                        </div>
+                        <div className="text-[10px] text-slate-400 uppercase tracking-widest font-medium">
+                            Auto-refresh enabled
                         </div>
                     </div>
                 </div>
