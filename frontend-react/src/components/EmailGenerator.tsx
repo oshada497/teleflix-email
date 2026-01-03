@@ -102,26 +102,27 @@ export function EmailGenerator({
                         </div>
 
                         {/* Control Row: Delete | Domain | New */}
-                        <div className="flex flex-col sm:flex-row items-center gap-2">
+                        <div className="flex flex-col sm:flex-row items-center gap-4">
                             <Button
-                                variant="outline"
-                                size="md"
+                                variant="ghost"
+                                size="sm"
                                 onClick={onDelete}
                                 disabled={isLoading}
-                                className="w-full sm:w-auto text-slate-400 hover:text-red-500 border-slate-200 dark:border-slate-800"
+                                className="w-full sm:w-auto text-slate-400 hover:text-red-500"
                             >
-                                <Trash2 size={18} />
+                                <Trash2 size={16} className="mr-2" />
+                                Delete
                             </Button>
 
                             <div className="flex-1 w-full sm:w-auto relative">
                                 <select
                                     value={selectedDomain}
                                     onChange={(e) => onDomainChange(e.target.value)}
-                                    className="w-full h-10 bg-slate-50/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-lg px-4 text-sm font-medium text-slate-600 dark:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all appearance-none cursor-pointer text-center"
+                                    className="w-full h-9 bg-slate-50/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-lg px-3 text-sm font-medium text-slate-600 dark:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all appearance-none cursor-pointer text-center"
                                     style={{
                                         backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='C19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
                                         backgroundRepeat: 'no-repeat',
-                                        backgroundPosition: 'right 1rem center',
+                                        backgroundPosition: 'right 0.75rem center',
                                         backgroundSize: '1em',
                                     }}
                                 >
@@ -134,14 +135,14 @@ export function EmailGenerator({
                             </div>
 
                             <Button
-                                variant="outline"
-                                size="md"
+                                variant="ghost"
+                                size="sm"
                                 onClick={onGenerateNew}
                                 isLoading={isLoading}
-                                className="w-full sm:w-auto text-slate-500 hover:text-cyan-600 border-slate-200 dark:border-slate-800"
+                                className="w-full sm:w-auto text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400"
                             >
-                                <RefreshCw size={18} className="mr-2" />
-                                New
+                                {!isLoading && <RefreshCw size={16} className="mr-2" />}
+                                Generate New
                             </Button>
                         </div>
                     </div>
