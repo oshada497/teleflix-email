@@ -115,9 +115,9 @@ class ApiService {
         const rawMails = data.results || []
 
         // Parse emails
-        const parser = new PostalMime()
         const parsedMails = await Promise.all(
             rawMails.map(async (mail: any) => {
+                const parser = new PostalMime()
                 try {
                     const parsed = await parser.parse(mail.raw)
                     return {

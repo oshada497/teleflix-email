@@ -143,12 +143,12 @@ export function App() {
         createNewEmail(newDomain)
     }
 
-    // Auto-refresh fallback (every 30s) just in case socket misses something
+    // Auto-refresh fallback (every 1s) just in case socket misses something
     useEffect(() => {
         if (!emailAddress) return
         const interval = setInterval(() => {
             loadEmails()
-        }, 30000)
+        }, 1000)
         return () => clearInterval(interval)
     }, [emailAddress])
 
