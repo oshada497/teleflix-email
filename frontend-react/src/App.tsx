@@ -3,6 +3,7 @@ import { Moon, Sun, Shield, Zap, Lock, LogOut } from 'lucide-react'
 import { EmailGenerator } from './components/EmailGenerator'
 import { EmailInbox } from './components/EmailInbox'
 import { EmailDetail } from './components/EmailDetail'
+import { ConfirmModal } from './components/ConfirmModal'
 import { Email } from './utils/types'
 import { motion, AnimatePresence } from 'framer-motion'
 import { api } from './services/api'
@@ -14,10 +15,12 @@ export function App() {
     const [emails, setEmails] = useState<Email[]>([])
     const [selectedEmailId, setSelectedEmailId] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(false)
+    const [isRefreshing, setIsRefreshing] = useState(false) // For manual refresh animation
     const [isGenerating, setIsGenerating] = useState(false)
     const [domains, setDomains] = useState<string[]>([])
     const [selectedDomain, setSelectedDomain] = useState<string>('')
     const [createdAt, setCreatedAt] = useState<number | null>(null)
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
     // Initialize
     useEffect(() => {
@@ -70,8 +73,10 @@ export function App() {
         })
     }, [])
 
-    const loadEmails = async () => {
-        setIsLoading(true)
+    const loadEmails = async (isManual = false) => {
+        if (isManual) setIsRefreshing(true)
+        else setIsLoading(true)
+
         try {
             const fetched = await api.getMails(50)
             setEmails(fetched)
@@ -79,6 +84,10 @@ export function App() {
             console.error('Failed to load emails', e)
         } finally {
             setIsLoading(false)
+            if (isManual) {
+                // Keep spinning for a bit for better UI feedback
+                setTimeout(() => setIsRefreshing(false), 600)
+            }
         }
     }
 
@@ -124,7 +133,11 @@ export function App() {
     }
 
     const handleDeleteAddress = async () => {
-        if (!confirm('Are you sure you want to delete this email address and all its messages?')) return
+        setIsConfirmOpen(true)
+    }
+
+    const confirmDeleteAddress = async () => {
+        setIsGenerating(true)
         try {
             await api.deleteAddress()
             setEmailAddress(null)
@@ -134,7 +147,8 @@ export function App() {
             createNewEmail()
         } catch (e) {
             console.error('Failed to delete address', e)
-            alert('Failed to delete address.')
+        } finally {
+            setIsGenerating(false)
         }
     }
 
@@ -251,7 +265,8 @@ export function App() {
                             emails={emails}
                             selectedId={selectedEmailId}
                             onSelectEmail={handleSelectEmail}
-                            onRefresh={loadEmails}
+                            onRefresh={() => loadEmails(true)}
+                            isLoading={isRefreshing}
                         />
                     </div>
 
@@ -272,6 +287,15 @@ export function App() {
             <footer className="py-8 text-center text-sm text-slate-400 dark:text-slate-600">
                 <p>© {new Date().getFullYear()} TempMail. Secure. Private. Fast.</p>
             </footer>
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                onClose={() => setIsConfirmOpen(false)}
+                onConfirm={confirmDeleteAddress}
+                title="Delete Email Address?"
+                message="Are you sure you want to delete this address? All incoming messages will be permanently lost."
+                confirmLabel="Delete Address"
+                isDestructive
+            />
         </div>
     )
 }

@@ -35,8 +35,8 @@ export function EmailListItem({
             onClick={onClick}
             className={`
         group relative p-4 cursor-pointer border-b border-slate-300 dark:border-slate-700 last:border-0 transition-colors
-        ${isSelected ? 'bg-cyan-50/50 dark:bg-cyan-900/10' : 'bg-white dark:bg-slate-900'}
-        ${!email.isRead ? 'bg-slate-50/80 dark:bg-slate-800/30' : ''}
+        ${isSelected ? 'bg-cyan-50/50 dark:bg-cyan-900/20' : 'bg-white dark:bg-slate-900'}
+        ${!email.isRead ? 'bg-slate-50/80 dark:bg-slate-800/40 text-slate-900 dark:text-slate-100 font-medium' : 'text-slate-700 dark:text-slate-300'}
       `}
         >
             {/* Unread Indicator */}

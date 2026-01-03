@@ -20,7 +20,7 @@ export function EmailInbox({
 }: EmailInboxProps) {
     if (emails.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center h-[400px] text-slate-400 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700">
+            <div className="flex flex-col items-center justify-center h-[600px] text-slate-400 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700">
                 <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
                     <Inbox size={32} className="opacity-50" />
                 </div>
