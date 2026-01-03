@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { X, Reply, Trash2, Download, Star } from 'lucide-react'
 import { Email } from '../utils/types'
 import { Button } from './ui/Button'
+import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 
 interface EmailDetailProps {
     email: Email | null
@@ -11,9 +12,16 @@ interface EmailDetailProps {
 export function EmailDetail({ email, onClose }: EmailDetailProps) {
     if (!email) {
         return (
-            <div className="hidden md:flex h-[600px] items-center justify-center bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-300 dark:border-slate-800 border-dashed">
+            <div className="hidden md:flex flex-col h-[600px] items-center justify-center bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-300 dark:border-slate-800 border-dashed p-12">
+                <div className="w-64 h-64 mb-4">
+                    <DotLottieReact
+                        src="https://lottie.host/69f90986-e354-4d23-b91c-510b16b258c1/qflZLNtOXw.lottie"
+                        loop
+                        autoplay
+                    />
+                </div>
                 <div className="text-center text-slate-400">
-                    <p>Select an email to read</p>
+                    <p className="text-lg font-medium">Select an email to read</p>
                 </div>
             </div>
         )
