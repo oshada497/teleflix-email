@@ -251,6 +251,7 @@ export function App() {
                             emails={emails}
                             selectedId={selectedEmailId}
                             onSelectEmail={handleSelectEmail}
+                            onRefresh={loadEmails}
                         />
                     </div>
 
