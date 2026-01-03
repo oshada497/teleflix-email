@@ -7,9 +7,19 @@ interface EmailGeneratorProps {
     email: string
     onGenerateNew: () => void
     isLoading?: boolean
+    domains: string[]
+    selectedDomain: string
+    onDomainChange: (domain: string) => void
 }
 
-export function EmailGenerator({ email, onGenerateNew, isLoading }: EmailGeneratorProps) {
+export function EmailGenerator({
+    email,
+    onGenerateNew,
+    isLoading,
+    domains,
+    selectedDomain,
+    onDomainChange
+}: EmailGeneratorProps) {
     const [copied, setCopied] = useState(false)
 
     const handleCopy = () => {
@@ -27,63 +37,86 @@ export function EmailGenerator({ email, onGenerateNew, isLoading }: EmailGenerat
                             Your Temporary Address
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400 text-sm">
-                            This email will self-destruct when you leave
+                            Select a domain and generate your temporary email
                         </p>
                     </div>
 
-                    <div className="relative w-full group">
-                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl blur-xl transition-opacity opacity-50 group-hover:opacity-100" />
-                        <div className="relative flex items-center justify-between bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-xl p-2 pr-2 transition-colors hover:border-cyan-500/30 dark:hover:border-cyan-500/30">
-                            <div className="flex-1 px-4 py-2 overflow-hidden">
-                                <motion.p
-                                    key={email}
-                                    initial={{
-                                        opacity: 0,
-                                        y: 10,
-                                    }}
-                                    animate={{
-                                        opacity: 1,
-                                        y: 0,
-                                    }}
-                                    className="text-xl md:text-2xl font-mono text-slate-900 dark:text-slate-100 truncate font-medium"
-                                >
-                                    {email}
-                                </motion.p>
-                            </div>
+                    <div className="flex flex-col md:flex-row items-center gap-4 w-full">
+                        <div className="w-full md:w-48">
+                            <label className="sr-only">Select Domain</label>
+                            <select
+                                value={selectedDomain}
+                                onChange={(e) => onDomainChange(e.target.value)}
+                                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all appearance-none cursor-pointer"
+                                style={{
+                                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='C19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                                    backgroundRepeat: 'no-repeat',
+                                    backgroundPosition: 'right 1rem center',
+                                    backgroundSize: '1em',
+                                }}
+                            >
+                                {domains.map((dom) => (
+                                    <option key={dom} value={dom}>
+                                        @{dom}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
 
-                            <div className="flex items-center gap-2">
-                                <Button
-                                    onClick={handleCopy}
-                                    variant="primary"
-                                    className="min-w-[100px]"
-                                    disabled={isLoading}
-                                >
-                                    <AnimatePresence mode="wait">
-                                        {copied ? (
-                                            <motion.div
-                                                key="check"
-                                                initial={{ scale: 0.5, opacity: 0 }}
-                                                animate={{ scale: 1, opacity: 1 }}
-                                                exit={{ scale: 0.5, opacity: 0 }}
-                                                className="flex items-center gap-2"
-                                            >
-                                                <Check size={18} />
-                                                <span>Copied</span>
-                                            </motion.div>
-                                        ) : (
-                                            <motion.div
-                                                key="copy"
-                                                initial={{ scale: 0.5, opacity: 0 }}
-                                                animate={{ scale: 1, opacity: 1 }}
-                                                exit={{ scale: 0.5, opacity: 0 }}
-                                                className="flex items-center gap-2"
-                                            >
-                                                <Copy size={18} />
-                                                <span>Copy</span>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </Button>
+                        <div className="relative flex-1 group w-full">
+                            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl blur-xl transition-opacity opacity-50 group-hover:opacity-100" />
+                            <div className="relative flex items-center justify-between bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-xl p-2 pr-2 transition-colors hover:border-cyan-500/30 dark:hover:border-cyan-500/30">
+                                <div className="flex-1 px-4 py-2 overflow-hidden">
+                                    <motion.p
+                                        key={email}
+                                        initial={{
+                                            opacity: 0,
+                                            y: 10,
+                                        }}
+                                        animate={{
+                                            opacity: 1,
+                                            y: 0,
+                                        }}
+                                        className="text-xl md:text-2xl font-mono text-slate-900 dark:text-slate-100 truncate font-medium"
+                                    >
+                                        {email}
+                                    </motion.p>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <Button
+                                        onClick={handleCopy}
+                                        variant="primary"
+                                        className="min-w-[100px]"
+                                        disabled={isLoading}
+                                    >
+                                        <AnimatePresence mode="wait">
+                                            {copied ? (
+                                                <motion.div
+                                                    key="check"
+                                                    initial={{ scale: 0.5, opacity: 0 }}
+                                                    animate={{ scale: 1, opacity: 1 }}
+                                                    exit={{ scale: 0.5, opacity: 0 }}
+                                                    className="flex items-center gap-2"
+                                                >
+                                                    <Check size={18} />
+                                                    <span>Copied</span>
+                                                </motion.div>
+                                            ) : (
+                                                <motion.div
+                                                    key="copy"
+                                                    initial={{ scale: 0.5, opacity: 0 }}
+                                                    animate={{ scale: 1, opacity: 1 }}
+                                                    exit={{ scale: 0.5, opacity: 0 }}
+                                                    className="flex items-center gap-2"
+                                                >
+                                                    <Copy size={18} />
+                                                    <span>Copy</span>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </Button>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -15,6 +15,8 @@ export function App() {
     const [selectedEmailId, setSelectedEmailId] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const [isGenerating, setIsGenerating] = useState(false)
+    const [domains, setDomains] = useState<string[]>([])
+    const [selectedDomain, setSelectedDomain] = useState<string>('')
 
     // Initialize
     useEffect(() => {
@@ -29,11 +31,20 @@ export function App() {
             setEmailAddress(session.address)
             loadEmails()
             api.connectSocket(handleNewEmail)
-        } else {
-            // Optional: Auto-create first email? Or let user click?
-            // Let's create one for them to match previous UX
-            createNewEmail()
         }
+
+        // Fetch domains
+        api.getDomains().then(doms => {
+            setDomains(doms)
+            if (doms.length > 0 && !selectedDomain) {
+                setSelectedDomain(doms[0])
+            }
+
+            // If no session, create initial email with first domain
+            if (!session && doms.length > 0) {
+                createNewEmail(doms[0])
+            }
+        })
 
         return () => {
             api.disconnectSocket()
@@ -69,13 +80,12 @@ export function App() {
         }
     }
 
-    const createNewEmail = async () => {
+    const createNewEmail = async (overrideDomain?: string) => {
         setIsGenerating(true)
         try {
             api.clearSession() // Clear old session first
-            // Get domain list (fallback to hardcoded)
-            const domains = await api.getDomains()
-            const domain = domains[Math.floor(Math.random() * domains.length)]
+
+            const domain = overrideDomain || selectedDomain || (await api.getDomains())[0]
 
             const session = await api.createAddress(domain)
             setEmailAddress(session.address)
@@ -175,8 +185,11 @@ export function App() {
                 {/* Generator */}
                 <EmailGenerator
                     email={emailAddress || 'Generating...'}
-                    onGenerateNew={createNewEmail}
+                    onGenerateNew={() => createNewEmail()}
                     isLoading={isGenerating}
+                    domains={domains}
+                    selectedDomain={selectedDomain}
+                    onDomainChange={setSelectedDomain}
                 />
 
                 {/* Features Grid (Small) */}
