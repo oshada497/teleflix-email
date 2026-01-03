@@ -66,6 +66,15 @@ class ApiService {
         return null
     }
 
+    restoreSession(jwt: string, address: string, createdAt: number) {
+        this.jwt = jwt
+        this.address = address
+        this.createdAt = createdAt
+        localStorage.setItem('wipemymail_jwt', jwt)
+        localStorage.setItem('wipemymail_address', address)
+        localStorage.setItem('wipemymail_created_at', createdAt.toString())
+    }
+
     // --- API Interactions ---
 
     async getDomains(): Promise<string[]> {

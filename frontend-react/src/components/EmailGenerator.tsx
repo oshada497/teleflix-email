@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Copy, RefreshCw, Check, Trash2, Clock } from 'lucide-react'
+import { Copy, RefreshCw, Check, Trash2, Clock, QrCode } from 'lucide-react'
 import { Button } from './ui/Button'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -12,6 +12,7 @@ interface EmailGeneratorProps {
     domains: string[]
     selectedDomain: string
     onDomainChange: (domain: string) => void
+    onShowQR?: () => void
 }
 
 export function EmailGenerator({
@@ -22,7 +23,8 @@ export function EmailGenerator({
     isLoading,
     domains,
     selectedDomain,
-    onDomainChange
+    onDomainChange,
+    onShowQR
 }: EmailGeneratorProps) {
     const [copied, setCopied] = useState(false)
     const [timeLeft, setTimeLeft] = useState<string>('24:00:00')
@@ -186,6 +188,16 @@ export function EmailGenerator({
                             <div className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
                             Active
                         </div>
+
+                        {onShowQR && (
+                            <button
+                                onClick={onShowQR}
+                                className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400 transition-colors uppercase tracking-tight"
+                            >
+                                <QrCode size={14} />
+                                Sync to Mobile
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

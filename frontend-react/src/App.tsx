@@ -4,6 +4,7 @@ import { EmailGenerator } from './components/EmailGenerator'
 import { EmailInbox } from './components/EmailInbox'
 import { EmailDetail } from './components/EmailDetail'
 import { ConfirmModal } from './components/ConfirmModal'
+import { QRCodeModal } from './components/QRCodeModal'
 import { Email } from './utils/types'
 import { motion, AnimatePresence } from 'framer-motion'
 import { api } from './services/api'
@@ -21,12 +22,26 @@ export function App() {
     const [selectedDomain, setSelectedDomain] = useState<string>('')
     const [createdAt, setCreatedAt] = useState<number | null>(null)
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+    const [isQRModalOpen, setIsQRModalOpen] = useState(false)
 
     // Initialize
     useEffect(() => {
         // Check system preference
         if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
             setIsDark(true)
+        }
+
+        // Check for session in URL (QR Scan recovery)
+        const params = new URLSearchParams(window.location.search)
+        const token = params.get('token')
+        const addr = params.get('addr')
+        const ts = params.get('ts')
+
+        if (token && addr && ts) {
+            api.restoreSession(token, addr, parseInt(ts))
+            // Remove params from URL and reload to clean state
+            window.history.replaceState({}, document.title, window.location.pathname)
+            // Continue with normal initialization
         }
 
         // Check for existing session
@@ -219,6 +234,7 @@ export function App() {
                         domains={domains}
                         selectedDomain={selectedDomain}
                         onDomainChange={handleDomainChange}
+                        onShowQR={() => setIsQRModalOpen(true)}
                     />
                 )}
 
@@ -295,6 +311,11 @@ export function App() {
                 message="Are you sure you want to delete this address? All incoming messages will be permanently lost."
                 confirmLabel="Delete Address"
                 isDestructive
+            />
+            <QRCodeModal
+                isOpen={isQRModalOpen}
+                onClose={() => setIsQRModalOpen(false)}
+                sessionUrl={`${window.location.origin}${window.location.pathname}?token=${encodeURIComponent(api.getSession()?.jwt || '')}&addr=${encodeURIComponent(api.getSession()?.address || '')}&ts=${api.getSession()?.createdAt || ''}`}
             />
         </div>
     )
