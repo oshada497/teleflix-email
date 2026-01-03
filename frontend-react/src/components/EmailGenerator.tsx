@@ -1,6 +1,5 @@
-```javascript
-import { useState, useRef, useEffect, memo, useMemo } from 'react'
-import { Copy, RefreshCw, Trash2, QrCode, ChevronDown, Check } from 'lucide-react'
+import { useState, useRef, useEffect, memo } from 'react'
+import { Copy, RefreshCw, Trash2, QrCode, ChevronDown, Check, Clock } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from './ui/Button'
 
@@ -16,7 +15,7 @@ interface EmailGeneratorProps {
     onShowQR: () => void
 }
 
-export const EmailGenerator = memo(function EmailGeneratorComponent({
+function EmailGeneratorComponent({
     email,
     createdAt,
     onGenerateNew,
@@ -28,7 +27,6 @@ export const EmailGenerator = memo(function EmailGeneratorComponent({
     onShowQR
 }: EmailGeneratorProps) {
     const [timeLeft, setTimeLeft] = useState<string>('')
-    const [progress, setProgress] = useState(100)
     const [hasCopied, setHasCopied] = useState(false)
     const [isDomainOpen, setIsDomainOpen] = useState(false)
     const dropdownRef = useRef<HTMLDivElement>(null)
@@ -124,7 +122,7 @@ export const EmailGenerator = memo(function EmailGeneratorComponent({
                                         disabled={isLoading}
                                     >
                                         <AnimatePresence mode="wait">
-                                            {copied ? (
+                                            {hasCopied ? (
                                                 <motion.div
                                                     key="check"
                                                     initial={{ scale: 0.5, opacity: 0 }}
@@ -160,10 +158,10 @@ export const EmailGenerator = memo(function EmailGeneratorComponent({
                                 <button
                                     onClick={() => !isLoading && setIsDomainOpen(!isDomainOpen)}
                                     disabled={isLoading}
-                                    className={`w - full h - 9 pl - 3 pr - 2 bg - slate - 50 dark: bg - slate - 900 border border - slate - 200 dark: border - slate - 800 rounded - lg text - sm font - medium text - slate - 700 dark: text - slate - 200 flex items - center justify - between transition - all outline - none focus: ring - 2 focus: ring - cyan - 500 / 30 ${ isDomainOpen ? 'ring-2 ring-cyan-500/30 border-cyan-500/50' : '' } ${ isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-slate-300 dark:hover:border-slate-700' } `}
+                                    className={`w-full h-9 pl-3 pr-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 flex items-center justify-between transition-all outline-none focus:ring-2 focus:ring-cyan-500/30 ${isDomainOpen ? 'ring-2 ring-cyan-500/30 border-cyan-500/50' : ''} ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-slate-300 dark:hover:border-slate-700'}`}
                                 >
                                     <span className="truncate mr-2">@{selectedDomain}</span>
-                                    <ChevronDown size={14} className={`text - slate - 500 transition - transform duration - 200 ${ isDomainOpen ? 'rotate-180' : '' } `} />
+                                    <ChevronDown size={14} className={`text-slate-500 transition-transform duration-200 ${isDomainOpen ? 'rotate-180' : ''}`} />
                                 </button>
 
                                 {/* Dropdown Menu */}
@@ -176,11 +174,10 @@ export const EmailGenerator = memo(function EmailGeneratorComponent({
                                                     onDomainChange(dom)
                                                     setIsDomainOpen(false)
                                                 }}
-                                                className={`w - full text - left px - 3 py - 2 text - sm flex items - center justify - between transition - colors hover: bg - slate - 50 dark: hover: bg - slate - 800 ${
-    selectedDomain === dom
-        ? 'text-cyan-600 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-900/20 font-medium'
-        : 'text-slate-700 dark:text-slate-300'
-} `}
+                                                className={`w-full text-left px-3 py-2 text-sm flex items-center justify-between transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 ${selectedDomain === dom
+                                                        ? 'text-cyan-600 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-900/20 font-medium'
+                                                        : 'text-slate-700 dark:text-slate-300'
+                                                    }`}
                                             >
                                                 <span>@{dom}</span>
                                                 {selectedDomain === dom && <Check size={14} className="text-cyan-500" />}
