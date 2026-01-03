@@ -155,7 +155,8 @@ export function App() {
         setIsGenerating(true)
         try {
             await api.deleteAddress()
-            setEmailAddress(null)
+            // Don't nullify emailAddress here to prevent UI flicker (hero section disappearing)
+            // setEmailAddress(null) 
             setCreatedAt(null)
             setEmails([])
             setSelectedEmailId(null)

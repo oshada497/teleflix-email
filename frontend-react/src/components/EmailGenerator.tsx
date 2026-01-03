@@ -163,7 +163,7 @@ function EmailGeneratorComponent({
                                 size="sm"
                                 onClick={onGenerateNew}
                                 isLoading={isLoading}
-                                className="w-full sm:w-auto text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400 transition-all duration-200 hover:scale-105 active:scale-95"
+                                className="group w-full sm:w-auto text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400 transition-all duration-200 hover:scale-105 active:scale-95"
                             >
                                 {!isLoading && <RefreshCw size={16} className="mr-2 group-hover:rotate-180 transition-transform duration-300" />}
                                 Generate New
