@@ -1,21 +1,22 @@
-import { useState, useEffect, memo, useMemo } from 'react'
-import { Copy, RefreshCw, Check, Trash2, Clock, QrCode } from 'lucide-react'
-import { Button } from './ui/Button'
+```javascript
+import { useState, useRef, useEffect, memo, useMemo } from 'react'
+import { Copy, RefreshCw, Trash2, QrCode, ChevronDown, Check } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Button } from './ui/Button'
 
 interface EmailGeneratorProps {
-    email: string
+    email: string | null
     createdAt: number | null
     onGenerateNew: () => void
     onDelete: () => void
-    isLoading?: boolean
+    isLoading: boolean
     domains: string[]
     selectedDomain: string
     onDomainChange: (domain: string) => void
-    onShowQR?: () => void
+    onShowQR: () => void
 }
 
-function EmailGeneratorComponent({
+export const EmailGenerator = memo(function EmailGeneratorComponent({
     email,
     createdAt,
     onGenerateNew,
@@ -26,14 +27,32 @@ function EmailGeneratorComponent({
     onDomainChange,
     onShowQR
 }: EmailGeneratorProps) {
-    const [copied, setCopied] = useState(false)
-    const [timeLeft, setTimeLeft] = useState<string>('24:00:00')
+    const [timeLeft, setTimeLeft] = useState<string>('')
+    const [progress, setProgress] = useState(100)
+    const [hasCopied, setHasCopied] = useState(false)
+    const [isDomainOpen, setIsDomainOpen] = useState(false)
+    const dropdownRef = useRef<HTMLDivElement>(null)
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(email)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
+        if (email) {
+            navigator.clipboard.writeText(email)
+            setHasCopied(true)
+            setTimeout(() => setHasCopied(false), 2000)
+        }
     }
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsDomainOpen(false)
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside)
+        }
+    }, [])
 
     // Timer Logic
     useEffect(() => {
@@ -54,7 +73,7 @@ function EmailGeneratorComponent({
             const s = Math.floor((diff % (1000 * 60)) / 1000)
 
             const pad = (n: number) => n.toString().padStart(2, '0')
-            setTimeLeft(`${pad(h)}:${pad(m)}:${pad(s)}`)
+            setTimeLeft(`${ pad(h) }:${ pad(m) }:${ pad(s) } `)
         }
 
         updateTimer()
@@ -136,25 +155,39 @@ function EmailGeneratorComponent({
 
                         {/* Control Row: Domain | New | Delete */}
                         <div className="flex flex-col sm:flex-row items-center gap-3">
-                            {/* Domain Selector (Left) */}
-                            <div className="flex-1 w-full sm:w-auto relative">
-                                <select
-                                    value={selectedDomain}
-                                    onChange={(e) => onDomainChange(e.target.value)}
-                                    className="w-full h-9 bg-slate-50/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-lg px-3 text-sm font-medium text-slate-600 dark:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all appearance-none cursor-pointer text-center"
-                                    style={{
-                                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                                        backgroundRepeat: 'no-repeat',
-                                        backgroundPosition: 'right 0.75rem center',
-                                        backgroundSize: '1em',
-                                    }}
+                            {/* Domain Selector (Custom Dropdown) */}
+                            <div className="relative w-full sm:w-[200px]" ref={dropdownRef}>
+                                <button
+                                    onClick={() => !isLoading && setIsDomainOpen(!isDomainOpen)}
+                                    disabled={isLoading}
+                                    className={`w - full h - 9 pl - 3 pr - 2 bg - slate - 50 dark: bg - slate - 900 border border - slate - 200 dark: border - slate - 800 rounded - lg text - sm font - medium text - slate - 700 dark: text - slate - 200 flex items - center justify - between transition - all outline - none focus: ring - 2 focus: ring - cyan - 500 / 30 ${ isDomainOpen ? 'ring-2 ring-cyan-500/30 border-cyan-500/50' : '' } ${ isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-slate-300 dark:hover:border-slate-700' } `}
                                 >
-                                    {domains.map((dom) => (
-                                        <option key={dom} value={dom}>
-                                            @{dom}
-                                        </option>
-                                    ))}
-                                </select>
+                                    <span className="truncate mr-2">@{selectedDomain}</span>
+                                    <ChevronDown size={14} className={`text - slate - 500 transition - transform duration - 200 ${ isDomainOpen ? 'rotate-180' : '' } `} />
+                                </button>
+
+                                {/* Dropdown Menu */}
+                                {isDomainOpen && (
+                                    <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl z-50 overflow-hidden py-1 animate-in fade-in zoom-in-95 duration-100 origin-top">
+                                        {domains.map((dom) => (
+                                            <button
+                                                key={dom}
+                                                onClick={() => {
+                                                    onDomainChange(dom)
+                                                    setIsDomainOpen(false)
+                                                }}
+                                                className={`w - full text - left px - 3 py - 2 text - sm flex items - center justify - between transition - colors hover: bg - slate - 50 dark: hover: bg - slate - 800 ${
+    selectedDomain === dom
+        ? 'text-cyan-600 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-900/20 font-medium'
+        : 'text-slate-700 dark:text-slate-300'
+} `}
+                                            >
+                                                <span>@{dom}</span>
+                                                {selectedDomain === dom && <Check size={14} className="text-cyan-500" />}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
 
                             {/* Generate New (Center) */}
