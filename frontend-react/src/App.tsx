@@ -5,6 +5,9 @@ import { EmailInbox } from './components/EmailInbox'
 import { EmailDetail } from './components/EmailDetail'
 import { ConfirmModal } from './components/ConfirmModal'
 import { QRCodeModal } from './components/QRCodeModal'
+import { FeatureGrid } from './components/FeatureGrid'
+import { Testimonials } from './components/Testimonials'
+import { FAQ } from './components/FAQ'
 import { Email } from './utils/types'
 import { motion, AnimatePresence } from 'framer-motion'
 import { api } from './services/api'
@@ -301,7 +304,15 @@ export function App() {
                         </AnimatePresence>
                     </div>
                 </div>
-            </main>
+
+
+                {/* Extended Landing Page Sections */}
+                <div className="mt-24 space-y-0">
+                    <FeatureGrid />
+                    <Testimonials />
+                    <FAQ />
+                </div>
+            </main >
 
             <footer className="py-8 text-center text-sm text-slate-400 dark:text-slate-600">
                 <p>© {new Date().getFullYear()} TempMail. Secure. Private. Fast.</p>
@@ -320,7 +331,7 @@ export function App() {
                 onClose={() => setIsQRModalOpen(false)}
                 sessionUrl={`${window.location.origin}${window.location.pathname}?t=${encodeURIComponent(api.getSession()?.jwt || '')}&a=${encodeURIComponent(api.getSession()?.address || '')}&c=${api.getSession()?.createdAt || ''}`}
             />
-        </div>
+        </div >
     )
 }
 
