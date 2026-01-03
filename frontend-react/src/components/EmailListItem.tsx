@@ -29,15 +29,18 @@ export function EmailListItem({
                 x: -20,
             }}
             whileHover={{
-                scale: 1.005,
-                backgroundColor: 'rgba(6, 182, 212, 0.03)',
+                scale: 1.002,
             }}
             onClick={onClick}
             className={`
-        group relative p-4 cursor-pointer border-b border-slate-300 dark:border-slate-700 last:border-0 transition-colors
-        ${isSelected ? 'bg-cyan-50/50 dark:bg-cyan-900/20' : 'bg-white dark:bg-slate-900'}
-        ${!email.isRead ? 'bg-slate-50/80 dark:bg-slate-800/40 text-slate-900 dark:text-slate-100 font-medium' : 'text-slate-700 dark:text-slate-300'}
-      `}
+                group relative p-4 cursor-pointer border-b border-slate-300 dark:border-slate-700 last:border-0 transition-all
+                ${isSelected
+                    ? 'bg-cyan-50/50 dark:bg-cyan-900/30'
+                    : !email.isRead
+                        ? 'bg-slate-50/80 dark:bg-slate-800/50'
+                        : 'bg-white dark:bg-slate-900'}
+                hover:bg-slate-50 dark:hover:bg-slate-800/70
+            `}
         >
             {/* Unread Indicator */}
             {!email.isRead && (
