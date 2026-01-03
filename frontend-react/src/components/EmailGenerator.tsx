@@ -101,13 +101,23 @@ export function EmailGenerator({
                             </div>
                         </div>
 
-                        {/* Compact Domain Selector */}
-                        <div className="flex justify-center">
-                            <div className="w-full max-w-xs relative">
+                        {/* Control Row: Delete | Domain | New */}
+                        <div className="flex flex-col sm:flex-row items-center gap-2">
+                            <Button
+                                variant="outline"
+                                size="md"
+                                onClick={onDelete}
+                                disabled={isLoading}
+                                className="w-full sm:w-auto text-slate-400 hover:text-red-500 border-slate-200 dark:border-slate-800"
+                            >
+                                <Trash2 size={18} />
+                            </Button>
+
+                            <div className="flex-1 w-full sm:w-auto relative">
                                 <select
                                     value={selectedDomain}
                                     onChange={(e) => onDomainChange(e.target.value)}
-                                    className="w-full bg-slate-50/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all appearance-none cursor-pointer text-center"
+                                    className="w-full h-10 bg-slate-50/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-lg px-4 text-sm font-medium text-slate-600 dark:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all appearance-none cursor-pointer text-center"
                                     style={{
                                         backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='C19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
                                         backgroundRepeat: 'no-repeat',
@@ -122,34 +132,21 @@ export function EmailGenerator({
                                     ))}
                                 </select>
                             </div>
+
+                            <Button
+                                variant="outline"
+                                size="md"
+                                onClick={onGenerateNew}
+                                isLoading={isLoading}
+                                className="w-full sm:w-auto text-slate-500 hover:text-cyan-600 border-slate-200 dark:border-slate-800"
+                            >
+                                <RefreshCw size={18} className="mr-2" />
+                                New
+                            </Button>
                         </div>
                     </div>
 
                     <div className="flex items-center justify-between w-full pt-4 border-t border-slate-100 dark:border-slate-800">
-                        <div className="flex items-center gap-4">
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={onGenerateNew}
-                                isLoading={isLoading}
-                                className="text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400"
-                            >
-                                {!isLoading && <RefreshCw size={16} className="mr-2" />}
-                                Generate New
-                            </Button>
-                            <div className="h-4 w-px bg-slate-200 dark:bg-slate-800" />
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={onDelete}
-                                disabled={isLoading}
-                                className="text-slate-400 hover:text-red-500 dark:hover:text-red-400"
-                            >
-                                <Trash2 size={16} className="mr-2" />
-                                Delete
-                            </Button>
-                        </div>
-
                         <div className="flex items-center text-xs text-slate-400">
                             <div className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
                             Active
