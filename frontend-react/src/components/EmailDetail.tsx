@@ -29,18 +29,10 @@ export function EmailDetail({ email, onClose }: EmailDetailProps) {
 
     return (
         <motion.div
-            initial={{
-                opacity: 0,
-                x: 20,
-            }}
-            animate={{
-                opacity: 1,
-                x: 0,
-            }}
-            exit={{
-                opacity: 0,
-                x: 20,
-            }}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-xl h-[600px] flex flex-col overflow-hidden absolute inset-0 md:relative z-20 md:z-0"
         >
             {/* Header */}

@@ -17,18 +17,10 @@ function EmailListItemComponent({
     return (
         <motion.div
             layout
-            initial={{
-                opacity: 0,
-                x: -20,
-            }}
-            animate={{
-                opacity: 1,
-                x: 0,
-            }}
-            exit={{
-                opacity: 0,
-                x: -20,
-            }}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
             onClick={onClick}
             className={`
                 group relative p-4 cursor-pointer border-b border-slate-300 dark:border-slate-700 last:border-0 transition-all hover:scale-[1.002]
