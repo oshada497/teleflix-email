@@ -20,7 +20,7 @@ export function EmailGenerator({ email, onGenerateNew, isLoading }: EmailGenerat
 
     return (
         <div className="w-full max-w-2xl mx-auto mb-8">
-            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 p-6 md:p-8">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-300 dark:border-slate-800 p-6 md:p-8">
                 <div className="flex flex-col items-center text-center space-y-6">
                     <div className="space-y-2">
                         <h2 className="text-sm font-semibold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">
@@ -33,7 +33,7 @@ export function EmailGenerator({ email, onGenerateNew, isLoading }: EmailGenerat
 
                     <div className="relative w-full group">
                         <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl blur-xl transition-opacity opacity-50 group-hover:opacity-100" />
-                        <div className="relative flex items-center justify-between bg-slate-50 dark:bg-slate-950 border-2 border-slate-100 dark:border-slate-800 rounded-xl p-2 pr-2 transition-colors hover:border-cyan-500/30 dark:hover:border-cyan-500/30">
+                        <div className="relative flex items-center justify-between bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-xl p-2 pr-2 transition-colors hover:border-cyan-500/30 dark:hover:border-cyan-500/30">
                             <div className="flex-1 px-4 py-2 overflow-hidden">
                                 <motion.p
                                     key={email}

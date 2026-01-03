@@ -34,7 +34,7 @@ export function EmailListItem({
             }}
             onClick={onClick}
             className={`
-        group relative p-4 cursor-pointer border-b border-slate-200 dark:border-slate-700 last:border-0 transition-colors
+        group relative p-4 cursor-pointer border-b border-slate-300 dark:border-slate-700 last:border-0 transition-colors
         ${isSelected ? 'bg-cyan-50/50 dark:bg-cyan-900/10' : 'bg-white dark:bg-slate-900'}
         ${!email.isRead ? 'bg-slate-50/80 dark:bg-slate-800/30' : ''}
       `}

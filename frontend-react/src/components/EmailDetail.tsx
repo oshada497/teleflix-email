@@ -11,7 +11,7 @@ interface EmailDetailProps {
 export function EmailDetail({ email, onClose }: EmailDetailProps) {
     if (!email) {
         return (
-            <div className="hidden md:flex h-[600px] items-center justify-center bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-200 dark:border-slate-800 border-dashed">
+            <div className="hidden md:flex h-[600px] items-center justify-center bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-300 dark:border-slate-800 border-dashed">
                 <div className="text-center text-slate-400">
                     <p>Select an email to read</p>
                 </div>
@@ -33,10 +33,10 @@ export function EmailDetail({ email, onClose }: EmailDetailProps) {
                 opacity: 0,
                 x: 20,
             }}
-            className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-xl h-[600px] flex flex-col overflow-hidden absolute inset-0 md:relative z-20 md:z-0"
+            className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-xl h-[600px] flex flex-col overflow-hidden absolute inset-0 md:relative z-20 md:z-0"
         >
             {/* Header */}
-            <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-start justify-between bg-white dark:bg-slate-900 sticky top-0 z-10">
+            <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between bg-white dark:bg-slate-900 sticky top-0 z-10">
                 <div className="flex-1 pr-4">
                     <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2 leading-tight">
                         {email.subject}
@@ -59,7 +59,7 @@ export function EmailDetail({ email, onClose }: EmailDetailProps) {
             </div>
 
             {/* Toolbar */}
-            <div className="px-6 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2 bg-slate-50/50 dark:bg-slate-900/50">
+            <div className="px-6 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2 bg-slate-50/50 dark:bg-slate-900/50">
                 <span className="text-xs text-slate-500 mr-auto">
                     {email.timestamp.toLocaleString()}
                 </span>
@@ -88,7 +88,7 @@ export function EmailDetail({ email, onClose }: EmailDetailProps) {
                 />
 
                 {email.hasAttachments && (
-                    <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
+                    <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800">
                         <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-3">
                             Attachments (2)
                         </h4>
