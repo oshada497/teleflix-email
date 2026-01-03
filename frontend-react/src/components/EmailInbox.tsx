@@ -33,20 +33,25 @@ function EmailInboxComponent({
                     </h3>
 
                     {onRefresh && (
-                        <button
+                        <motion.button
                             onClick={onRefresh}
                             disabled={isLoading}
-                            className={`group p-2 rounded-lg transition-all duration-300 ${isLoading
+                            whileHover="hover"
+                            whileTap={{ scale: 0.95 }}
+                            className={`p-2 rounded-lg transition-colors duration-300 ${isLoading
                                 ? 'text-cyan-500'
-                                : 'text-slate-500 hover:text-cyan-600 hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95'
+                                : 'text-slate-500 hover:text-cyan-600 hover:bg-slate-200 dark:hover:bg-slate-800'
                                 }`}
                             title="Refresh Inbox"
                         >
-                            <RefreshCw
-                                size={18}
-                                className={isLoading ? 'animate-spin' : 'transform origin-center transition-transform duration-500 group-hover:rotate-180'}
-                            />
-                        </button>
+                            <motion.div
+                                variants={{ hover: { rotate: 180 } }}
+                                transition={{ duration: 0.5, ease: "easeInOut" }}
+                                className={isLoading ? 'animate-spin' : ''}
+                            >
+                                <RefreshCw size={18} />
+                            </motion.div>
+                        </motion.button>
                     )}
                 </div>
             </div>
