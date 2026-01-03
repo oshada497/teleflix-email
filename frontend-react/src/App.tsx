@@ -261,8 +261,10 @@ export function App() {
                             key={i}
                             className="flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm"
                         >
-                            <feature.icon className="text-cyan-500" size={20} />
-                            <div>
+                            <div className="flex-shrink-0">
+                                <feature.icon className="text-cyan-500" size={24} />
+                            </div>
+                            <div className="flex-1">
                                 <h3 className="font-semibold text-sm text-slate-900 dark:text-white">
                                     {feature.label}
                                 </h3>

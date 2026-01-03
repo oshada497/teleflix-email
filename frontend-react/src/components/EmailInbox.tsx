@@ -36,13 +36,16 @@ function EmailInboxComponent({
                         <button
                             onClick={onRefresh}
                             disabled={isLoading}
-                            className={`p-2 rounded-lg transition-all duration-200 ${isLoading
-                                    ? 'text-cyan-500 animate-spin'
-                                    : 'text-slate-500 hover:text-cyan-600 hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95 hover:rotate-180'
+                            className={`group p-2 rounded-lg transition-all duration-300 ${isLoading
+                                    ? 'text-cyan-500'
+                                    : 'text-slate-500 hover:text-cyan-600 hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95'
                                 }`}
                             title="Refresh Inbox"
                         >
-                            <RefreshCw size={18} />
+                            <RefreshCw
+                                size={18}
+                                className={isLoading ? 'animate-spin' : 'transition-transform duration-300 group-hover:rotate-180'}
+                            />
                         </button>
                     )}
                 </div>
