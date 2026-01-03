@@ -88,7 +88,7 @@ export function App() {
         })
     }, [])
 
-    const loadEmails = async (isManual = false) => {
+    const loadEmails = useCallback(async (isManual = false) => {
         if (isManual) setIsRefreshing(true)
         else setIsLoading(true)
 
@@ -104,7 +104,7 @@ export function App() {
                 setTimeout(() => setIsRefreshing(false), 600)
             }
         }
-    }
+    }, [])
 
     const createNewEmail = async (overrideDomain?: string) => {
         setIsGenerating(true)
@@ -172,12 +172,12 @@ export function App() {
         createNewEmail(newDomain)
     }
 
-    // Auto-refresh fallback (every 1s) just in case socket misses something
+    // Auto-refresh fallback (every 5s) just in case socket misses something
     useEffect(() => {
         if (!emailAddress) return
         const interval = setInterval(() => {
             loadEmails()
-        }, 1000)
+        }, 5000) // Reduced from 1000ms to 5000ms for better performance
         return () => clearInterval(interval)
     }, [emailAddress])
 

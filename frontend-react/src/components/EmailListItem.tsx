@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { motion } from 'framer-motion'
 import { Paperclip, ChevronRight } from 'lucide-react'
 import { Email } from '../utils/types'
@@ -8,7 +9,7 @@ interface EmailListItemProps {
     onClick: () => void
 }
 
-export function EmailListItem({
+function EmailListItemComponent({
     email,
     isSelected,
     onClick,
@@ -28,12 +29,9 @@ export function EmailListItem({
                 opacity: 0,
                 x: -20,
             }}
-            whileHover={{
-                scale: 1.002,
-            }}
             onClick={onClick}
             className={`
-                group relative p-4 cursor-pointer border-b border-slate-300 dark:border-slate-700 last:border-0 transition-all
+                group relative p-4 cursor-pointer border-b border-slate-300 dark:border-slate-700 last:border-0 transition-all hover:scale-[1.002]
                 ${isSelected
                     ? 'bg-cyan-50/50 dark:bg-cyan-900/30'
                     : !email.isRead
@@ -96,3 +94,5 @@ export function EmailListItem({
         </motion.div>
     )
 }
+
+export const EmailListItem = memo(EmailListItemComponent)

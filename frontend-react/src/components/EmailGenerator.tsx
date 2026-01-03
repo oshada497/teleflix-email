@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo, useMemo } from 'react'
 import { Copy, RefreshCw, Check, Trash2, Clock, QrCode } from 'lucide-react'
 import { Button } from './ui/Button'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -15,7 +15,7 @@ interface EmailGeneratorProps {
     onShowQR?: () => void
 }
 
-export function EmailGenerator({
+function EmailGeneratorComponent({
     email,
     createdAt,
     onGenerateNew,
@@ -204,3 +204,5 @@ export function EmailGenerator({
         </div>
     )
 }
+
+export const EmailGenerator = memo(EmailGeneratorComponent)

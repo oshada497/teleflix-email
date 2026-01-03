@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { Inbox, RefreshCw } from 'lucide-react'
 import { Email } from '../utils/types'
@@ -11,7 +12,7 @@ interface EmailInboxProps {
     isLoading?: boolean
 }
 
-export function EmailInbox({
+function EmailInboxComponent({
     emails,
     selectedId,
     onSelectEmail,
@@ -33,7 +34,7 @@ export function EmailInbox({
                         <button
                             onClick={onRefresh}
                             disabled={isLoading}
-                            className={`ml-auto p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 hover:text-cyan-600 transition-all ${isLoading ? 'animate-spin text-cyan-500' : ''}`}
+                            className={`ml - auto p - 1.5 rounded - lg hover: bg - slate - 200 dark: hover: bg - slate - 800 text - slate - 500 hover: text - cyan - 600 transition - all ${isLoading ? 'animate-spin text-cyan-500' : ''} `}
                             title="Refresh Inbox"
                         >
                             <RefreshCw size={16} />
@@ -70,3 +71,5 @@ export function EmailInbox({
         </div>
     )
 }
+
+export const EmailInbox = memo(EmailInboxComponent)

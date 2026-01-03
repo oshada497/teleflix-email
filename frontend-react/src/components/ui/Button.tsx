@@ -1,5 +1,5 @@
 import { motion, HTMLMotionProps } from 'framer-motion'
-import { ReactNode } from 'react'
+import { ReactNode, memo } from 'react'
 
 interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
     children: ReactNode
@@ -8,7 +8,7 @@ interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
     isLoading?: boolean
 }
 
-export function Button({
+function ButtonComponent({
     children,
     variant = 'primary',
     size = 'md',
@@ -38,10 +38,7 @@ export function Button({
 
     return (
         <motion.button
-            whileTap={{
-                scale: 0.98,
-            }}
-            className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+            className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className} active:scale-[0.98]`}
             disabled={isLoading}
             {...props}
         >
@@ -71,3 +68,5 @@ export function Button({
         </motion.button>
     )
 }
+
+export const Button = memo(ButtonComponent)

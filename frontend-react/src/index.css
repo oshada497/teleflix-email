@@ -36,14 +36,32 @@
 }
 
 /* Custom scrollbar for email content */
-.email-content::-webkit-scrollbar {
+.email-content::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar {
     width: 8px;
 }
 
-.email-content::-webkit-scrollbar-track {
+.email-content::-webkit-scrollbar-track,
+.custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.email-content::-webkit-scrollbar-thumb {
+.email-content::-webkit-scrollbar-thumb,
+.custom-scrollbar::-webkit-scrollbar-thumb {
     @apply bg-slate-200 dark:bg-slate-700 rounded-full;
+}
+
+/* Performance optimizations */
+.custom-scrollbar {
+    will-change: scroll-position;
+    contain: layout style paint;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

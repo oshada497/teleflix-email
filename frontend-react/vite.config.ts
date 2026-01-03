@@ -6,13 +6,22 @@ export default defineConfig({
     plugins: [react()],
     build: {
         chunkSizeWarningLimit: 1000,
+        minify: 'esbuild',
+        target: 'es2015',
+        cssCodeSplit: true,
         rollupOptions: {
             output: {
                 manualChunks: {
-                    vendor: ['react', 'react-dom', 'framer-motion'],
+                    vendor: ['react', 'react-dom'],
+                    animation: ['framer-motion'],
                     lottie: ['@lottiefiles/dotlottie-react'],
+                    icons: ['lucide-react'],
+                    socket: ['socket.io-client'],
                 },
             },
         },
+    },
+    optimizeDeps: {
+        include: ['react', 'react-dom'],
     },
 })
