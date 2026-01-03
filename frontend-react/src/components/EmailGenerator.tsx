@@ -73,7 +73,7 @@ export const EmailGenerator = memo(function EmailGeneratorComponent({
             const s = Math.floor((diff % (1000 * 60)) / 1000)
 
             const pad = (n: number) => n.toString().padStart(2, '0')
-            setTimeLeft(`${ pad(h) }:${ pad(m) }:${ pad(s) } `)
+            setTimeLeft(pad(h) + ':' + pad(m) + ':' + pad(s))
         }
 
         updateTimer()
