@@ -161,6 +161,18 @@ class ApiService {
         return res.ok
     }
 
+    async deleteAddress(): Promise<boolean> {
+        if (!this.jwt) return false
+        const res = await fetch(`${API_BASE}/api/delete_address`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${this.jwt}` }
+        })
+        if (res.ok) {
+            this.clearSession()
+        }
+        return res.ok
+    }
+
     // --- Real-time Updates ---
 
     connectSocket(onNewMail?: (mail: Email) => void) {

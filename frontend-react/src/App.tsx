@@ -120,6 +120,25 @@ export function App() {
         )
     }
 
+    const handleDeleteAddress = async () => {
+        if (!confirm('Are you sure you want to delete this email address and all its messages?')) return
+        try {
+            await api.deleteAddress()
+            setEmailAddress(null)
+            setEmails([])
+            setSelectedEmailId(null)
+            createNewEmail()
+        } catch (e) {
+            console.error('Failed to delete address', e)
+            alert('Failed to delete address.')
+        }
+    }
+
+    const handleDomainChange = (domain: string) => {
+        setSelectedDomain(domain)
+        createNewEmail(domain)
+    }
+
     // Auto-refresh fallback (every 30s) just in case socket misses something
     useEffect(() => {
         if (!emailAddress) return
@@ -146,17 +165,6 @@ export function App() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                        {emailAddress && (
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={handleLogout}
-                                className="hidden md:flex text-slate-500 hover:text-red-500"
-                            >
-                                <LogOut size={16} className="mr-2" />
-                                Exit
-                            </Button>
-                        )}
                         <button
                             onClick={() => setIsDark(!isDark)}
                             className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors"
@@ -189,7 +197,8 @@ export function App() {
                     isLoading={isGenerating}
                     domains={domains}
                     selectedDomain={selectedDomain}
-                    onDomainChange={setSelectedDomain}
+                    onDomainChange={handleDomainChange}
+                    onDelete={handleDeleteAddress}
                 />
 
                 {/* Features Grid (Small) */}

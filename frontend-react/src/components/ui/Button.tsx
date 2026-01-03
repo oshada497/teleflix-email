@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 
 interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
     children: ReactNode
-    variant?: 'primary' | 'secondary' | 'ghost' | 'outline'
+    variant?: 'primary' | 'secondary' | 'ghost' | 'outline' | 'danger'
     size?: 'sm' | 'md' | 'lg'
     isLoading?: boolean
 }
@@ -27,6 +27,8 @@ export function Button({
             'bg-transparent text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800',
         outline:
             'border border-slate-200 bg-transparent hover:bg-slate-50 text-slate-700 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800',
+        danger:
+            'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500 shadow-sm shadow-red-500/20',
     }
     const sizes = {
         sm: 'h-8 px-3 text-xs',
