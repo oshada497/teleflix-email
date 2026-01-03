@@ -154,7 +154,7 @@ function EmailGeneratorComponent({
                         {/* Control Row: Domain | New | Delete */}
                         <div className="flex flex-col sm:flex-row items-center gap-3">
                             {/* Domain Selector (Custom Dropdown) */}
-                            <div className="relative w-full sm:w-[200px]" ref={dropdownRef}>
+                            <div className="relative w-full sm:flex-1" ref={dropdownRef}>
                                 <button
                                     onClick={() => !isLoading && setIsDomainOpen(!isDomainOpen)}
                                     disabled={isLoading}
@@ -175,8 +175,8 @@ function EmailGeneratorComponent({
                                                     setIsDomainOpen(false)
                                                 }}
                                                 className={`w-full text-left px-3 py-2 text-sm flex items-center justify-between transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 ${selectedDomain === dom
-                                                        ? 'text-cyan-600 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-900/20 font-medium'
-                                                        : 'text-slate-700 dark:text-slate-300'
+                                                    ? 'text-cyan-600 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-900/20 font-medium'
+                                                    : 'text-slate-700 dark:text-slate-300'
                                                     }`}
                                             >
                                                 <span>@{dom}</span>
