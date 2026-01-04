@@ -311,8 +311,8 @@ export function Home() {
                 {/* Extended Landing Page Sections */}
                 <div className="mt-24 space-y-0">
                     <FeatureGrid />
-                    <BlogSection /> {/* [NEW] Added Blog Section */}
                     <Testimonials />
+                    <BlogSection /> {/* [MOVED] Blog Section between Testimonials and FAQ */}
                     <FAQ />
                 </div>
             </main >

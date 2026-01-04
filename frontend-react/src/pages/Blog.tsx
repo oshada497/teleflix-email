@@ -83,9 +83,10 @@ export function BlogPage() {
                 {/* Blog Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
                     {filteredPosts.map((post) => (
-                        <article
+                        <Link
+                            to={`/blog/${post.id}`}
                             key={post.id}
-                            className="group bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-xl transition-all duration-300 hover:border-cyan-500/30"
+                            className="group bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-xl transition-all duration-300 hover:border-cyan-500/30 block"
                         >
                             <div className="relative h-56 overflow-hidden">
                                 <img
@@ -130,7 +131,7 @@ export function BlogPage() {
                                     <span className="text-cyan-500 text-sm font-medium group-hover:underline">Read More</span>
                                 </div>
                             </div>
-                        </article>
+                        </Link>
                     ))}
                 </div>
 
