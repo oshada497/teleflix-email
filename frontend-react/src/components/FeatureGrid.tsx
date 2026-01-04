@@ -37,38 +37,46 @@ const features = [
 
 function FeatureGridComponent() {
     return (
-        <section className="py-16 md:py-24 bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
-            <div className="container mx-auto px-4">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-                        What is <span className="text-cyan-500">Temp Mail?</span>
+        <section className="py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+            {/* Background Decor - Static & Lightweight */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                <div className="absolute -top-1/2 -right-1/2 w-[1000px] h-[1000px] rounded-full bg-cyan-500/5 blur-3xl" />
+                <div className="absolute -bottom-1/2 -left-1/2 w-[800px] h-[800px] rounded-full bg-blue-500/5 blur-3xl" />
+            </div>
+
+            <div className="container mx-auto px-4 relative z-10">
+                <div className="text-center mb-16 max-w-3xl mx-auto">
+                    <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6 tracking-tight">
+                        Why Choose <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Temp Mail?</span>
                     </h2>
-                    <p className="text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
-                        Temp Mail is a free online temporary email service that provides users with an instant disposable email address.
-                        Our mission is to offer a simple and effective privacy protection solution for your online activities in today's complex digital world.
+                    <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed">
+                        Experience the most secure and fastest temporary email service.
+                        Designed for privacy, speed, and simplicity.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
                     {features.map((feature, index) => (
-                        <motion.div
+                        <div
                             key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.4, delay: index * 0.1 }}
-                            className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 hover:shadow-lg hover:border-cyan-500/30 dark:hover:border-cyan-500/30 transition-all group"
+                            className="group relative bg-white dark:bg-slate-900/50 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-cyan-500/30 transition-colors duration-300"
                         >
-                            <div className="w-12 h-12 rounded-xl bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center text-cyan-600 dark:text-cyan-400 mb-6 group-hover:scale-110 transition-transform duration-300">
-                                <feature.icon size={24} strokeWidth={2} />
+                            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+
+                            <div className="relative z-10">
+                                <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-900 dark:text-white mb-6 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-white transition-all duration-300 shadow-sm">
+                                    <feature.icon size={26} strokeWidth={1.5} />
+                                </div>
+
+                                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-cyan-500 transition-colors duration-300">
+                                    {feature.title}
+                                </h3>
+
+                                <p className="text-slate-600 dark:text-slate-400 leading-relaxed group-hover:text-slate-500 dark:group-hover:text-slate-300 transition-colors duration-300">
+                                    {feature.description}
+                                </p>
                             </div>
-                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3">
-                                {feature.title}
-                            </h3>
-                            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                                {feature.description}
-                            </p>
-                        </motion.div>
+                        </div>
                     ))}
                 </div>
             </div>
