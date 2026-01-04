@@ -227,7 +227,7 @@ export function Home() {
                     ].map((feature, i) => (
                         <div
                             key={i}
-                            className="flex justify-center md:justify-start items-center gap-0 md:gap-3 p-3 md:p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm"
+                            className="flex justify-center items-center gap-0 md:gap-3 p-3 md:p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm"
                         >
                             <div className="flex-shrink-0">
                                 <feature.icon className="text-cyan-500" size={24} />
