@@ -186,47 +186,50 @@ function EmailGeneratorComponent({
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-3 w-full sm:flex-row sm:items-center">
-                        <div className="flex-1 flex justify-center sm:justify-start min-h-[65px]">
-                            <Turnstile
-                                siteKey={TURNSTILE_SITE_KEY}
-                                onSuccess={setToken}
-                                options={{
-                                    theme: 'auto',
-                                    size: 'normal',
-                                }}
-                            />
-                        </div>
-                        <div className="flex gap-3 w-full sm:w-auto">
-                            <Button
-                                onClick={() => {
-                                    onGenerateNew(token || undefined)
-                                }}
-                                disabled={isLoading || !token}
-                                className="flex-1 sm:flex-none relative overflow-hidden group"
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <div className="relative flex items-center gap-2">
-                                    <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
-                                    <span>Generate New</span>
-                                </div>
-                            </Button>
+                    {/* Turnstile Section */}
+                    <div className="flex justify-center w-full min-h-[65px] -my-2 transform scale-90 sm:scale-100 origin-center transition-transform">
+                        <Turnstile
+                            siteKey={TURNSTILE_SITE_KEY}
+                            onSuccess={setToken}
+                            options={{
+                                theme: 'auto',
+                                size: 'normal',
+                            }}
+                        />
+                    </div>
 
-                            <Button
-                                variant="outline"
-                                onClick={onDelete}
-                                className="text-red-500 border-red-200 hover:bg-red-50 dark:border-red-900/30 dark:hover:bg-red-900/20"
-                            >
-                                <Trash2 size={18} />
-                            </Button>
+                    {/* Action Buttons */}
+                    <div className="flex gap-3 w-full">
+                        <Button
+                            onClick={() => {
+                                onGenerateNew(token || undefined)
+                            }}
+                            disabled={isLoading || !token}
+                            className="flex-1 relative overflow-hidden group py-6 text-base"
+                            variant="primary"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <div className="relative flex items-center justify-center gap-2">
+                                <RefreshCw size={20} className={isLoading ? 'animate-spin' : ''} />
+                                <span className="font-semibold">Generate New</span>
+                            </div>
+                        </Button>
 
-                            <Button
-                                variant="outline"
-                                onClick={onShowQR}
-                            >
-                                <QrCode size={18} />
-                            </Button>
-                        </div>
+                        <Button
+                            variant="outline"
+                            onClick={onDelete}
+                            className="px-4 text-red-500 border-red-200 hover:bg-red-50 dark:border-red-900/30 dark:hover:bg-red-900/20"
+                        >
+                            <Trash2 size={20} />
+                        </Button>
+
+                        <Button
+                            variant="outline"
+                            onClick={onShowQR}
+                            className="px-4"
+                        >
+                            <QrCode size={20} />
+                        </Button>
                     </div>
 
                     <div className="flex items-center justify-between w-full pt-4 border-t border-slate-100 dark:border-slate-800">
