@@ -86,13 +86,13 @@ export function BlogPage() {
                         <Link
                             to={`/blog/${post.id}`}
                             key={post.id}
-                            className="group bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-xl transition-all duration-300 hover:border-cyan-500/30 block"
+                            className="group bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-xl transition-all duration-500 ease-out hover:border-cyan-500/30 block"
                         >
                             <div className="relative h-56 overflow-hidden">
                                 <img
                                     src={post.imageUrl}
                                     alt={post.title}
-                                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out will-change-transform"
                                 />
                                 <div className="absolute top-4 left-4 bg-cyan-500/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full">
                                     {post.category}
