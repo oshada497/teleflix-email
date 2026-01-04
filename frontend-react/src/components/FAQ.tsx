@@ -29,9 +29,9 @@ function FAQComponent() {
     const [openIndex, setOpenIndex] = useState<number | null>(0)
 
     return (
-        <section className="py-16 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-300">
+        <section className="py-12 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-300">
             <div className="container mx-auto px-4">
-                <div className="text-center mb-16">
+                <div className="text-center mb-10 md:mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
                         Temp Mail <span className="text-cyan-500">FAQ</span>
                     </h2>

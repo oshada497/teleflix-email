@@ -37,7 +37,7 @@ const features = [
 
 function FeatureGridComponent() {
     return (
-        <section className="py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+        <section className="py-12 md:py-20 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
             {/* Background Decor - Static & Lightweight */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                 <div className="absolute -top-1/2 -right-1/2 w-[1000px] h-[1000px] rounded-full bg-cyan-500/5 blur-3xl" />
@@ -45,7 +45,7 @@ function FeatureGridComponent() {
             </div>
 
             <div className="container mx-auto px-4 relative z-10">
-                <div className="text-center mb-16 max-w-3xl mx-auto">
+                <div className="text-center mb-10 md:mb-16 max-w-3xl mx-auto">
                     <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6 tracking-tight">
                         Why Choose <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Temp Mail?</span>
                     </h2>
@@ -59,7 +59,7 @@ function FeatureGridComponent() {
                     {features.map((feature, index) => (
                         <div
                             key={index}
-                            className="group relative bg-white dark:bg-slate-900/50 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-cyan-500/30 transition-colors duration-300"
+                            className="group relative bg-white dark:bg-slate-900/50 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-cyan-500/30 transition-colors duration-300"
                         >
                             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
 

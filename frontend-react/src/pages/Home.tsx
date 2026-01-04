@@ -178,9 +178,8 @@ export function Home() {
     return (
         <div>
             <main className="container mx-auto px-4 py-8 md:py-12">
-                {/* Hero Section */}
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4 tracking-tight">
+                <div className="text-center mb-8 md:mb-12">
+                    <h1 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4 tracking-tight">
                         Disposable email for{' '}
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500">
                             privacy
@@ -208,7 +207,7 @@ export function Home() {
                 )}
 
                 {/* Features Grid (Small) */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-8 md:mb-12">
                     {[
                         {
                             icon: Shield,
@@ -228,7 +227,7 @@ export function Home() {
                     ].map((feature, i) => (
                         <div
                             key={i}
-                            className="flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm"
+                            className="flex items-center gap-3 p-3 md:p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm"
                         >
                             <div className="flex-shrink-0">
                                 <feature.icon className="text-cyan-500" size={24} />
@@ -272,7 +271,7 @@ export function Home() {
 
 
                 {/* Extended Landing Page Sections */}
-                <div className="mt-24 space-y-0">
+                <div className="mt-16 md:mt-24 space-y-0">
                     <FeatureGrid />
                     <Testimonials />
                     <BlogSection /> {/* [MOVED] Blog Section between Testimonials and FAQ */}

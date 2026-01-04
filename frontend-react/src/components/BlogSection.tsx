@@ -7,9 +7,9 @@ export function BlogSection() {
     const recentPosts = blogPosts.slice(0, 3)
 
     return (
-        <section className="py-20 bg-slate-50 dark:bg-slate-950">
+        <section className="py-12 md:py-20 bg-slate-50 dark:bg-slate-950">
             <div className="container mx-auto px-4">
-                <div className="text-center mb-12">
+                <div className="text-center mb-8 md:mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
                         Latest from our <span className="text-cyan-500">Blog</span>
                     </h2>

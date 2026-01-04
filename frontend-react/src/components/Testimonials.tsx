@@ -52,8 +52,8 @@ const reviews = [...testimonials, ...testimonials]
 
 function TestimonialsComponent() {
     return (
-        <section className="py-24 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 overflow-hidden">
-            <div className="container mx-auto px-4 mb-16 text-center">
+        <section className="py-12 md:py-24 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 overflow-hidden">
+            <div className="container mx-auto px-4 mb-10 md:mb-16 text-center">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -86,7 +86,7 @@ function TestimonialsComponent() {
                         {reviews.map((review, index) => (
                             <div
                                 key={`${review.name}-${index}`}
-                                className="flex-shrink-0 w-[350px] md:w-[400px] p-8 rounded-2xl bg-white dark:bg-slate-800/50 backdrop-blur-sm border border-slate-100 dark:border-slate-700 shadow-xl shadow-slate-200/50 dark:shadow-none transition-all hover:-translate-y-1 hover:shadow-2xl hover:border-cyan-500/30"
+                                className="flex-shrink-0 w-[300px] md:w-[400px] p-6 md:p-8 rounded-2xl bg-white dark:bg-slate-800/50 backdrop-blur-sm border border-slate-100 dark:border-slate-700 shadow-xl shadow-slate-200/50 dark:shadow-none transition-all hover:-translate-y-1 hover:shadow-2xl hover:border-cyan-500/30"
                             >
                                 <div className="flex items-center gap-1 mb-4">
                                     {[...Array(5)].map((_, i) => (
@@ -123,8 +123,8 @@ function TestimonialsComponent() {
             </div>
 
             {/* Bottom Stats / Trust Indicators */}
-            <div className="container mx-auto px-4 mt-16">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto border-t border-slate-200 dark:border-slate-800 pt-12">
+            <div className="container mx-auto px-4 mt-10 md:mt-16">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto border-t border-slate-200 dark:border-slate-800 pt-8 md:pt-12">
                     {[
                         { icon: Shield, label: "Private", value: "100%" },
                         { icon: Zap, label: "Speed", value: "<100ms" },
