@@ -127,6 +127,10 @@ api.post('/api/new_address', async (c) => {
     }
     // eslint-disable-next-line prefer-const
     let { name, domain, cf_token } = await c.req.json();
+    // Check header if not in body
+    if (!cf_token) {
+        cf_token = c.req.raw.headers.get("cf-turnstile-response");
+    }
     // check cf turnstile
     try {
         await checkCfTurnstile(c, cf_token);

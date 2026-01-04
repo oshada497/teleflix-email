@@ -41,7 +41,12 @@ app.post('/notify', (req, res) => {
 
     if (to) {
         console.log(`Notifying user: ${to}`);
-        io.to(to).emit('new_email', { timestamp: Date.now() });
+        io.to(to).emit('new_email', {
+            to,
+            raw: req.body.raw,
+            id: req.body.id,
+            timestamp: Date.now()
+        });
         return res.json({ success: true });
     }
 

@@ -1,4 +1,4 @@
-name = "wipemymail-api"
+name = "cloudflare_temp_email"
 main = "src/worker.ts"
 account_id = "7b6e2e1c4bd848d5707f16059e81996d"
 compatibility_date = "2025-04-01"
@@ -6,7 +6,6 @@ compatibility_flags = [ "nodejs_compat" ]
 keep_vars = true
 # if you want use custom_domain, you need to add routes
 routes = [
-	{ pattern = "api.wipemymail.com", custom_domain = true },
 	{ pattern = "temp-email-api.teleflix.online", custom_domain = true },
 	{ pattern = "tempxmail.qzz.io", custom_domain = true },
 ]
@@ -79,8 +78,8 @@ ENABLE_AUTO_REPLY = false
 # the role which can send emails without limit, multiple roles can be separated by ,
 # NO_LIMIT_SEND_ROLE = "vip"
 # Turnstile verification
-# CF_TURNSTILE_SITE_KEY = ""
-# CF_TURNSTILE_SECRET_KEY = ""
+CF_TURNSTILE_SITE_KEY = "0x4AAAAAACKeB7MPM8Eo6R-n"
+CF_TURNSTILE_SECRET_KEY = "0x4AAAAAACKeB6x6y1YVdOWt4wR1dYLFg8s"
 # telegram bot
 # TG_MAX_ADDRESS = 5
 # telegram bot info, predefined bot info can reduce latency of the webhook
@@ -95,7 +94,7 @@ ENABLE_AUTO_REPLY = false
 # ]
 # """
 # Frontend URL
-FRONTEND_URL = "https://wipemymail.com"
+FRONTEND_URL = "https://teleflix-email.pages.dev"
 
 # Render Pusher Config
 PUSHER_URL = "https://swiftmail-pusher.onrender.com"

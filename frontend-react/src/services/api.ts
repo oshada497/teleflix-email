@@ -20,9 +20,9 @@ class ApiService {
     private socket: Socket | null = null
 
     constructor() {
-        this.jwt = localStorage.getItem('wipemymail_jwt')
-        this.address = localStorage.getItem('wipemymail_address')
-        const storedCreated = localStorage.getItem('wipemymail_created_at')
+        this.jwt = localStorage.getItem('jwt')
+        this.address = localStorage.getItem('address')
+        const storedCreated = localStorage.getItem('created_at')
 
         if (storedCreated) {
             this.createdAt = parseInt(storedCreated)
@@ -38,18 +38,18 @@ class ApiService {
         this.jwt = jwt
         this.address = address
         this.createdAt = Date.now()
-        localStorage.setItem('wipemymail_jwt', jwt)
-        localStorage.setItem('wipemymail_address', address)
-        localStorage.setItem('wipemymail_created_at', this.createdAt.toString())
+        localStorage.setItem('jwt', jwt)
+        localStorage.setItem('address', address)
+        localStorage.setItem('created_at', this.createdAt.toString())
     }
 
     clearSession() {
         this.jwt = null
         this.address = null
         this.createdAt = null
-        localStorage.removeItem('wipemymail_jwt')
-        localStorage.removeItem('wipemymail_address')
-        localStorage.removeItem('wipemymail_created_at')
+        localStorage.removeItem('jwt')
+        localStorage.removeItem('address')
+        localStorage.removeItem('created_at')
         if (this.socket) {
             this.socket.disconnect()
             this.socket = null
@@ -71,9 +71,9 @@ class ApiService {
         this.jwt = jwt
         this.address = address
         this.createdAt = createdAt
-        localStorage.setItem('wipemymail_jwt', jwt)
-        localStorage.setItem('wipemymail_address', address)
-        localStorage.setItem('wipemymail_created_at', createdAt.toString())
+        localStorage.setItem('jwt', jwt)
+        localStorage.setItem('address', address)
+        localStorage.setItem('created_at', createdAt.toString())
     }
 
     // --- API Interactions ---
@@ -102,7 +102,7 @@ class ApiService {
         this.setSession(data.jwt, data.address)
 
         // Request send access (fire & forget)
-        fetch(`${API_BASE}/api/requset_send_mail_access`, {
+        fetch(`${API_BASE}/api/request_send_mail_access`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${data.jwt}` }
         }).catch(err => console.warn('Failed to request send access', err))
@@ -219,8 +219,8 @@ class ApiService {
             ; (this.socket as any)._address = this.address
 
         this.socket.on('connect', () => {
-            console.log('[Socket] Connected, registering:', this.address)
-            this.socket?.emit('register', this.address)
+            console.log('[Socket] Connected, joining room:', this.address)
+            this.socket?.emit('join', this.address)
         })
 
         this.socket.on('new_email', (rawMail: any) => this.handleIncomingMail(rawMail, onNewMail))

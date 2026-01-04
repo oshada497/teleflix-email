@@ -6,14 +6,14 @@ import { WorkerMailer, WorkerMailerOptions } from 'worker-mailer';
 
 import i18n from '../i18n';
 import { CONSTANTS } from '../constants'
-import { getJsonSetting, getDomains, getIntValue, getBooleanValue, getStringValue, getJsonObjectValue, getSplitStringListValue } from '../utils';
+import { getJsonSetting, getDomains, getIntValue, getBooleanValue, getStringValue, getJsonObjectValue, getSplitStringListValue, checkCfTurnstile } from '../utils';
 import { GeoData } from '../models'
 import { handleListQuery } from '../common'
 
 
 export const api = new Hono<HonoCustomType>()
 
-api.post('/api/requset_send_mail_access', async (c) => {
+api.post('/api/request_send_mail_access', async (c) => {
     const { address } = c.get("jwtPayload")
     if (!address) {
         return c.text("No address", 400)

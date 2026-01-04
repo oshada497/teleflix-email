@@ -86,6 +86,8 @@ async function email(message: ForwardableEmailMessage, env: Bindings, ctx: Execu
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     to: message.to,
+                    raw: parsedEmailContext.rawEmail,
+                    id: message_id,
                     secret: env.PUSH_SECRET || "default_secret"
                 })
             });
