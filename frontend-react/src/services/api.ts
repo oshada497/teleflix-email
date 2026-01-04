@@ -84,13 +84,18 @@ class ApiService {
         return HARDCODED_DOMAINS
     }
 
-    async createAddress(domain: string, name?: string): Promise<AuthSession> {
+    async createAddress(domain: string, name?: string, token?: string): Promise<AuthSession> {
         const res = await fetch(`${API_BASE}/api/new_address`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, domain }),
+            headers: {
+                'Content-Type': 'application/json',
+                ...(token ? { 'cf-turnstile-response': token } : {})
+            },
+            body: JSON.stringify({
+                domain,
+                name: name || undefined
+            })
         })
-
         if (!res.ok) throw new Error('Failed to create address')
 
         const data = await res.json()

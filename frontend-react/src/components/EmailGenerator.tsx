@@ -2,11 +2,14 @@ import { useState, useRef, useEffect, memo } from 'react'
 import { Copy, RefreshCw, Trash2, QrCode, ChevronDown, Check, Clock } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from './ui/Button'
+import { Turnstile } from '@marsidev/react-turnstile'
+
+const TURNSTILE_SITE_KEY = '0x4AAAAAACKeB7MPM8Eo6R-n'
 
 interface EmailGeneratorProps {
     email: string | null
     createdAt: number | null
-    onGenerateNew: () => void
+    onGenerateNew: (token?: string) => void
     onDelete: () => void
     isLoading: boolean
     domains: string[]
@@ -29,6 +32,7 @@ function EmailGeneratorComponent({
     const [timeLeft, setTimeLeft] = useState<string>('')
     const [hasCopied, setHasCopied] = useState(false)
     const [isDomainOpen, setIsDomainOpen] = useState(false)
+    const [token, setToken] = useState<string | null>(null)
     const dropdownRef = useRef<HTMLDivElement>(null)
 
     const handleCopy = () => {
@@ -100,14 +104,8 @@ function EmailGeneratorComponent({
                                 <div className="flex-1 px-4 py-2 overflow-hidden text-left">
                                     <motion.p
                                         key={email}
-                                        initial={{
-                                            opacity: 0,
-                                            y: 10,
-                                        }}
-                                        animate={{
-                                            opacity: 1,
-                                            y: 0,
-                                        }}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
                                         className="text-xl md:text-2xl font-mono text-slate-900 dark:text-slate-100 truncate font-medium"
                                     >
                                         {email}
@@ -151,73 +149,82 @@ function EmailGeneratorComponent({
                             </div>
                         </div>
 
-                        {/* Control Row: Domain | New | Delete */}
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                            {/* Domain Selector (Custom Dropdown) */}
-                            <div className="relative w-full sm:w-56" ref={dropdownRef}>
-                                <button
-                                    onClick={() => !isLoading && setIsDomainOpen(!isDomainOpen)}
-                                    disabled={isLoading}
-                                    className={`w-full h-9 pl-3 pr-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 flex items-center justify-between transition-all outline-none focus:ring-2 focus:ring-cyan-500/30 ${isDomainOpen ? 'ring-2 ring-cyan-500/30 border-cyan-500/50' : ''} ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-slate-300 dark:hover:border-slate-700'}`}
-                                >
-                                    <span className="truncate mr-2">@{selectedDomain}</span>
-                                    <ChevronDown size={14} className={`text-slate-500 transition-transform duration-200 ${isDomainOpen ? 'rotate-180' : ''}`} />
-                                </button>
+                        {/* Domain Selection */}
+                        <div className="relative" ref={dropdownRef}>
+                            <button
+                                onClick={() => !isLoading && setIsDomainOpen(!isDomainOpen)}
+                                className={`w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl transition-all ${isDomainOpen ? 'ring-2 ring-cyan-500/20 border-cyan-500' : 'hover:border-slate-300 dark:hover:border-slate-700'
+                                    }`}
+                            >
+                                <span className="text-slate-700 dark:text-slate-300 font-medium">{selectedDomain || 'Select Domain'}</span>
+                                <ChevronDown size={18} className={`text-slate-400 transition-transform ${isDomainOpen ? 'rotate-180' : ''}`} />
+                            </button>
 
-                                {/* Dropdown Menu */}
+                            <AnimatePresence>
                                 {isDomainOpen && (
-                                    <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl z-50 overflow-hidden py-1 animate-in fade-in zoom-in-95 duration-100 origin-top">
-                                        {domains.map((dom) => (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 10 }}
+                                        className="absolute z-50 w-full mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl overflow-hidden"
+                                    >
+                                        {domains.map(domain => (
                                             <button
-                                                key={dom}
+                                                key={domain}
                                                 onClick={() => {
-                                                    onDomainChange(dom)
+                                                    onDomainChange(domain)
                                                     setIsDomainOpen(false)
                                                 }}
-                                                className={`w-full text-left px-3 py-2 text-sm flex items-center justify-between transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 ${selectedDomain === dom
-                                                    ? 'text-cyan-600 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-900/20 font-medium'
-                                                    : 'text-slate-700 dark:text-slate-300'
-                                                    }`}
+                                                className="w-full px-4 py-3 text-left text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
                                             >
-                                                <span>@{dom}</span>
-                                                {selectedDomain === dom && <Check size={14} className="text-cyan-500" />}
+                                                {domain}
                                             </button>
                                         ))}
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Generate New (Center) */}
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={onGenerateNew}
-                                isLoading={isLoading}
-                                whileTap="tap"
-                                className="group w-full sm:w-auto text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400 transition-all duration-200 hover:scale-105"
-                            >
-                                {!isLoading && (
-                                    <motion.div
-                                        className="mr-2"
-                                        variants={{ tap: { rotate: 180 } }}
-                                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                                    >
-                                        <RefreshCw size={16} />
                                     </motion.div>
                                 )}
-                                Generate New
+                            </AnimatePresence>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col gap-3 w-full sm:flex-row sm:items-center">
+                        <div className="flex-1 flex justify-center sm:justify-start min-h-[65px]">
+                            <Turnstile
+                                siteKey={TURNSTILE_SITE_KEY}
+                                onSuccess={setToken}
+                                options={{
+                                    theme: 'auto',
+                                    size: 'normal',
+                                }}
+                            />
+                        </div>
+                        <div className="flex gap-3 w-full sm:w-auto">
+                            <Button
+                                onClick={() => {
+                                    onGenerateNew(token || undefined)
+                                }}
+                                disabled={isLoading || !token}
+                                className="flex-1 sm:flex-none relative overflow-hidden group"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <div className="relative flex items-center gap-2">
+                                    <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
+                                    <span>Generate New</span>
+                                </div>
                             </Button>
 
-                            {/* Delete (Right) */}
                             <Button
-                                variant="ghost"
-                                size="sm"
+                                variant="outline"
                                 onClick={onDelete}
-                                disabled={isLoading}
-                                className="w-full sm:w-auto text-slate-400 hover:text-red-500"
+                                className="text-red-500 border-red-200 hover:bg-red-50 dark:border-red-900/30 dark:hover:bg-red-900/20"
                             >
-                                <Trash2 size={16} className="mr-2" />
-                                Delete
+                                <Trash2 size={18} />
+                            </Button>
+
+                            <Button
+                                variant="outline"
+                                onClick={onShowQR}
+                            >
+                                <QrCode size={18} />
                             </Button>
                         </div>
                     </div>

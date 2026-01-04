@@ -123,20 +123,20 @@ export function Home() {
         }
     }, [])
 
-    const createNewEmail = async (overrideDomain?: string) => {
+    const createNewEmail = async (domain?: string, token?: string) => {
         setIsGenerating(true)
         try {
-            api.clearSession() // Clear old session first
+            const domainToUse = domain || selectedDomain || domains[0]
+            if (!domainToUse) return
 
-            const domain = overrideDomain || selectedDomain || (await api.getDomains())[0]
+            const session = await api.createAddress(domainToUse, undefined, token)
 
-            const session = await api.createAddress(domain)
             setEmailAddress(session.address)
             setCreatedAt(session.createdAt)
-            setEmails([])
-            setSelectedEmailId(null)
+            setEmails([]) // Clear inbox logic as it's a new address
+            setSelectedEmailId(null) // Close detail view
 
-            // Connect socket for the new address
+            // Connect socket for new address
             api.connectSocket(handleNewEmail)
         } catch (e) {
             console.error('Failed to create email', e)
@@ -249,12 +249,12 @@ export function Home() {
                     <EmailGenerator
                         email={emailAddress}
                         createdAt={createdAt}
-                        onGenerateNew={() => createNewEmail()}
-                        onDelete={handleDeleteAddress}
+                        onGenerateNew={(token) => createNewEmail(selectedDomain, token)}
+                        onDelete={() => setIsConfirmOpen(true)}
                         isLoading={isGenerating}
                         domains={domains}
                         selectedDomain={selectedDomain}
-                        onDomainChange={handleDomainChange}
+                        onDomainChange={setSelectedDomain}
                         onShowQR={() => setIsQRModalOpen(true)}
                     />
                 )}
