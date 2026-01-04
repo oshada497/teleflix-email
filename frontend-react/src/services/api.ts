@@ -3,7 +3,7 @@ import DOMPurify from 'dompurify'
 import { io, Socket } from 'socket.io-client'
 import { Email } from '../utils/types'
 
-const API_BASE = 'https://temp-email-api.teleflix.online'
+const API_BASE = 'https://tempxmail.qzz.io'
 const PUSHER_BASE = 'https://swiftmail-pusher.onrender.com'
 const HARDCODED_DOMAINS = ['fbflix.online', 'tempxmail.qzz.io', 'teleflix.online']
 
@@ -28,7 +28,7 @@ class ApiService {
             this.createdAt = parseInt(storedCreated)
         } else if (this.address) {
             this.createdAt = Date.now()
-            localStorage.setItem('wipemymail_created_at', this.createdAt.toString())
+            localStorage.setItem('created_at', this.createdAt.toString())
         }
     }
 
