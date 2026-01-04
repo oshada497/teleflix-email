@@ -1,8 +1,15 @@
-import { memo } from 'react'
+import { memo, lazy, Suspense } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Inbox, RefreshCw } from 'lucide-react'
 import { Email } from '../utils/types'
 import { EmailListItem } from './EmailListItem'
+
+// Lazy load the Lottie player
+const DotLottieReact = lazy(() =>
+    import('@lottiefiles/dotlottie-react').then(module => ({
+        default: module.DotLottieReact
+    }))
+)
 
 interface EmailInboxProps {
     emails: Email[]
@@ -59,10 +66,19 @@ function EmailInboxComponent({
             <div className="flex-1 overflow-hidden">
                 {emails.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                        <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
-                            <Inbox size={32} className="opacity-50" />
+                        <div className="w-48 h-48 mb-2 relative flex items-center justify-center">
+                            <Suspense fallback={
+                                <div className="w-32 h-32 rounded-full bg-slate-100 dark:bg-slate-800 animate-pulse" />
+                            }>
+                                <DotLottieReact
+                                    src="https://lottie.host/69f90986-e354-4d23-b91c-510b16b258c1/qflZLNtOXw.lottie"
+                                    loop
+                                    autoplay
+                                    className="w-full h-full"
+                                />
+                            </Suspense>
                         </div>
-                        <p className="font-medium">Your inbox is empty</p>
+                        <p className="font-medium text-lg">Your inbox is empty</p>
                         <p className="text-sm mt-1">Waiting for incoming messages...</p>
                     </div>
                 ) : (

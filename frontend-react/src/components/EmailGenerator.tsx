@@ -204,15 +204,15 @@ function EmailGeneratorComponent({
                             onClick={() => {
                                 onGenerateNew(token || undefined)
                             }}
-                            disabled={isLoading || !token}
-                            className="flex-1 relative overflow-hidden group py-6 text-base"
-                            variant="primary"
+                            disabled={isLoading}
+                            className="flex-1 py-6 text-base relative overflow-hidden group"
+                            variant="ghost"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                            <div className="relative flex items-center justify-center gap-2">
+                            <span className="relative z-10 flex items-center justify-center gap-2">
                                 <RefreshCw size={20} className={isLoading ? 'animate-spin' : ''} />
                                 <span className="font-semibold">Generate New</span>
-                            </div>
+                            </span>
+                            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </Button>
 
                         <Button
