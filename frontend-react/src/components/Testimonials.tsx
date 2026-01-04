@@ -81,7 +81,10 @@ function TestimonialsComponent() {
                             ease: "linear",
                             repeatType: "loop"
                         }}
-                        style={{ width: "fit-content" }}
+                        style={{
+                            width: "fit-content",
+                            willChange: "transform" // Only set during animation
+                        }}
                     >
                         {reviews.map((review, index) => (
                             <div

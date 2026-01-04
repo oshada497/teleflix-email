@@ -218,6 +218,26 @@ class ApiService {
         })
 
         this.socket.on('new_email', (rawMail: any) => this.handleIncomingMail(rawMail, onNewMail))
+
+        // Optimize socket with Page Visibility API
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                console.log('[Socket] Tab hidden, disconnecting')
+                this.socket?.disconnect()
+            } else {
+                console.log('[Socket] Tab visible, reconnecting')
+                if (this.socket && !this.socket.connected) {
+                    this.socket.connect()
+                }
+            }
+        }
+
+        document.addEventListener('visibilitychange', handleVisibilityChange)
+
+            // Store cleanup function on socket
+            ; (this.socket as any)._visibilityCleanup = () => {
+                document.removeEventListener('visibilitychange', handleVisibilityChange)
+            }
     }
 
     private async handleIncomingMail(rawMail: any, onNewMail?: (mail: Email) => void) {
@@ -246,6 +266,10 @@ class ApiService {
 
     disconnectSocket() {
         if (this.socket) {
+            // Clean up visibility listener
+            const cleanup = (this.socket as any)._visibilityCleanup
+            if (cleanup) cleanup()
+
             this.socket.disconnect()
             this.socket = null
         }

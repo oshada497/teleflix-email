@@ -29,7 +29,8 @@ export function BlogSection() {
                                 <img
                                     src={post.imageUrl}
                                     alt={post.title}
-                                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out will-change-transform"
+                                    loading="lazy"
+                                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                                 />
                                 <div className="absolute top-4 left-4 bg-cyan-500/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full">
                                     {post.category}

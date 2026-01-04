@@ -12,16 +12,18 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks: {
-                    vendor: ['react', 'react-dom'],
+                    vendor: ['react', 'react-dom', 'react-router-dom'],
                     animation: ['framer-motion'],
-                    lottie: ['@lottiefiles/dotlottie-react'],
                     icons: ['lucide-react'],
                     socket: ['socket.io-client'],
                 },
             },
         },
+        modulePreload: {
+            polyfill: true,
+        },
     },
     optimizeDeps: {
-        include: ['react', 'react-dom'],
+        include: ['react', 'react-dom', 'react-router-dom'],
     },
 })

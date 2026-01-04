@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { Moon, Sun, Shield, Zap, Lock } from 'lucide-react'
 import { EmailGenerator } from '../components/EmailGenerator'
 import { EmailInbox } from '../components/EmailInbox'
@@ -13,6 +13,25 @@ import { Email } from '../utils/types'
 import { Link } from 'react-router-dom' // [NEW]
 import { AnimatePresence } from 'framer-motion'
 import { api } from '../services/api'
+
+// Move static features array outside component to prevent recreation on every render
+const HERO_FEATURES = [
+    {
+        icon: Shield,
+        label: 'Private & Secure',
+        desc: 'No logs kept',
+    },
+    {
+        icon: Zap,
+        label: 'Instant',
+        desc: 'Real-time delivery',
+    },
+    {
+        icon: Lock,
+        label: 'Encrypted',
+        desc: 'End-to-end protection',
+    },
+] as const
 
 export function Home() {
     const [isDark, setIsDark] = useState(() => {
@@ -164,14 +183,48 @@ export function Home() {
         createNewEmail(newDomain)
     }
 
-    // Auto-refresh fallback (every 5s) just in case socket misses something
+    // Auto-refresh with Page Visibility API - pause when tab is hidden
     useEffect(() => {
         if (!emailAddress) return
-        const interval = setInterval(() => {
-            loadEmails()
-        }, 5000)
-        return () => clearInterval(interval)
-    }, [emailAddress])
+
+        let interval: number | null = null
+
+        const startPolling = () => {
+            if (interval) return
+            interval = setInterval(() => {
+                loadEmails()
+            }, 5000)
+        }
+
+        const stopPolling = () => {
+            if (interval) {
+                clearInterval(interval)
+                interval = null
+            }
+        }
+
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                stopPolling()
+            } else {
+                startPolling()
+                // Refresh immediately when tab becomes visible
+                loadEmails()
+            }
+        }
+
+        // Start polling if tab is visible
+        if (!document.hidden) {
+            startPolling()
+        }
+
+        document.addEventListener('visibilitychange', handleVisibilityChange)
+
+        return () => {
+            stopPolling()
+            document.removeEventListener('visibilitychange', handleVisibilityChange)
+        }
+    }, [emailAddress, loadEmails])
 
     const selectedEmail = emails.find((e) => e.id === selectedEmailId) || null
 
@@ -208,23 +261,7 @@ export function Home() {
 
                 {/* Features Grid (Small) */}
                 <div className="grid grid-cols-3 md:grid-cols-3 gap-2 md:gap-4 max-w-4xl mx-auto mb-8 md:mb-12">
-                    {[
-                        {
-                            icon: Shield,
-                            label: 'Private & Secure',
-                            desc: 'No logs kept',
-                        },
-                        {
-                            icon: Zap,
-                            label: 'Instant',
-                            desc: 'Real-time delivery',
-                        },
-                        {
-                            icon: Lock,
-                            label: 'Encrypted',
-                            desc: 'End-to-end protection',
-                        },
-                    ].map((feature, i) => (
+                    {HERO_FEATURES.map((feature, i) => (
                         <div
                             key={i}
                             className="flex justify-center items-center gap-0 md:gap-3 p-3 md:p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm"
