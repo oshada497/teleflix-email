@@ -207,7 +207,7 @@ export function Home() {
                 )}
 
                 {/* Features Grid (Small) */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-8 md:mb-12">
+                <div className="grid grid-cols-3 md:grid-cols-3 gap-2 md:gap-4 max-w-4xl mx-auto mb-8 md:mb-12">
                     {[
                         {
                             icon: Shield,
@@ -227,12 +227,12 @@ export function Home() {
                     ].map((feature, i) => (
                         <div
                             key={i}
-                            className="flex items-center gap-3 p-3 md:p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm"
+                            className="flex justify-center md:justify-start items-center gap-0 md:gap-3 p-3 md:p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm"
                         >
                             <div className="flex-shrink-0">
                                 <feature.icon className="text-cyan-500" size={24} />
                             </div>
-                            <div className="flex-1">
+                            <div className="hidden md:block flex-1">
                                 <h3 className="font-semibold text-sm text-slate-900 dark:text-white">
                                     {feature.label}
                                 </h3>
