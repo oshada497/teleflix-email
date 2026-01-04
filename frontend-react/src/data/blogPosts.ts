@@ -199,7 +199,7 @@ Privacy requires active effort, but the tools are better than ever. By integrati
         date: 'Dec 20, 2025',
         author: 'Michael Brown',
         readTime: '6 min read',
-        imageUrl: 'https://images.unsplash.com/photo-1510915361405-ef8a93fa3838?auto=format&fit=crop&q=80&w=1000',
+        imageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1000',
         category: 'Security'
     },
     {

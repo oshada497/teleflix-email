@@ -30,6 +30,16 @@ export function BlogPostPage() {
 
     if (!post) return null
 
+    const renderText = (text: string) => {
+        const parts = text.split(/(\*\*.*?\*\*)/g);
+        return parts.map((part, index) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+                return <strong key={index} className="font-bold text-slate-900 dark:text-white">{part.slice(2, -2)}</strong>;
+            }
+            return part;
+        });
+    };
+
     return (
         <div className="container mx-auto px-4 py-12">
             <div className="max-w-3xl mx-auto">
@@ -62,7 +72,7 @@ export function BlogPostPage() {
                                     <p className="text-xs text-slate-500">Author</p>
                                 </div>
                             </div>
-                            <div className="hidden md:block w-px h-8 bg-slate-200 dark:bg-slate-800" />
+                            <div className="hidden md:block w-px h-8 bg-slate-200 dark:border-slate-800" />
                             <div className="hidden md:flex items-center gap-4 text-sm text-slate-500">
                                 <div className="flex items-center gap-1">
                                     <Calendar size={16} />
@@ -95,21 +105,21 @@ export function BlogPostPage() {
                     {/* Manual Render for basic markdown-like structure without deps */}
                     {post.content.split('\n').map((line, i) => {
                         if (line.startsWith('## ')) {
-                            return <h2 key={i} className="text-2xl font-bold text-slate-900 dark:text-white mt-10 mb-4">{line.replace('## ', '')}</h2>
+                            return <h2 key={i} className="text-2xl font-bold text-slate-900 dark:text-white mt-10 mb-4">{renderText(line.replace('## ', ''))}</h2>
                         }
                         if (line.startsWith('### ')) {
-                            return <h3 key={i} className="text-xl font-bold text-slate-900 dark:text-white mt-8 mb-3">{line.replace('### ', '')}</h3>
+                            return <h3 key={i} className="text-xl font-bold text-slate-900 dark:text-white mt-8 mb-3">{renderText(line.replace('### ', ''))}</h3>
                         }
                         if (line.startsWith('* ')) {
-                            return <li key={i} className="ml-4 list-disc text-slate-600 dark:text-slate-400 mb-2">{line.replace('* ', '')}</li>
+                            return <li key={i} className="ml-4 list-disc text-slate-600 dark:text-slate-400 mb-2">{renderText(line.replace('* ', ''))}</li>
                         }
                         if (line.match(/^\d+\./)) {
-                            return <div key={i} className="ml-4 font-semibold text-slate-800 dark:text-slate-200 mt-4 mb-2">{line}</div>
+                            return <div key={i} className="ml-4 font-semibold text-slate-800 dark:text-slate-200 mt-4 mb-2">{renderText(line)}</div>
                         }
                         if (line.trim() === '') {
                             return <br key={i} />
                         }
-                        return <p key={i} className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">{line}</p>
+                        return <p key={i} className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">{renderText(line)}</p>
                     })}
                 </article>
 
