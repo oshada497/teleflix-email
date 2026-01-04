@@ -22,14 +22,15 @@ export function EmailDetail({ email, onClose }: EmailDetailProps) {
             <div className="hidden md:flex flex-col h-[600px] items-center justify-center bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-300 dark:border-slate-800 border-dashed p-12">
                 <div className="w-64 h-64 mb-4 relative flex items-center justify-center">
                     <Suspense fallback={
-                        <div className="animate-pulse flex flex-col items-center">
-                            <div className="w-24 h-24 rounded-full bg-slate-200 dark:bg-slate-800 mb-4" />
+                        <div className="w-full h-full flex items-center justify-center">
+                            <div className="w-32 h-32 rounded-full bg-slate-100 dark:bg-slate-800 animate-pulse" />
                         </div>
                     }>
                         <DotLottieReact
                             src="https://lottie.host/69f90986-e354-4d23-b91c-510b16b258c1/qflZLNtOXw.lottie"
                             loop
                             autoplay
+                            className="w-full h-full"
                         />
                     </Suspense>
                 </div>
