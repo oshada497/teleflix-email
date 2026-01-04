@@ -2,6 +2,14 @@ import { motion } from 'framer-motion'
 import { X, Reply, Trash2, Download, Star, Mail } from 'lucide-react'
 import { Email } from '../utils/types'
 import { Button } from './ui/Button'
+import { lazy, Suspense } from 'react'
+
+// Lazy load the Lottie player to save ~500KB on initial bundle
+const DotLottieReact = lazy(() =>
+    import('@lottiefiles/dotlottie-react').then(module => ({
+        default: module.DotLottieReact
+    }))
+)
 
 interface EmailDetailProps {
     email: Email | null
@@ -12,20 +20,19 @@ export function EmailDetail({ email, onClose }: EmailDetailProps) {
     if (!email) {
         return (
             <div className="hidden md:flex flex-col h-[600px] items-center justify-center bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-300 dark:border-slate-800 border-dashed p-12">
-                <motion.div
-                    className="w-32 h-32 mb-8 flex items-center justify-center rounded-full bg-cyan-50 dark:bg-cyan-900/20"
-                    animate={{
-                        scale: [1, 1.1, 1],
-                        rotate: [0, 5, -5, 0]
-                    }}
-                    transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                    }}
-                >
-                    <Mail size={64} className="text-cyan-500" />
-                </motion.div>
+                <div className="w-64 h-64 mb-4 relative flex items-center justify-center">
+                    <Suspense fallback={
+                        <div className="animate-pulse flex flex-col items-center">
+                            <div className="w-24 h-24 rounded-full bg-slate-200 dark:bg-slate-800 mb-4" />
+                        </div>
+                    }>
+                        <DotLottieReact
+                            src="https://lottie.host/69f90986-e354-4d23-b91c-510b16b258c1/qflZLNtOXw.lottie"
+                            loop
+                            autoplay
+                        />
+                    </Suspense>
+                </div>
                 <div className="text-center text-slate-400">
                     <p className="text-lg font-medium">Select an email to read</p>
                 </div>

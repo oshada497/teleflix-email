@@ -14,6 +14,7 @@ export default defineConfig({
                 manualChunks: {
                     vendor: ['react', 'react-dom', 'react-router-dom'],
                     animation: ['framer-motion'],
+                    lottie: ['@lottiefiles/dotlottie-react'],
                     icons: ['lucide-react'],
                     socket: ['socket.io-client'],
                 },
