@@ -14,7 +14,15 @@ import { api } from './services/api'
 import { Button } from './components/ui/Button'
 
 export function App() {
-    const [isDark, setIsDark] = useState(false)
+    const [isDark, setIsDark] = useState(() => {
+        // Check local storage first
+        const saved = localStorage.getItem('theme')
+        if (saved) {
+            return saved === 'dark'
+        }
+        // Fallback to system preference
+        return window.matchMedia('(prefers-color-scheme: dark)').matches
+    })
     const [emailAddress, setEmailAddress] = useState<string | null>(null)
     const [emails, setEmails] = useState<Email[]>([])
     const [selectedEmailId, setSelectedEmailId] = useState<string | null>(null)
@@ -29,11 +37,6 @@ export function App() {
 
     // Initialize
     useEffect(() => {
-        // Check system preference
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            setIsDark(true)
-        }
-
         // Check for session in URL (QR Scan recovery)
         const params = new URLSearchParams(window.location.search)
         const token = params.get('t')
@@ -78,8 +81,10 @@ export function App() {
     useEffect(() => {
         if (isDark) {
             document.documentElement.classList.add('dark')
+            localStorage.setItem('theme', 'dark')
         } else {
             document.documentElement.classList.remove('dark')
+            localStorage.setItem('theme', 'light')
         }
     }, [isDark])
 
