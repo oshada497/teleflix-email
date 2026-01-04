@@ -78,17 +78,6 @@ export function Home() {
         }
     }, [])
 
-    // Dark mode toggle
-    useEffect(() => {
-        if (isDark) {
-            document.documentElement.classList.add('dark')
-            localStorage.setItem('theme', 'dark')
-        } else {
-            document.documentElement.classList.remove('dark')
-            localStorage.setItem('theme', 'light')
-        }
-    }, [isDark])
-
     const handleNewEmail = useCallback((email: Email) => {
         setEmails((prev) => {
             // Avoid duplicates
@@ -187,33 +176,7 @@ export function Home() {
     const selectedEmail = emails.find((e) => e.id === selectedEmailId) || null
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
-            {/* Header */}
-            <header className="sticky top-0 z-30 w-full border-b border-slate-300 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md">
-                <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-cyan-500 flex items-center justify-center text-white">
-                            <Shield size={20} />
-                        </div>
-                        <span className="font-bold text-xl tracking-tight text-slate-900 dark:text-white">
-                            Temp<span className="text-cyan-500">Mail</span>
-                        </span>
-                    </Link>
-
-                    <div className="flex items-center gap-4">
-                        <Link to="/blog" className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-cyan-500 transition-colors hidden md:block">
-                            Blog
-                        </Link>
-                        <button
-                            onClick={() => setIsDark(!isDark)}
-                            className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors"
-                        >
-                            {isDark ? <Sun size={20} /> : <Moon size={20} />}
-                        </button>
-                    </div>
-                </div>
-            </header>
-
+        <div>
             <main className="container mx-auto px-4 py-8 md:py-12">
                 {/* Hero Section */}
                 <div className="text-center mb-12">
@@ -317,9 +280,6 @@ export function Home() {
                 </div>
             </main >
 
-            <footer className="py-8 text-center text-sm text-slate-400 dark:text-slate-600">
-                <p>© {new Date().getFullYear()} TempMail. Secure. Private. Fast.</p>
-            </footer>
             <ConfirmModal
                 isOpen={isConfirmOpen}
                 onClose={() => setIsConfirmOpen(false)}
