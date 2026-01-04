@@ -152,7 +152,7 @@ function EmailGeneratorComponent({
                         </div>
 
                         {/* Control Row: Domain | New | Delete */}
-                        <div className="flex flex-col sm:flex-row items-center gap-3">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                             {/* Domain Selector (Custom Dropdown) */}
                             <div className="relative w-full sm:w-56" ref={dropdownRef}>
                                 <button
