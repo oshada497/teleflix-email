@@ -154,7 +154,7 @@ function EmailGeneratorComponent({
                         {/* Control Row: Domain | New | Delete */}
                         <div className="flex flex-col sm:flex-row items-center gap-3">
                             {/* Domain Selector (Custom Dropdown) */}
-                            <div className="relative w-full sm:flex-1" ref={dropdownRef}>
+                            <div className="relative w-full sm:w-56" ref={dropdownRef}>
                                 <button
                                     onClick={() => !isLoading && setIsDomainOpen(!isDomainOpen)}
                                     disabled={isLoading}
